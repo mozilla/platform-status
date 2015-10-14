@@ -10,11 +10,8 @@ export default class FixtureParser {
   }
 
   read() {
-    this.results = new Map(
-      glob.sync(path.join(this.root, '*.md'))
-        .map(this.readFile, this)
-        .map((entry) => [entry.slug, entry])
-    );
+    this.results = glob.sync(path.join(this.root, '*.md'))
+      .map(this.readFile, this);
     return Promise.resolve(this.results);
   }
 

@@ -24,6 +24,7 @@
     "gulp-autoprefixer": "^3.0.2",
     "gulp-concat": "^2.6.0",
     "gulp-eslint": "^1.0.0",
+    "gulp-hb": "^2.6.5",
     "gulp-load-plugins": "^1.0.0-rc.1",
     "gulp-sourcemaps": "^1.6.0",
     "source-map-support": "^0.3.2",

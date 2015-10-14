@@ -7,6 +7,23 @@
 </head>
 <body>
   <h1>Platatus!</h1>
+  <div id="features">
+    {{#each features}}
+      <div class="feature">
+        <div class="title">{{title}}</div>
+        <div class="details">
+          <div class="summary">{{summary}}</div>
+          {{#if mdn_url}}
+            <div class="documentation"><a href="{{mdn_url}}">documentation</a></div>
+          {{/if}}
+          {{#if spec_url}}
+            <div class="spec"><a href="{{spec_url}}">spec</a></div>
+          {{/if}}
+        </div>
+      </div>
+    {{/each}}
+  </div>
+
   <script src="./bundle.js"></script>
 </body>
 </html>
