@@ -9,7 +9,7 @@ const plugins = loadPlugins({
   lazy: false,
 });
 
-import babelRegister from 'babel/register';
+import babelRegister from 'babel-core/register';
 babelRegister();
 import sourceMapSupport from 'source-map-support';
 sourceMapSupport.install();
