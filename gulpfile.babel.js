@@ -72,7 +72,7 @@ gulp.task('build:css', ['clean'], () => {
     .pipe(gulp.dest('./dist'));
 });
 
-gulp.task('build', ['build:root', 'build:js', 'build:css']);
+gulp.task('build', ['build:root', 'build:engine', 'build:js', 'build:css']);
 
 gulp.task('watch', ['build'], () => {
   browserSync.init({
