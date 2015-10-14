@@ -1,0 +1,10 @@
+{
+  "stage": 0,
+  "ignore": [
+    "/node_modules/",
+    "/dist/",
+  ],
+  "sourceMaps": "inline",
+  "loose": "all",
+  "optional": ["runtime"],
+}

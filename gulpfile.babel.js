@@ -9,24 +9,15 @@ const plugins = loadPlugins({
   lazy: false,
 });
 
-const babelOptions = {
-  'stage': 1,
-  'ignore': [
-    '/node_modules/',
-    '/dist/',
-  ],
-  'sourceMaps': 'inline',
-  'loose': 'all',
-  'optional': ['runtime'],
-};
-
-// import babelRegister from 'babel/register';
-// babelRegister(babelOptions);
-// import sourceMapSupport from 'source-map-support';
-// sourceMapSupport.install();
+import babelRegister from 'babel/register';
+babelRegister();
+import sourceMapSupport from 'source-map-support';
+sourceMapSupport.install();
 
 import browserSyncCreator from 'browser-sync';
 const browserSync = browserSyncCreator.create();
+
+import engine from './engine/index.js';
 
 gulp.task('clean', (done) => {
   del(['./dist']).then(() => {
@@ -43,6 +34,10 @@ gulp.task('lint', () => {
 
 gulp.task('test', ['lint']);
 
+gulp.task('build:engine', (done) => {
+  engine().then(done);
+});
+
 gulp.task('build:root', ['clean'], () => {
   return gulp
     .src('./src/*.*')
@@ -54,7 +49,7 @@ gulp.task('build:js', ['clean'], () => {
     entries: './src/js/index.js',
     debug: true,
   })
-  .transform(babelify.configure(babelOptions))
+  .transform(babelify.configure())
   .bundle()
   .pipe(source('bundle.js'))
   .pipe(buffer())
@@ -81,6 +76,7 @@ gulp.task('build', ['build:root', 'build:js', 'build:css']);
 
 gulp.task('watch', ['build'], () => {
   browserSync.init({
+    open: false,
     server: {
       baseDir: './dist',
     },
