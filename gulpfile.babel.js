@@ -42,7 +42,7 @@ gulp.task('test:mocha', () => {
     .pipe(mocha());
 });
 
-gulp.task('test', ['lint', 'mocha-test']);
+gulp.task('test', ['lint', 'test:mocha']);
 
 gulp.task('deploy', ['build'], () => {
   return oghliner.deploy({
