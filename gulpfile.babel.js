@@ -4,6 +4,7 @@ import del from 'del';
 import source from 'vinyl-source-stream';
 import buffer from 'vinyl-buffer';
 import gulp from 'gulp';
+import oghliner from 'oghliner';
 import loadPlugins from 'gulp-load-plugins';
 const plugins = loadPlugins({
   lazy: false,
@@ -33,6 +34,12 @@ gulp.task('lint', () => {
 });
 
 gulp.task('test', ['lint']);
+
+gulp.task('deploy', ['build'], (done) => {
+  oghliner.deploy({
+    rootDir: 'dist',
+  }, done);
+});
 
 gulp.task('build:engine', (done) => {
   engine().then(done);

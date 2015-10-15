@@ -26,6 +26,7 @@
     "gulp-eslint": "^1.0.0",
     "gulp-load-plugins": "^1.0.0-rc.1",
     "gulp-sourcemaps": "^1.6.0",
+    "oghliner": "^0.9.0",
     "source-map-support": "^0.3.2",
     "vinyl-buffer": "^1.0.0",
     "vinyl-source-stream": "^1.1.0"
