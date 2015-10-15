@@ -1,6 +1,6 @@
-import gulp from 'gulp';
-import hb from 'gulp-hb';
 import path from 'path';
+import fs from 'fs';
+import handlebars from 'handlebars';
 import FixtureParser from './fixtureParser.js';
 import BrowserParser from './browserParser.js';
 
@@ -10,15 +10,8 @@ const browserParser = new BrowserParser();
 
 
 function buildIndex(data) {
-  return new Promise((resolve, reject) => {
-    gulp.src('src/tpl/*.html')
-      .pipe(hb({
-        data: data,
-      }))
-      .pipe(gulp.dest('./dist/'))
-      .on('error', reject)
-      .on('finished', resolve);
-  })
+  var templateContents = fs.readFileSync('src/tpl/index.html');
+  return handlebars.compile(String(templateContents.contents))(data);
 }
 
 
@@ -27,7 +20,9 @@ function build() {
     fixtureParser.read(),
     browserParser.read(),
   ]).then(() => {
-    return buildIndex({ features: fixtureParser.results });
+    return {
+      'index.html' : buildIndex({ features: fixtureParser.results })
+    };
   }).catch((err) => {
     console.error(err);
   });

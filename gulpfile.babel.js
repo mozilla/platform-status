@@ -1,5 +1,6 @@
 import browserify from 'browserify';
 import babelify from 'babelify';
+import fs from 'fs';
 import del from 'del';
 import source from 'vinyl-source-stream';
 import buffer from 'vinyl-buffer';
@@ -41,8 +42,12 @@ gulp.task('deploy', ['build'], () => {
   });
 });
 
-gulp.task('build:engine', (done) => {
-  engine().then(done);
+gulp.task('build:engine', () => {
+  return engine().then(function(files) {
+    for (var filename in files) {
+      fs.writeFileSync('./dist/' + filename);
+    }
+  });
 });
 
 gulp.task('build:root', ['clean'], () => {
