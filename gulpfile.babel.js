@@ -35,10 +35,10 @@ gulp.task('lint', () => {
 
 gulp.task('test', ['lint']);
 
-gulp.task('deploy', ['build'], (done) => {
-  oghliner.deploy({
+gulp.task('deploy', ['build'], () => {
+  return oghliner.deploy({
     rootDir: 'dist',
-  }, done);
+  });
 });
 
 gulp.task('build:engine', (done) => {
