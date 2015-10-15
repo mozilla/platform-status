@@ -29,7 +29,7 @@ gulp.task('clean', (done) => {
 
 gulp.task('lint', () => {
   return gulp
-    .src(['./*.js', './src/**/*.js'])
+    .src(['./*.js', './engine/*.js', './src/*.js'])
     .pipe(plugins.eslint())
     .pipe(plugins.eslint.format());
 });
@@ -56,7 +56,7 @@ gulp.task('build:root', ['clean'], () => {
     .pipe(gulp.dest('./dist'));
 });
 
-gulp.task('build:js', ['clean'], () => {
+gulp.task('build:js', () => {
   return browserify({
     entries: './src/js/index.js',
     debug: true,
@@ -72,9 +72,9 @@ gulp.task('build:js', ['clean'], () => {
   .pipe(gulp.dest('./dist'));
 });
 
-gulp.task('build:css', ['clean'], () => {
+gulp.task('build:css', () => {
   return gulp
-    .src('./src/css/**/*.css')
+    .src('./src/css/*.css')
     .pipe(plugins.sourcemaps.init())
     .pipe(plugins.autoprefixer({
       browsers: ['last 2 versions'],
@@ -93,7 +93,10 @@ gulp.task('watch', ['build'], () => {
       baseDir: './dist',
     },
   });
-  gulp.watch(['./src/**'], ['build'], browserSync.reload);
+  gulp.watch(['./src/*.*'], ['build:root'], browserSync.reload);
+  gulp.watch(['./src/css/*.css'], ['build:css'], browserSync.reload);
+  gulp.watch(['./src/js/*.js'], ['build:js'], browserSync.reload);
+  gulp.watch(['./engine/*.js', './features/*.md'], ['build:engine'], browserSync.reload);
 });
 
 gulp.task('default', ['build']);
