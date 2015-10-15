@@ -36,7 +36,7 @@ gulp.task('lint', () => {
     .pipe(plugins.eslint.format());
 });
 
-gulp.task('mocha-test', () => {
+gulp.task('test:mocha', () => {
   return gulp.src(yargs.argv.file ? yargs.argv.file : 'test/test*.js', {read: false})
     // gulp-mocha needs filepaths so you can't have any plugins before it
     .pipe(mocha());
