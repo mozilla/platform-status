@@ -12,4 +12,4 @@ before_script:
   - 'git config --global user.name "Travis CI"'
   - 'git config --global user.email "brendan.dahl@gmail.com"'
 after_success:
-  - '[ "${TRAVIS_PULL_REQUEST}" = "false" ] && [ "${TRAVIS_BRANCH}" = "master" ] && gulp deploy'
+  - 'test $TRAVIS_PULL_REQUEST == "false" && test $TRAVIS_BRANCH == "master" && gulp deploy'
