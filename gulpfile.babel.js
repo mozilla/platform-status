@@ -43,8 +43,8 @@ gulp.task('deploy', ['build'], () => {
 });
 
 gulp.task('build:engine', () => {
-  return engine().then(function(files) {
-    for (var filename in files) {
+  return engine().then((files) => {
+    for (const filename of Object.keys(files)) {
       fs.writeFileSync('./dist/' + filename);
     }
   });
