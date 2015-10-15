@@ -5,6 +5,8 @@ import del from 'del';
 import source from 'vinyl-source-stream';
 import buffer from 'vinyl-buffer';
 import gulp from 'gulp';
+import mocha from 'gulp-mocha';
+import yargs from 'yargs';
 import oghliner from 'oghliner';
 import loadPlugins from 'gulp-load-plugins';
 const plugins = loadPlugins({
@@ -34,7 +36,13 @@ gulp.task('lint', () => {
     .pipe(plugins.eslint.format());
 });
 
-gulp.task('test', ['lint']);
+gulp.task('mocha-test', () => {
+  return gulp.src(yargs.argv.file ? yargs.argv.file : 'test/test*.js', {read: false})
+    // gulp-mocha needs filepaths so you can't have any plugins before it
+    .pipe(mocha());
+});
+
+gulp.task('test', ['lint', 'mocha-test']);
 
 gulp.task('deploy', ['build'], () => {
   return oghliner.deploy({
