@@ -45,7 +45,7 @@ gulp.task('deploy', ['build'], () => {
 gulp.task('build:engine', () => {
   return engine().then((files) => {
     for (const filename of Object.keys(files)) {
-      fs.writeFileSync('./dist/' + filename);
+      fs.writeFileSync('./dist/' + filename, files[filename]);
     }
   });
 });
