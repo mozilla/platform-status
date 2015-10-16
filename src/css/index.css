@@ -1,2 +1,11 @@
 body {
+	font-family: 'Open Sans', sans-serif;
+}
+
+.feature {
+	padding-bottom: 20px;
+}
+
+.title {
+	font-weight: bold;
 }
