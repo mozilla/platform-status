@@ -36,11 +36,11 @@ gulp.task('lint', () => {
     .pipe(plugins.eslint.format());
 });
 
-gulp.task('test:mocha', () => {
+gulp.task('test:mocha', ['build'], () => {
   const tf = yargs.option('tf', { alias: 'testFilename', default: 'test/test*.js', type: 'string' }).argv.tf;
   return gulp.src(tf, {read: false})
     // gulp-mocha needs filepaths so you can't have any plugins before it
-    .pipe(mocha());
+    .pipe(mocha({ ui: 'bdd', timeout: 1000 }));
 });
 
 gulp.task('test', ['lint', 'test:mocha']);
