@@ -37,7 +37,8 @@ gulp.task('lint', () => {
 });
 
 gulp.task('test:mocha', () => {
-  return gulp.src(yargs.argv.file ? yargs.argv.file : 'test/test*.js', {read: false})
+  const tf = yargs.option('tf', { alias: 'testFilename', default: 'test/test*.js', type: 'string' }).argv.tf;
+  return gulp.src(tf, {read: false})
     // gulp-mocha needs filepaths so you can't have any plugins before it
     .pipe(mocha());
 });
