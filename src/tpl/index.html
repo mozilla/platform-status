@@ -19,6 +19,9 @@
           {{#if spec_url}}
             <div class="spec"><a href="{{spec_url}}">spec</a></div>
           {{/if}}
+          {{#if bugzilla}}
+            <div class="bugzilla"><a target="_blank" href="https://bugzilla.mozilla.org/show_bug.cgi?id={{bugzilla}}">bugzilla</a></div>
+          {{/if}}
           <div class="statuses">
             Chrome: {{chrome_status}},
             Webkit: {{webkit_status}},
