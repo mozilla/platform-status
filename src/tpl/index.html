@@ -19,6 +19,11 @@
           {{#if spec_url}}
             <div class="spec"><a href="{{spec_url}}">spec</a></div>
           {{/if}}
+          <div class="statuses">
+            Chrome: {{chrome_status}},
+            Webkit: {{webkit_status}},
+            IE: {{ie_status}}
+          </div>
         </div>
       </div>
     {{/each}}
