@@ -17,7 +17,7 @@ describe('Build process', function() {
       let promises = files.map(processExistingFile);
 
       Promise.all(promises).then(function () {
-        if (0 !== expectedFiles.length) {
+        if (expectedFiles.length !== 0) {
           throw new Error('File(s) not found: ' + expectedFiles);
         }
 
@@ -29,7 +29,7 @@ describe('Build process', function() {
 
     function processExistingFile(filename) {
       let index = expectedFiles.indexOf(filename.toLowerCase());
-      if (-1 === index) {
+      if (index === -1) {
         return Promise.reject(new Error('Unexpected file: ' + filename));
       }
       expectedFiles.splice(index, 1);
