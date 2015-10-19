@@ -5,7 +5,6 @@
 [![devdependencies](https://img.shields.io/david/dev/mozilla/platatus/dev-status.svg)](https://david-dm.org/mozilla/oghliner#info=devDependencies)
 
 *tomayto, tomahto*, or also **platform-status**
-being
 
 ## Goal
 
