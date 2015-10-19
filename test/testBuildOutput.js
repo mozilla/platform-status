@@ -14,10 +14,7 @@ describe('Build process', function() {
         done(err);
       }
 
-      let promises = [];
-      files.forEach(function (filename) {
-        promises.push(processExistingFile(filename));
-      });
+      let promises = files.map(processExistingFile);
 
       Promise.all(promises).then(function () {
         if (0 !== expectedFiles.length) {
