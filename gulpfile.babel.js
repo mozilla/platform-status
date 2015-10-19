@@ -23,6 +23,8 @@ const browserSync = browserSyncCreator.create();
 
 import engine from './engine/index.js';
 
+const testFilename = yargs.option('tf', { alias: 'testFilename', default: 'test/test*.js', type: 'string' }).argv.tf;
+
 gulp.task('clean', (done) => {
   del(['./dist']).then(() => {
     done();
@@ -37,8 +39,7 @@ gulp.task('lint', () => {
 });
 
 gulp.task('test:mocha', ['build'], () => {
-  const tf = yargs.option('tf', { alias: 'testFilename', default: 'test/test*.js', type: 'string' }).argv.tf;
-  return gulp.src(tf, {read: false})
+  return gulp.src(testFilename, {read: false})
     // gulp-mocha needs filepaths so you can't have any plugins before it
     .pipe(mocha({ ui: 'bdd', timeout: 1000 }));
 });
