@@ -1,7 +1,12 @@
 # Project Platatus
 
+[![Build Status](https://img.shields.io/travis/mozilla/platatus.svg)](https://travis-ci.org/mozilla/platatus)
+[![dependencies](https://img.shields.io/david/mozilla/platatus.svg)](https://david-dm.org/mozilla/platatus)
+[![devdependencies](https://img.shields.io/david/dev/mozilla/platatus/dev-status.svg)](https://david-dm.org/mozilla/oghliner#info=devDependencies)
+
 *tomayto, tomahto*, or also **platform-status**
 being
+
 ## Goal
 
 Platatus gives developers a cross-platform and cross-browser roadmap for browser features, from standardization and development to release. Not only a channel to raise awareness, it can also drive adoption and improve the vital feedback loop Firefox's platform needs to have with web developers. For most developers it will be a reference to discover and learn, but it has the potential to provide the entry points for radical participation on Mozilla's platform development.
