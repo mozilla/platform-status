@@ -1,6 +1,7 @@
 import path from 'path';
 import fs from 'fs';
 import handlebars from 'handlebars';
+import fetch from 'node-fetch';
 import FixtureParser from './fixtureParser.js';
 import BrowserParser from './browserParser.js';
 
@@ -86,6 +87,20 @@ function populateBrowserFeatureData(browserData, features) {
   });
 }
 
+function populateBugzillaData(features) {
+  return Promise.all(features.map((feature) => {
+    if (!feature.bugzilla) {
+      return null;
+    }
+    return fetch('https://bugzilla.mozilla.org/rest/bug?id=' + feature.bugzilla)
+      .then((response) => {
+        return response.json();
+      }).then((json) => {
+        feature.bugzilla_status = json.bugs[0].status;
+      });
+  }));
+}
+
 function buildIndex(data) {
   const templateContents = fs.readFileSync('src/tpl/index.html');
   return handlebars.compile(String(templateContents))(data);
@@ -96,6 +111,8 @@ function build() {
     fixtureParser.read(),
     browserParser.read(),
   ]).then(() => {
+    return populateBugzillaData(fixtureParser.results);
+  }).then(() => {
     populateBrowserFeatureData(browserParser.results, fixtureParser.results);
     return {
       'index.html': buildIndex({ features: fixtureParser.results }),
