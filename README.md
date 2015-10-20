@@ -2,7 +2,7 @@
 
 [![Build Status](https://img.shields.io/travis/mozilla/platatus.svg)](https://travis-ci.org/mozilla/platatus)
 [![dependencies](https://img.shields.io/david/mozilla/platatus.svg)](https://david-dm.org/mozilla/platatus)
-[![devdependencies](https://img.shields.io/david/dev/mozilla/platatus/dev-status.svg)](https://david-dm.org/mozilla/oghliner#info=devDependencies)
+[![devdependencies](https://img.shields.io/david/dev/mozilla/platatus/dev-status.svg)](https://david-dm.org/mozilla/platatus#info=devDependencies)
 
 *tomayto, tomahto*, or also **platform-status**
 
