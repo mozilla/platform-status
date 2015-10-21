@@ -19,12 +19,12 @@ function normalizeStatus(status) {
   case 'removed':
     return 'deprecated';
   case 'under consideration':
-    return 'under consideration';
+    return 'under-consideration';
   case 'in development':
   case 'behind a flag':
   case 'proposed': // ?
   case 'prototyping': // ?
-    return 'in development';
+    return 'in-development';
   case 'shipped':
   case 'enabled by default':
   case 'done':

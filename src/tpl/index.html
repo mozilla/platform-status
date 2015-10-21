@@ -6,32 +6,45 @@
   <link rel="stylesheet" href="./bundle.css">
 </head>
 <body>
-  <h1>Platatus!</h1>
-  <div id="features">
-    {{#each features}}
-      <div class="feature">
-        <div class="title">{{title}}</div>
-        <div class="details">
-          <div class="summary">{{summary}}</div>
-          {{#if mdn_url}}
-            <div class="documentation"><a target="_blank" href="{{mdn_url}}">documentation</a></div>
-          {{/if}}
-          {{#if spec_url}}
-            <div class="spec"><a target="_blank" href="{{spec_url}}">spec</a></div>
-          {{/if}}
-          {{#if bugzilla}}
-            <div class="bugzilla"><a target="_blank" href="https://bugzilla.mozilla.org/show_bug.cgi?id={{bugzilla}}">bugzilla</a></div>
-          {{/if}}
-          <div class="statuses">
-            Chrome: {{chrome_status}},
-            Webkit: {{webkit_status}},
-            IE: {{ie_status}}
-          </div>
-        </div>
-      </div>
-    {{/each}}
+  <div id="main">
+    <header>
+      <h1>Platatus!</h1>
+    </header>
+    <article>
+      <ul id="features">
+        {{#each features}}
+          <li class="feature">
+            <div class="feature-meta">
+              <h2 class="feature-title">{{title}}</h2>
+              <p class="feature-summary">{{summary}}</p>
+              <div class="feature-links">
+                <ul>
+                {{#if mdn_url}}
+                  <li class="feature-link-mdn"><a target="_blank" href="{{mdn_url}}">documentation</a></li>
+                {{/if}}
+                {{#if spec_url}}
+                  <li class="feature-link-spec"><a target="_blank" href="{{spec_url}}">spec</a></li>
+                {{/if}}
+                {{#if bugzilla}}
+                  <li class="feature-link-bugzilla"><a target="_blank" href="https://bugzilla.mozilla.org/show_bug.cgi?id={{bugzilla}}">bugzilla</a></li>
+                {{/if}}
+                </ul>
+              </div>
+            </div>
+            <div class="feature-statuses">
+              <ul>
+                <li>FF <span>in development</span></li>
+                <li>CH <span>{{chrome_status}}</span></li>
+                <li>SA <span>{{webkit_status}}</span></li>
+                <li>IE <span>{{ie_status}}</span>
+                </li>
+              </ul>
+            </div>
+          </li>
+        {{/each}}
+      </ul>
+    </article>
   </div>
-
   <script src="./bundle.js"></script>
 </body>
 </html>

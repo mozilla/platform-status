@@ -7,6 +7,7 @@ spec_url: http://slightlyoff.github.io/ServiceWorker/spec/service_worker/
 webkit_ref: Service Workers
 chrome_ref: 6561526227927040
 ie_ref: Service Worker
+status: shipped
 ---
 
-A method for browsers to run JavaScript in the background to handle network requests and manage cached responses. Service Workers offers a replacement for Application Cache.
+A method for browsers to run JavaScript in the background to handle network requests and manage cached responses.
