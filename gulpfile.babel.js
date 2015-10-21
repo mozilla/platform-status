@@ -82,7 +82,16 @@ gulp.task('build:css', () => {
     .pipe(gulp.dest('./dist'));
 });
 
-gulp.task('build', ['build:root', 'build:engine', 'build:js', 'build:css']);
+gulp.task('build', ['build:root', 'build:engine', 'build:js', 'build:css'], () => {
+  return oghliner.offline({
+    rootDir: 'dist/',
+    fileGlobs: [
+      'index.html',
+      '*.js',
+      '*.css',
+    ],
+  });
+});
 
 gulp.task('watch', ['build'], () => {
   browserSync.init({
