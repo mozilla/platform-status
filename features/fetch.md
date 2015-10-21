@@ -1,6 +1,7 @@
 ---
 title: Fetch API
 category: network
+firefox_status: In Development
 mdn_url: https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API
 spec_url: https://fetch.spec.whatwg.org/
 spec_repo: https://github.com/whatwg/fetch

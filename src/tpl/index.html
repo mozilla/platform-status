@@ -16,6 +16,10 @@
           {{#if mdn_url}}
             <div class="documentation"><a target="_blank" href="{{mdn_url}}">documentation</a></div>
           {{/if}}
+          <div class="status">
+            <div class="title">Implementation Status</div>
+            {{firefox_status}}
+          </div>
           {{#if spec_url}}
             <div class="spec"><a target="_blank" href="{{spec_url}}">spec</a></div>
           {{/if}}

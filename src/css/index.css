@@ -7,5 +7,10 @@ body {
 }
 
 .title {
-	font-weight: bold;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.details .title {
+	font-size: 16px;
 }
