@@ -22,9 +22,7 @@ const browserSync = browserSyncCreator.create();
 import engine from './engine/index.js';
 
 gulp.task('clean', (done) => {
-  del(['./dist']).then(() => {
-    done();
-  });
+  return del(['./dist']);
 });
 
 gulp.task('lint', () => {
