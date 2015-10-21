@@ -50,7 +50,7 @@ gulp.task('build:engine', () => {
   });
 });
 
-gulp.task('build:root', ['clean'], () => {
+gulp.task('build:root', () => {
   return gulp
     .src('./src/*.*')
     .pipe(gulp.dest('./dist'));
