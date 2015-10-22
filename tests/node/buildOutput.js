@@ -42,7 +42,7 @@ define([
       // Actual test starts here
 
       // Please keep this list alphabetically sorted and lowercase
-      var expectedFiles = [ 'bundle.css', 'bundle.css.map', 'bundle.js', 'bundle.js.map', 'index.html'];
+      var expectedFiles = [ 'bundle.css', 'bundle.css.map', 'bundle.js', 'bundle.js.map', 'index.html', 'offline-worker.js'];
 
       return new Promise(function (resolve, reject) {
         fs.readdir('dist', function (err, files) {
