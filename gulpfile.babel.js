@@ -26,9 +26,7 @@ const browserSync = browserSyncCreator.create();
 import engine from './engine/index.js';
 
 gulp.task('clean', (done) => {
-  del(['./dist']).then(() => {
-    done();
-  });
+  return del(['./dist']);
 });
 
 gulp.task('lint', () => {
@@ -96,7 +94,16 @@ gulp.task('build:css', () => {
     .pipe(gulp.dest('./dist'));
 });
 
-gulp.task('build', ['build:root', 'build:engine', 'build:js', 'build:css']);
+gulp.task('build', ['build:root', 'build:engine', 'build:js', 'build:css'], () => {
+  return oghliner.offline({
+    rootDir: 'dist/',
+    fileGlobs: [
+      'index.html',
+      '*.js',
+      '*.css',
+    ],
+  });
+});
 
 gulp.task('watch', ['build'], () => {
   browserSync.init({
