@@ -11,6 +11,10 @@ import loadPlugins from 'gulp-load-plugins';
 const plugins = loadPlugins({
   lazy: false,
 });
+import cssnext from 'postcss-cssnext';
+import postImport from 'postcss-import';
+import autoprefixer from 'autoprefixer';
+import cssMqpacker from 'css-mqpacker';
 
 import babelRegister from 'babel-core/register';
 babelRegister();
@@ -83,7 +87,7 @@ gulp.task('build:engine', () => {
   });
 });
 
-gulp.task('build:root', ['clean'], () => {
+gulp.task('build:root', () => {
   return gulp
     .src('./src/*.*')
     .pipe(gulp.dest('./dist'));
@@ -106,12 +110,20 @@ gulp.task('build:js', () => {
 });
 
 gulp.task('build:css', () => {
+  const processors = [
+    postImport({
+      browers: ['last 1 version'],
+    }),
+    cssnext(),
+    autoprefixer({
+      browers: ['last 1 version'],
+    }),
+    cssMqpacker(),
+  ];
   return gulp
     .src('./src/css/*.css')
     .pipe(plugins.sourcemaps.init())
-    .pipe(plugins.autoprefixer({
-      browsers: ['last 2 versions'],
-    }))
+    .pipe(plugins.postcss(processors))
     .pipe(plugins.concat('bundle.css'))
     .pipe(plugins.sourcemaps.write('.'))
     .pipe(gulp.dest('./dist'));
@@ -126,10 +138,11 @@ gulp.task('watch', ['build'], () => {
       baseDir: './dist',
     },
   });
-  gulp.watch(['./src/*.*'], ['build:root'], browserSync.reload);
-  gulp.watch(['./src/css/*.css'], ['build:css'], browserSync.reload);
-  gulp.watch(['./src/js/*.js'], ['build:js'], browserSync.reload);
-  gulp.watch(['./engine/*.js', './features/*.md'], ['build:engine'], browserSync.reload);
+  gulp.watch(['./src/*.*'], ['build:root']);
+  gulp.watch(['./src/css/*.css'], ['build:css']);
+  gulp.watch(['./src/js/*.js'], ['build:js']);
+  gulp.watch(['./engine/*.js', './features/*.md', './src/tpl/*.html'], ['build:engine']);
+  gulp.watch(['./dist/**/*.*'], browserSync.reload);
 });
 
 gulp.task('default', ['build']);

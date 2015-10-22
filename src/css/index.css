@@ -1,2 +1,66 @@
+@import "./rhythm/index.css";
+
+* {
+	box-sizing: border-box;
+}
+html, body {
+	margin: 0;
+	padding: 0;
+}
+
 body {
+	font-family: 'Open Sans', sans-serif;
+	display: flex;
+	justify-content: center;
+}
+
+#main {
+	max-width: 1280px;
+}
+
+h1, h2, h3, h4 {
+  font-family: 'Open Sans Light', sans-serif;
+  font-weight: normal;
+}
+
+#features {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+
+.feature {
+	margin: 0;
+	padding: 0;
+	padding-bottom: var(--gutter-y);
+	display: flex;
+	flex-direction: row;
+}
+
+.feature-meta {
+	flex: 1;
+}
+
+.feature-summary {
+	margin: 0;
+}
+
+.feature-links ul {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+	display: flex;
+	flex-direction: row;
+}
+.feature-links li {
+	margin-right: var(--gutter-x);
+}
+
+.feature-statuses ul {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+.feature-statuses ul li {
+
 }

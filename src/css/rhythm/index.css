@@ -1,0 +1,7 @@
+@import "./variables.css";
+@import "./headings.css";
+
+body {
+  font-size: var(--fontSize);
+  line-height: var(--lineHeight);
+}
