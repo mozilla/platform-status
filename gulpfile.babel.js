@@ -48,9 +48,15 @@ gulp.task('lint', () => {
 });
 
 gulp.task('test:node', () => {
-  return new Promise((resolve) => {
+  return new Promise((resolve, reject) => {
     const child = childProcess.spawn('./node_modules/intern/bin/intern-client.js', ['config=tests/intern-node'], { stdio: 'inherit' });
-    child.once('exit', resolve);
+    child.once('exit', (exitCode) => {
+      if (exitCode !== 0) {
+        reject();
+      } else {
+        resolve();
+      }
+    });
   });
 });
 
@@ -107,26 +113,31 @@ function ensureSelenium() {
   });
 }
 
-gulp.task('test:browser', () => {
+gulp.task('test:browser', ['build'], () => {
   return ensureSelenium().then(() => {
-    let server;
-    const promise = new Promise((resolve) => {
+    return new Promise((resolve, reject) => {
       fs.open(seleniumLogPath, 'w', (err, fd) => {
-        // TODO: Error handling
+        if (err) {
+          reject(err);
+          return;
+        }
 
-        server = childProcess.spawn('java', ['-jar', seleniumPath], { stdio: [fd, fd, fd] });
+        const server = childProcess.spawn('java', ['-jar', seleniumPath], { stdio: [fd, fd, fd] });
 
         // Wait 1s after starting the Selenium server to give it time
         // to start accepting connections
         setTimeout(() => {
           const child = childProcess.spawn('./node_modules/intern/bin/intern-runner.js', ['config=tests/intern-browser'], { stdio: 'inherit' });
-          child.once('exit', resolve);
+          child.once('exit', (exitCode) => {
+            server.kill('SIGINT');
+            if (exitCode !== 0) {
+              reject();
+            } else {
+              resolve();
+            }
+          });
         }, 1000);
       });
-    });
-
-    return promise.then(() => {
-      server.kill('SIGINT');
     });
   });
 });
