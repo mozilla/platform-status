@@ -26,7 +26,17 @@ const browserSync = browserSyncCreator.create();
 
 import engine from './engine/index.js';
 
-gulp.task('clean', (done) => {
+import https from 'https';
+
+const testsVarDir = 'tests/support/var/';
+const seleniumVersion = '2.48.2';
+const seleniumFilename = 'selenium-server-standalone-' + seleniumVersion + '.jar';
+const seleniumPath = testsVarDir + seleniumFilename;
+const seleniumDownloadUrl = 'https://selenium-release.storage.googleapis.com/2.48/selenium-server-standalone-2.48.2.jar';
+const seleniumLogPath = testsVarDir + 'selenium.log';
+
+
+gulp.task('clean', () => {
   return del(['./dist']);
 });
 
@@ -44,28 +54,80 @@ gulp.task('test:node', () => {
   });
 });
 
-gulp.task('test:browser', () => {
-  // TODO: Choose a standard place for server JAR to reside
-  // TODO: Check for selenium server JAR
-  // TODO: Maybe download selenium if not found
+function maybeMkdir(path) {
+  return new Promise((resolve, reject) => {
+    // We ignore creation errors since we don't care
+    // whether the directory was already there or if
+    // we created it, and we're about to check its
+    // existence.
+    fs.mkdir(path, () => {
+      fs.stat(path, (err, stats) => {
+        if (err) {
+          reject(err);
+          return;
+        }
 
-  let server;
-  return new Promise((resolve) => {
-    // TODO: Choose a better place for logs
-    fs.open('selenium.log', 'w', (err, fd) => {
-      // TODO: Error handling
+        if (!stats.isDirectory()) {
+          reject(path + ' already exists and is not a directory');
+          return;
+        }
 
-      server = childProcess.spawn('java', ['-jar', 'selenium-server-standalone.jar'], { stdio: [fd, fd, fd] });
-
-      // Wait 1s after starting the server before starting the client
-      // to allow it time to get ready to accept incoming connections
-      setTimeout(() => {
-        const child = childProcess.spawn('./node_modules/intern/bin/intern-runner.js', ['config=tests/intern-browser'], { stdio: 'inherit' });
-        child.once('exit', resolve);
-      }, 1000);
+        resolve();
+      });
     });
-  }).then(() => {
-    server.kill('SIGINT');
+  });
+}
+
+function ensureSelenium() {
+  return new Promise((resolve, reject) => {
+    // Check for selenium server JAR
+    fs.access(seleniumPath, fs.R_OK, (accessErr) => {
+      if (!accessErr) {
+        console.log('Using existing Selenium server JAR');
+        resolve();
+        return;
+      }
+
+      console.log('No Selenium server JAR found');
+      // Download Selenium if not found
+      maybeMkdir(testsVarDir).then(() => {
+        const file = fs.createWriteStream(seleniumPath);
+        const request = https.get(seleniumDownloadUrl, (response) => {
+          console.log('Downloading Selenium server JAR');
+          response.pipe(file);
+          file.on('finish', resolve);
+        });
+
+        request.on('error', (reqErr) => { // Handle errors
+          fs.unlink(seleniumPath); // Delete the file async. (But we don't check the result)
+          reject(reqErr);
+        });
+      });
+    });
+  });
+}
+
+gulp.task('test:browser', () => {
+  return ensureSelenium().then(() => {
+    let server;
+    const promise = new Promise((resolve) => {
+      fs.open(seleniumLogPath, 'w', (err, fd) => {
+        // TODO: Error handling
+
+        server = childProcess.spawn('java', ['-jar', seleniumPath], { stdio: [fd, fd, fd] });
+
+        // Wait 1s after starting the Selenium server to give it time
+        // to start accepting connections
+        setTimeout(() => {
+          const child = childProcess.spawn('./node_modules/intern/bin/intern-runner.js', ['config=tests/intern-browser'], { stdio: 'inherit' });
+          child.once('exit', resolve);
+        }, 1000);
+      });
+    });
+
+    return promise.then(() => {
+      server.kill('SIGINT');
+    });
   });
 });
 
