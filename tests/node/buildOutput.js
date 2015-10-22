@@ -48,6 +48,7 @@ define([
         fs.readdir('dist', function (err, files) {
           if (err) {
             reject(err);
+            return;
           }
 
           var promises = files.map(processExistingFile);
@@ -59,7 +60,7 @@ define([
             }
 
             resolve();
-          });
+          }).catch(reject);
         });
       });
 
@@ -73,7 +74,8 @@ define([
         var p1 = new Promise(function (resolve, reject) {
           fs.access('dist/index.html', fs.F_OK | fs.R_OK, function (err) {
             if (err) {
-              throw err;
+              reject(err);
+              return;
             }
 
             resolve();
@@ -83,11 +85,13 @@ define([
         var p2 = new Promise(function (resolve, reject) {
           fs.stat('dist/index.html', function(err, stats) {
             if (err) {
-              throw err;
+              reject(err);
+              return;
             }
 
             if (!stats.isFile()) {
-              throw new Error(filename + ' is not a file');
+              reject(new Error(filename + ' is not a file'));
+              return;
             }
 
             resolve();
