@@ -5,6 +5,7 @@ import del from 'del';
 import source from 'vinyl-source-stream';
 import buffer from 'vinyl-buffer';
 import gulp from 'gulp';
+import childProcess from 'child_process';
 import oghliner from 'oghliner';
 import loadPlugins from 'gulp-load-plugins';
 const plugins = loadPlugins({
@@ -36,7 +37,39 @@ gulp.task('lint', () => {
     .pipe(plugins.eslint.format());
 });
 
-gulp.task('test', ['lint']);
+gulp.task('test:node', () => {
+  return new Promise((resolve) => {
+    const child = childProcess.spawn('./node_modules/intern/bin/intern-client.js', ['config=tests/intern-node'], { stdio: 'inherit' });
+    child.once('exit', resolve);
+  });
+});
+
+gulp.task('test:browser', () => {
+  // TODO: Choose a standard place for server JAR to reside
+  // TODO: Check for selenium server JAR
+  // TODO: Maybe download selenium if not found
+
+  let server;
+  return new Promise((resolve) => {
+    // TODO: Choose a better place for logs
+    fs.open('selenium.log', 'w', (err, fd) => {
+      // TODO: Error handling
+
+      server = childProcess.spawn('java', ['-jar', 'selenium-server-standalone.jar'], { stdio: [fd, fd, fd] });
+
+      // Wait 1s after starting the server before starting the client
+      // to allow it time to get ready to accept incoming connections
+      setTimeout(() => {
+        const child = childProcess.spawn('./node_modules/intern/bin/intern-runner.js', ['config=tests/intern-browser'], { stdio: 'inherit' });
+        child.once('exit', resolve);
+      }, 1000);
+    });
+  }).then(() => {
+    server.kill('SIGINT');
+  });
+});
+
+gulp.task('test', ['lint', 'test:node', 'test:browser']);
 
 gulp.task('deploy', ['build'], () => {
   return oghliner.deploy({
