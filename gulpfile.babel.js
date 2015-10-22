@@ -68,7 +68,7 @@ function maybeMkdir(path) {
         }
 
         if (!stats.isDirectory()) {
-          reject(path + ' already exists and is not a directory');
+          reject(new Error(path + ' already exists and is not a directory'));
           return;
         }
 
