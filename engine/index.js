@@ -87,6 +87,16 @@ function populateBrowserFeatureData(browserData, features) {
   });
 }
 
+function populateSpecStatus(browserData, features) {
+  features.forEach((feature) => {
+    const browserFeatureData = browserData.chrome.get(feature.chrome_ref);
+    if (!browserFeatureData.standardization) {
+      return;
+    }
+    feature.standardization = browserFeatureData.standardization.text;
+  });
+}
+
 function populateBugzillaData(features) {
   return Promise.all(features.map((feature) => {
     if (!feature.bugzilla) {
@@ -114,6 +124,7 @@ function build() {
     return populateBugzillaData(fixtureParser.results);
   }).then(() => {
     populateBrowserFeatureData(browserParser.results, fixtureParser.results);
+    populateSpecStatus(browserParser.results, fixtureParser.results);
     return {
       'index.html': buildIndex({ features: fixtureParser.results }),
     };
