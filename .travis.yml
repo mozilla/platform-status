@@ -9,9 +9,9 @@ env:
   global:
     - secure: 0J1bSEFeIyVU2xiuVFr6FQWuBMkL18XVrAzK8dIgUIzDpD4vs5Rr5x890+3d9ZVNCkctFKB5C9wDZOXyLw5rRhmtUQxZWtYPBIZlfofwH/t1wBx5iZ2n2yA4Yro7xzvAD8fIJjNNG7DBLTZYXE6tURwz4ekgGx/XMSw/QK2PDIEv7+ZKqtgED/c0vl8u3WGKUvPFZz5trsifTB1xihLS293Dhlr+jwyL1jDHcsgpEZnKEACG7EBm+zQxyXT8r1C3i8guSaXpAFTE83odQx+FZt4iVjOdA33/BxHDUGvcZ9TATZaErZhyX42EhsbXHWE2aTsn427DkaWcN6xXdYmMcVo7ROHIVybXAhbfCZdpsWbBl1ugVkfEzEygFOPn2piIDuNpWLq6gh/YToiJ36DbcSsh00KAVB9I6GL7CmsYR75iFSyaVrjsYFTJ9/JU6PJBSlngBEC47s+p5+A1zO8wrB20imyFS6xRTCe4/Zv971UviI23GqHFlWtHJ8sOOakuduuM2pl68Emsd/qMJ1lQt9ExTfg6SCqvFiUPUIs1LGU6VfLSYKJvIcYL3XuhGwm7qe7BQHMMhH0TAZhcWnCteSq/LxA+amLCTaZxILLk0S6MpGXueGezXlrzykL0z4XhY7yTJ4mncKYzeW4dwtB/Q7NNsBhdFi97zVrumxNjxcg=
 before_install:
-  - "/sbin/start-stop-daemon --start --pidfile /tmp/custom_xvfb_99.pid --make-pidfile --background --exec /usr/bin/Xvfb -- :99 -ac -screen 0 1280x1024x32"
+  - 'sh -e /etc/init.d/xvfb start'
 before_script:
-  - "export DISPLAY=:99.0"
+  - 'export DISPLAY=:99.0'
   - 'git config --global user.name "Travis CI"'
   - 'git config --global user.email "brendan.dahl@gmail.com"'
 after_success:
