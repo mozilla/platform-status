@@ -26,7 +26,7 @@ const browserSync = browserSyncCreator.create();
 
 import engine from './engine/index.js';
 
-gulp.task('clean', (done) => {
+gulp.task('clean', () => {
   return del(['./dist']);
 });
 

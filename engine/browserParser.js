@@ -17,6 +17,12 @@ export default class BrowserParser {
     return Promise.all([
       this.readJson(this.urls.webkit)
         .then((results) => {
+          results.specification.forEach((spec) => {
+            spec.type = 'specification';
+          });
+          results.features.forEach((feature) => {
+            feature.type = 'feature';
+          });
           const merged = results.specification.concat(results.features);
           this.results.webkit = new Map(
             merged.map(entry => [entry.name, entry])
