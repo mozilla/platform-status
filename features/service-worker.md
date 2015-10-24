@@ -1,6 +1,6 @@
 ---
 title: Service Worker
-category: network
+category: network, apps
 bugzilla: 1059784
 firefox_status: in-development
 mdn_url: https://developer.mozilla.org/en-US/docs/Web/API/Service_Worker_API
@@ -10,4 +10,4 @@ chrome_ref: 6561526227927040
 ie_ref: Service Worker
 ---
 
-A method for browsers to run JavaScript in the background to handle network requests and manage cached responses.
+Event-driven scripts that can handle network requests and manage cached responses in the background.
