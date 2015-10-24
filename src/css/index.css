@@ -1,4 +1,4 @@
-@import "./rhythm/index.css";
+@import "./variables/index.css";
 
 * {
 	box-sizing: border-box;
@@ -9,18 +9,41 @@ html, body {
 }
 
 body {
-	font-family: 'Open Sans', sans-serif;
+	@extend base-font;
+	@extend base-rhythm;
 	display: flex;
 	justify-content: center;
+
+	background: #1e1e21;
+	color: #fff;
+}
+
+h1, h2, h3, h4 {
+	@extend base-font-light;
+}
+h1 {
+	@extend h1;
+}
+h2 {
+	@extend h3;
+}
+h3 {
+	@extend h4;
+}
+
+a {
+  color: $linkSpaceBlue;
+  text-decoration: none;
+  &:hover,
+  &:focus,
+  &:active {
+    color: lighten($linkSpaceBlue, 10%);
+    text-decoration: underline;
+  }
 }
 
 #main {
 	max-width: 1280px;
-}
-
-h1, h2, h3, h4 {
-  font-family: 'Open Sans Light', sans-serif;
-  font-weight: normal;
 }
 
 #features {
@@ -32,7 +55,7 @@ h1, h2, h3, h4 {
 .feature {
 	margin: 0;
 	padding: 0;
-	padding-bottom: var(--gutter-y);
+	padding-bottom: $gutterY;
 	display: flex;
 	flex-direction: row;
 }
@@ -53,7 +76,7 @@ h1, h2, h3, h4 {
 	flex-direction: row;
 }
 .feature-links li {
-	margin-right: var(--gutter-x);
+	margin-right: $gutterX;
 }
 
 .feature-statuses ul {

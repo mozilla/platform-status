@@ -12,9 +12,13 @@ const plugins = loadPlugins({
   lazy: false,
 });
 import cssnext from 'postcss-cssnext';
-import postImport from 'postcss-import';
+import cssImport from 'postcss-import';
 import autoprefixer from 'autoprefixer';
 import cssMqpacker from 'css-mqpacker';
+import cssNested from 'postcss-nested';
+import cssExtend from 'postcss-simple-extend';
+import cssSimpleVars from 'postcss-simple-vars';
+import cssReporter from 'postcss-reporter';
 
 import babelRegister from 'babel-core/register';
 babelRegister();
@@ -109,14 +113,18 @@ gulp.task('build:js', () => {
 
 gulp.task('build:css', () => {
   const processors = [
-    postImport({
+    cssImport(),
+    cssExtend(),
+    cssNested(),
+    cssSimpleVars(),
+    cssnext({
       browers: ['last 1 version'],
     }),
-    cssnext(),
     autoprefixer({
       browers: ['last 1 version'],
     }),
     cssMqpacker(),
+    cssReporter(),
   ];
   return gulp
     .src('./src/css/*.css')
@@ -149,7 +157,7 @@ gulp.task('watch', ['build'], () => {
   gulp.watch(['./src/css/*.css'], ['build:css']);
   gulp.watch(['./src/js/*.js'], ['build:js']);
   gulp.watch(['./engine/*.js', './features/*.md', './src/tpl/*.html'], ['build:engine']);
-  gulp.watch(['./dist/**/*.*'], browserSync.reload);
+  gulp.watch(['./dist/*.*'], browserSync.reload);
 });
 
 gulp.task('default', ['build']);
