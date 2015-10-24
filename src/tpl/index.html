@@ -1,3 +1,7 @@
+{{#*inline "browserStatus"}}
+  {{#if url}}<a target="_blank" href="{{url}}">{{/if}}{{short}} <span>{{status}}</span>{{#if url}}</a>{{/if}}
+{{/inline}}
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -34,10 +38,9 @@
             <div class="feature-statuses">
               <ul>
                 <li>FF <span>{{firefox_status}}</span></li>
-                <li>CH <span>{{chrome_status}}</span></li>
-                <li>SA <span>{{webkit_status}}</span></li>
-                <li>IE <span>{{ie_status}}</span>
-                </li>
+                <li>{{> browserStatus short="CH" url=chrome_url status=chrome_status}}</li>
+                <li>{{> browserStatus short="SA" url=webkit_url status=webkit_status}}</li>
+                <li>{{> browserStatus short="IE" url=ie_url status=ie_status}}</li>
               </ul>
             </div>
           </li>
