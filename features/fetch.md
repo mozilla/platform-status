@@ -1,6 +1,6 @@
 ---
 title: Fetch API
-category: network
+category: network, apps
 firefox_status: shipped
 mdn_url: https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API
 spec_url: https://fetch.spec.whatwg.org/
