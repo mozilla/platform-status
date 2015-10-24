@@ -106,10 +106,10 @@ function buildIndex(data) {
   return handlebars.compile(String(templateContents))(data);
 }
 
-function build() {
+function build(options) {
   return Promise.all([
     fixtureParser.read(),
-    browserParser.read(),
+    browserParser.read(options),
   ]).then(() => {
     return populateBugzillaData(fixtureParser.results);
   }).then(() => {

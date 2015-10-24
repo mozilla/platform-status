@@ -22,6 +22,7 @@
     "del": "^2.0.2",
     "eslint": "^1.6.0",
     "eslint-config-airbnb": "^0.1.0",
+    "file-exists": "^0.1.1",
     "gulp": "^3.9.0",
     "gulp-autoprefixer": "^3.0.2",
     "gulp-concat": "^2.6.0",
@@ -31,6 +32,7 @@
     "gulp-sourcemaps": "^1.6.0",
     "handlebars": "^4.0.3",
     "intern": "^3.0.6",
+    "mkdirp": "^0.5.1",
     "oghliner": "^0.9.0",
     "postcss-cssnext": "^2.1.0",
     "postcss-import": "^7.1.0",
@@ -44,8 +46,8 @@
     "yargs": "^3.27.0"
   },
   "scripts": {
-    "test": "gulp test",
-    "start": "gulp watch"
+    "test": "./node_modules/gulp/bin/gulp.js test",
+    "start": "./node_modules/gulp/bin/gulp.js watch"
   },
   "repository": {
     "type": "git",

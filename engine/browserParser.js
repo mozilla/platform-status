@@ -1,4 +1,7 @@
+import fs from 'fs';
+import path from 'path';
 import fetch from 'node-fetch';
+import fileExists from 'file-exists';
 
 export default class BrowserParser {
   results = {
@@ -13,22 +16,23 @@ export default class BrowserParser {
     ie: 'https://raw.githubusercontent.com/MicrosoftEdge/Status/production/app/static/ie-status.json',
   };
 
-  read() {
+  read(options) {
+    const cacheDir = options.cacheDir;
     return Promise.all([
-      this.readJson(this.urls.webkit)
+      this.readJson(this.urls.webkit, cacheDir)
         .then((results) => {
           const merged = results.specification.concat(results.features);
           this.results.webkit = new Map(
             merged.map(entry => [entry.name, entry])
           );
         }),
-      this.readJson(this.urls.chrome)
+      this.readJson(this.urls.chrome, cacheDir)
         .then((results) => {
           this.results.chrome = new Map(
             results.map(entry => [entry.id, entry])
           );
         }),
-      this.readJson(this.urls.ie)
+      this.readJson(this.urls.ie, cacheDir)
         .then((results) => {
           this.results.ie = new Map(
             results.map(entry => [entry.name, entry])
@@ -37,8 +41,17 @@ export default class BrowserParser {
     ]);
   }
 
-  readJson(src) {
+  readJson(src, cacheDir) {
+    const cacheFilename = path.join(cacheDir, src.substr(0, src.length - 5).replace(/[^a-zA-Z0-9]/g, '').toLowerCase() + '.json');
+    if (fileExists(cacheFilename)) {
+      return Promise.resolve(JSON.parse(fs.readFileSync(cacheFilename)));
+    }
     return fetch(src)
-      .then((response) => response.json());
+      .then((response) => response.text())
+      .then((text) => {
+        console.log('Caching browser status data for: "' + src + '" in "' + cacheFilename + '"');
+        fs.writeFileSync(cacheFilename, text);
+        return JSON.parse(text);
+      });
   }
 }
