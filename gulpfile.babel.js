@@ -34,7 +34,8 @@ gulp.task('lint', () => {
   return gulp
     .src(['./*.js', './engine/*.js', './src/*.js'])
     .pipe(plugins.eslint())
-    .pipe(plugins.eslint.format());
+    .pipe(plugins.eslint.format())
+    .pipe(plugins.eslint.failOnError());
 });
 
 gulp.task('test:node', () => {
