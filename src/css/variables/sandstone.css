@@ -1,9 +1,4 @@
-/* Fonts and color */
-
-/* The custom X-LocaleSpecific font family is defined with a $font-face rule in */
-/* locale-specific stylesheets which can be found at /media/css/l10n/. See */
-/* /docs/l10n.rst for details. */
-$baseFontFamily:    'Open Sans', X-LocaleSpecific, sans-serif;
+$baseFontFamily:    'Open Sans', sans-serif;
 
 $baseFontSize:      14px;
 $baseLine:          20px;
@@ -42,17 +37,17 @@ $mozIDGrey: #56565a;
 }
 
 @define-placeholder base-font-italic {
-  font-family: $baseFontFamily;
+  /*font-family: $baseFontFamily;*/
   font-style: italic;
 }
 
 @define-placeholder base-font-light {
-  font-family: 'Open Sans Light', $baseFontFamily;
-  font-weight: normal;
+  /*font-family: $baseFontFamily;*/
+  font-weight: 300;
 }
 
 @define-placeholder base-font-extrabold {
-  font-family: 'Open Sans Extrabold', $baseFontFamily;
+  /*font-family: $baseFontFamily;*/
   font-weight: 800;
 }
 

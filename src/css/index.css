@@ -1,4 +1,5 @@
 @import "./variables/index.css";
+@import "./fonts.css";
 
 * {
 	box-sizing: border-box;
@@ -20,15 +21,16 @@ body {
 
 h1, h2, h3, h4 {
 	@extend base-font-light;
+	letter-spacing: -.035em;
 }
 h1 {
 	@extend h1;
 }
 h2 {
-	@extend h3;
+	@extend h2;
 }
 h3 {
-	@extend h4;
+	@extend h3;
 }
 
 a {
