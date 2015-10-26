@@ -12,14 +12,23 @@ export default class BrowserParser {
 
   urls = {
     chrome: 'https://www.chromestatus.com/features.json',
-    webkit: 'https://svn.webkit.org/repository/webkit/trunk/Source/WebCore/features.json',
+    webkitCore: 'https://svn.webkit.org/repository/webkit/trunk/Source/WebCore/features.json',
+    webkitJavaScript: 'https://svn.webkit.org/repository/webkit/trunk/Source/JavaScriptCore/features.json',
     ie: 'https://raw.githubusercontent.com/MicrosoftEdge/Status/production/app/static/ie-status.json',
   };
 
   read(options) {
     const cacheDir = options.cacheDir;
     return Promise.all([
-      this.readJson(this.urls.webkit, cacheDir)
+      this.readJson(this.urls.webkitCore, cacheDir)
+        .then((coreResults) => {
+          // Combine the web core and javascript core specs and features.
+          return this.readJson(this.urls.webkitJavaScript, cacheDir).then((jsResults) => {
+            coreResults.specification = Array.concat(coreResults.specification, jsResults.specification);
+            coreResults.features = Array.concat(coreResults.features, jsResults.features);
+            return coreResults;
+          });
+        })
         .then((results) => {
           results.specification.forEach((spec) => {
             spec.type = 'specification';
