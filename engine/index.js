@@ -93,7 +93,31 @@ function populateSpecStatus(browserData, features) {
     if (!browserFeatureData.standardization) {
       return;
     }
-    feature.standardization = browserFeatureData.standardization.text;
+    let normalized;
+    const status = browserFeatureData.standardization.text;
+    switch (status) {
+    case 'De-facto standard':
+      normalized = 'de-facto-standard';
+      break;
+    case 'Editor\'s draft':
+      normalized = 'editors-draft';
+      break;
+    case 'Established standard':
+      normalized = 'established-standard';
+      break;
+    case 'No public standards discussion':
+      normalized = 'no-public-discussion';
+      break;
+    case 'Public discussion':
+      normalized = 'public-discussion';
+      break;
+    case 'Working draft or equivalent':
+      normalized = 'working-draft-or-equivalent';
+      break;
+    default:
+      throw new Error('Unmapped standardization status: ' + status);
+    }
+    feature.standardization = normalized;
   });
 }
 
