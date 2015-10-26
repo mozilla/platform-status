@@ -1,6 +1,7 @@
 import browserify from 'browserify';
 import babelify from 'babelify';
 import fs from 'fs';
+import path from 'path';
 import del from 'del';
 import source from 'vinyl-source-stream';
 import buffer from 'vinyl-buffer';
@@ -14,6 +15,7 @@ import cssnext from 'postcss-cssnext';
 import postImport from 'postcss-import';
 import autoprefixer from 'autoprefixer';
 import cssMqpacker from 'css-mqpacker';
+import mkdirp from 'mkdirp';
 
 import babelRegister from 'babel-core/register';
 babelRegister();
@@ -33,7 +35,8 @@ gulp.task('lint', () => {
   return gulp
     .src(['./*.js', './engine/*.js', './src/*.js'])
     .pipe(plugins.eslint())
-    .pipe(plugins.eslint.format());
+    .pipe(plugins.eslint.format())
+    .pipe(plugins.eslint.failOnError());
 });
 
 gulp.task('deploy', ['build'], () => {
@@ -43,7 +46,12 @@ gulp.task('deploy', ['build'], () => {
 });
 
 gulp.task('build:engine', () => {
-  return engine().then((files) => {
+  const cacheDir = path.join('./dist', 'cache');
+  mkdirp.sync(cacheDir);
+  const options = {
+    cacheDir: cacheDir,
+  };
+  return engine(options).then((files) => {
     for (const filename of Object.keys(files)) {
       fs.writeFileSync('./dist/' + filename, files[filename]);
     }

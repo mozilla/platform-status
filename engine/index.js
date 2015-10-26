@@ -1,5 +1,6 @@
 import path from 'path';
 import fs from 'fs';
+import url from 'url';
 import handlebars from 'handlebars';
 import fetch from 'node-fetch';
 import FixtureParser from './fixtureParser.js';
@@ -52,17 +53,39 @@ class ChromeBrowserFeature extends BrowserFeature {
   get _rawStatus() {
     return this.data.impl_status_chrome;
   }
+  get url() {
+    return url.format({
+      host: 'www.chromestatus.com',
+      pathname: '/feature/' + this.data.id,
+      protocol: 'https:',
+    });
+  }
 }
 
 class WebKitBrowserFeature extends BrowserFeature {
   get _rawStatus() {
     return this.data.status ? this.data.status.status : '';
   }
+  get url() {
+    return url.format({
+      host: 'www.webkit.org',
+      pathname: '/status.html',
+      hash: '#' + this.data.type + '-' + this.data.name,
+      protocol: 'https:',
+    });
+  }
 }
 
 class IEBrowserFeature extends BrowserFeature {
   get _rawStatus() {
     return this.data.ieStatus.text;
+  }
+  get url() {
+    return url.format({
+      host: 'dev.modern.ie',
+      pathname: '/platform/status/' + this.data.name.replace(/[^a-zA-Z0-9]/g, '').toLowerCase(),
+      protocol: 'https:',
+    });
   }
 }
 
@@ -80,6 +103,7 @@ function populateBrowserFeatureData(browserData, features) {
       if (browserFeatureData) {
         const browserFeature = new BrowserFeatureConstructor(browserFeatureData);
         feature[key + '_status'] = browserFeature.status;
+        feature[key + '_url'] = browserFeature.url;
       } else {
         console.log('WARNING: Missing cross ref to "' + feature.title + '" for browser "' + key + '"');
       }
@@ -106,10 +130,10 @@ function buildIndex(data) {
   return handlebars.compile(String(templateContents))(data);
 }
 
-function build() {
+function build(options) {
   return Promise.all([
     fixtureParser.read(),
-    browserParser.read(),
+    browserParser.read(options),
   ]).then(() => {
     return populateBugzillaData(fixtureParser.results);
   }).then(() => {
