@@ -2,7 +2,7 @@
 title: Promises
 category: js
 bugzilla: 856410
-firefox_status: shipped
+firefox_status: 26
 mdn_url: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise
 spec_url: https://promisesaplus.com/
 spec_repo: https://github.com/promises-aplus/promises-spec
