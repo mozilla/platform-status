@@ -7,6 +7,7 @@ import source from 'vinyl-source-stream';
 import buffer from 'vinyl-buffer';
 import gulp from 'gulp';
 import childProcess from 'child_process';
+import debounce from 'lodash.debounce';
 import oghliner from 'oghliner';
 import loadPlugins from 'gulp-load-plugins';
 const plugins = loadPlugins({
@@ -99,7 +100,7 @@ gulp.task('build:engine', () => {
 
 gulp.task('build:root', () => {
   return gulp
-    .src('./src/*.*')
+    .src(['./src/*.*', './src/fonts/*.*'], {base: './src'})
     .pipe(gulp.dest('./dist'));
 });
 
@@ -143,7 +144,9 @@ gulp.task('build:css', () => {
     .pipe(gulp.dest('./dist'));
 });
 
-gulp.task('build', ['build:root', 'build:engine', 'build:js', 'build:css'], () => {
+gulp.task('build:dist', ['build:root', 'build:engine', 'build:js', 'build:css']);
+
+function offline() {
   return oghliner.offline({
     rootDir: 'dist/',
     fileGlobs: [
@@ -152,20 +155,25 @@ gulp.task('build', ['build:root', 'build:engine', 'build:js', 'build:css'], () =
       '*.css',
     ],
   });
-});
+}
+
+gulp.task('build', ['build:dist'], offline);
 
 gulp.task('watch', ['build'], () => {
   browserSync.init({
     open: false,
     server: {
       baseDir: './dist',
+      ghostMode: false,
+      notify: false,
     },
   });
   gulp.watch(['./src/*.*'], ['build:root']);
   gulp.watch(['./src/css/*.css'], ['build:css']);
   gulp.watch(['./src/js/*.js'], ['build:js']);
   gulp.watch(['./engine/*.js', './features/*.md', './src/tpl/*.html'], ['build:engine']);
-  gulp.watch(['./dist/*.*'], browserSync.reload);
+  gulp.watch(['./dist/**/*.*', '!./dist/offline-worker.js'], debounce(offline, 200));
+  gulp.watch(['./dist/offline-worker.js'], browserSync.reload);
 });
 
 gulp.task('default', ['build']);

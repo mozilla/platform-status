@@ -32,6 +32,7 @@
     "gulp-sourcemaps": "^1.6.0",
     "handlebars": "^4.0.3",
     "intern": "^3.0.6",
+    "lodash.debounce": "^3.1.1",
     "mkdirp": "^0.5.1",
     "oghliner": "^0.9.0",
     "postcss-cssnext": "^2.1.0",
