@@ -111,6 +111,40 @@ function populateBrowserFeatureData(browserData, features) {
   });
 }
 
+function populateSpecStatus(browserData, features) {
+  features.forEach((feature) => {
+    const browserFeatureData = browserData.chrome.get(feature.chrome_ref);
+    if (!browserFeatureData.standardization) {
+      return;
+    }
+    let normalized;
+    const status = browserFeatureData.standardization.text;
+    switch (status) {
+    case 'De-facto standard':
+      normalized = 'de-facto-standard';
+      break;
+    case 'Editor\'s draft':
+      normalized = 'editors-draft';
+      break;
+    case 'Established standard':
+      normalized = 'established-standard';
+      break;
+    case 'No public standards discussion':
+      normalized = 'no-public-discussion';
+      break;
+    case 'Public discussion':
+      normalized = 'public-discussion';
+      break;
+    case 'Working draft or equivalent':
+      normalized = 'working-draft-or-equivalent';
+      break;
+    default:
+      throw new Error('Unmapped standardization status: ' + status);
+    }
+    feature.standardization = normalized;
+  });
+}
+
 function populateBugzillaData(features) {
   return Promise.all(features.map((feature) => {
     if (!feature.bugzilla) {
@@ -138,6 +172,7 @@ function build(options) {
     return populateBugzillaData(fixtureParser.results);
   }).then(() => {
     populateBrowserFeatureData(browserParser.results, fixtureParser.results);
+    populateSpecStatus(browserParser.results, fixtureParser.results);
     return {
       'index.html': buildIndex({ features: fixtureParser.results }),
     };
