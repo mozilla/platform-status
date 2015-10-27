@@ -11,8 +11,13 @@ const fixtureDir = path.resolve('./features');
 const fixtureParser = new FixtureParser(fixtureDir);
 const browserParser = new BrowserParser();
 const firefoxVersionParser = new FirefoxVersionParser();
+let validationWarnings;
 
-function normalizeStatus(status) {
+function validateWarning(msg) {
+  validationWarnings.push(msg);
+}
+
+function normalizeStatus(status, browser) {
   switch (status.trim().toLowerCase()) {
   case '':
   case 'no active development':
@@ -37,7 +42,8 @@ function normalizeStatus(status) {
   case 'prefixed': // ?
     return 'shipped';
   default:
-    throw new Error('Unmapped status: ' + status);
+    validateWarning('Unmapped status: "' + status + '" for "' + browser + '"');
+    return 'invalid';
   }
 }
 
@@ -47,11 +53,16 @@ class BrowserFeature {
   }
 
   get status() {
-    return normalizeStatus(this._rawStatus);
+    return normalizeStatus(this._rawStatus, this.name);
   }
 }
 
 class ChromeBrowserFeature extends BrowserFeature {
+  constructor(data) {
+    super(data);
+    this.name = 'chrome';
+  }
+
   get _rawStatus() {
     return this.data.impl_status_chrome;
   }
@@ -65,6 +76,10 @@ class ChromeBrowserFeature extends BrowserFeature {
 }
 
 class WebKitBrowserFeature extends BrowserFeature {
+  constructor(data) {
+    super(data);
+    this.name = 'webkit';
+  }
   get _rawStatus() {
     return this.data.status ? this.data.status.status : '';
   }
@@ -79,6 +94,10 @@ class WebKitBrowserFeature extends BrowserFeature {
 }
 
 class IEBrowserFeature extends BrowserFeature {
+  constructor(data) {
+    super(data);
+    this.name = 'ie';
+  }
   get _rawStatus() {
     return this.data.ieStatus.text;
   }
@@ -106,8 +125,6 @@ function populateBrowserFeatureData(browserData, features) {
         const browserFeature = new BrowserFeatureConstructor(browserFeatureData);
         feature[key + '_status'] = browserFeature.status;
         feature[key + '_url'] = browserFeature.url;
-      } else {
-        console.log('WARNING: Missing cross ref to "' + feature.title + '" for browser "' + key + '"');
       }
     });
   });
@@ -141,7 +158,9 @@ function populateSpecStatus(browserData, features) {
       normalized = 'working-draft-or-equivalent';
       break;
     default:
-      throw new Error('Unmapped standardization status: ' + status);
+      validateWarning('Unmapped standardization status: ' + status);
+      normalized = 'invalid';
+      break;
     }
     feature.standardization = normalized;
   });
@@ -174,12 +193,80 @@ function populateFirefoxStatus(versions, features) {
   });
 }
 
+function validate(data) {
+  // We could potentially use a real JSON schema, but we'd still have to do
+  // uniqueness checks ourselves.
+  const schema = {
+    'title': {
+      required: true,
+      unique: true,
+    },
+    'summary': {
+      required: true,
+      unique: true,
+    },
+    'bugzilla': {
+      required: true,
+      unique: true,
+    },
+    'firefox_status': {
+      required: true,
+    },
+    'mdn_url': {
+      required: true,
+      unique: true,
+    },
+    'spec_url': {
+      required: true,
+      unique: true,
+    },
+    'chrome_ref': {
+      required: true,
+      unique: true,
+    },
+    'webkit_ref': {
+      required: true,
+      unique: true,
+    },
+    'ie_ref': {
+      required: true,
+      unique: true,
+    },
+    'standardization': {
+      required: true,
+    },
+  };
+  const uniques = {};
+  data.features.forEach((feature) => {
+    for (const key of Object.keys(schema)) {
+      const value = feature[key];
+
+      if (schema[key].required && !value) {
+        validateWarning(feature.file + ': missing ' + key);
+      }
+
+      if (schema[key].unique && typeof value !== 'undefined') {
+        if (!(key in uniques)) {
+          uniques[key] = {};
+        }
+        const duplicate = uniques[key][value];
+        if (duplicate) {
+          validateWarning(feature.file + ': duplicate value "' + value + '" for key "' + key + '", previously defined in ' + duplicate);
+        } else {
+          uniques[key][value] = feature.file;
+        }
+      }
+    }
+  });
+}
+
 function buildIndex(data) {
   const templateContents = fs.readFileSync('src/tpl/index.html');
   return Promise.resolve(handlebars.compile(String(templateContents))(data));
 }
 
 function buildStatus(options) {
+  validationWarnings = [];
   return Promise.all([
     fixtureParser.read(),
     browserParser.read(options),
@@ -190,11 +277,19 @@ function buildStatus(options) {
     populateFirefoxStatus(firefoxVersionParser.results, fixtureParser.results);
     populateBrowserFeatureData(browserParser.results, fixtureParser.results);
     populateSpecStatus(browserParser.results, fixtureParser.results);
-    return {
+    const data = {
       created: (new Date()).toISOString(),
       features: fixtureParser.results,
       firefoxVersions: firefoxVersionParser.results,
     };
+    validate(data);
+    if (validationWarnings.length) {
+      console.warn('Validation warnings: ');
+      validationWarnings.forEach((warning) => {
+        console.warn('\t' + warning);
+      });
+    }
+    return data;
   }).catch((err) => {
     console.error(err);
   });
