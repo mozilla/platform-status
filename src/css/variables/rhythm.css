@@ -1,0 +1,22 @@
+$fontSizeRatio: 0.875;
+$fontSizeUnit: 1rem;
+$fontSize: calc($fontSizeUnit * $fontSizeRatio);
+
+/* default: 1.5625, sandstone: 14px/20px = 1.42857 */
+$lineHeight: calc($fontSize * 1.42857);
+
+$capHeight: calc($fontSize * 0.75);
+
+$gutterX: $fontSize;
+$gutterY: $lineHeight;
+$gutter: $gutterY $gutterX;
+
+$rythmRatio: 1.200; /* minor third ratio */
+
+/* not rem so you can use .small in .small */
+$smallFontSize: calc(1em * $fontSizeRatio / $rythmRatio);
+
+@define-placeholder base-rhythm {
+	font-size: $fontSize;
+  line-height: $lineHeight;
+}

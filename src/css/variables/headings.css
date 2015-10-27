@@ -1,0 +1,84 @@
+$h1FontSize: calc($fontSize * $rythmRatio * $rythmRatio * $rythmRatio * $rythmRatio);
+$h1Lines: 2; /* depend on fontSize*/
+$h1LineHeight: calc($lineHeight * $h1Lines);
+$h1BaseLineDistance: calc(($lineHeight - $capHeight) / 2);
+$h1PaddingTop: $h1BaseLineDistance;
+$h1MarginBottom: calc($lineHeight - $h1BaseLineDistance);
+
+$h2FontSize: calc($fontSize * $rythmRatio * $rythmRatio * $rythmRatio);
+$h2Lines: 1; /* depend on fontSize*/
+$h2LineHeight: calc($lineHeight * $h2Lines);
+$h2BaseLineDistance: calc(($lineHeight - $capHeight) / 2);
+$h2PaddingTop: $h2BaseLineDistance;
+$h2MarginBottom: calc($lineHeight - $h2BaseLineDistance);
+
+$h3FontSize: calc($fontSize * $rythmRatio * $rythmRatio);
+$h3Lines: 1; /* depend on fontSize*/
+$h3LineHeight: calc($lineHeight * $h3Lines);
+$h3BaseLineDistance: calc(($lineHeight - $capHeight) / 2);
+$h3PaddingTop: $h3BaseLineDistance;
+$h3MarginBottom: calc($lineHeight - $h3BaseLineDistance);
+
+$h4FontSize: calc($fontSize * $rythmRatio);
+$h4Lines: 1; /* depend on fontSize*/
+$h4LineHeight: calc($lineHeight * $h4Lines);
+$h4BaseLineDistance: calc(($lineHeight - $capHeight) / 2);
+$h4PaddingTop: $h4BaseLineDistance;
+$h4MarginBottom: calc($lineHeight - $h4BaseLineDistance);
+
+$h5FontSize: calc($fontSize);
+$h5Lines: 1; /* depend on fontSize*/
+$h5LineHeight: calc($lineHeight * $h5Lines);
+$h5BaseLineDistance: calc(($lineHeight - $capHeight) / 2);
+$h5PaddingTop: $h5BaseLineDistance;
+$h5MarginBottom: calc($lineHeight - $h5BaseLineDistance);
+
+$h6FontSize: calc($fontSize / $rythmRatio);
+$h6Lines: 1; /* depend on fontSize*/
+$h6LineHeight: calc($lineHeight * $h6Lines);
+$h6BaseLineDistance: calc(($lineHeight - $capHeight) / 2);
+$h6PaddingTop: $h6BaseLineDistance;
+$h6MarginBottom: calc($lineHeight - $h6BaseLineDistance);
+
+@define-placeholder h1 {
+  font-size: $h1FontSize;
+  line-height: $h1LineHeight;
+  padding-top: $h1PaddingTop;
+  margin-bottom: $h1MarginBottom;
+  margin-top: 0;
+}
+@define-placeholder h2 {
+  font-size: $h2FontSize;
+  line-height: $h2LineHeight;
+  padding-top: $h2PaddingTop;
+  margin-bottom: $h2MarginBottom;
+  margin-top: 0;
+}
+@define-placeholder h3 {
+  font-size: $h3FontSize;
+  line-height: $h3LineHeight;
+  padding-top: $h3PaddingTop;
+  margin-bottom: $h3MarginBottom;
+  margin-top: 0;
+}
+@define-placeholder h4 {
+  font-size: $h4FontSize;
+  line-height: $h4LineHeight;
+  padding-top: $h4PaddingTop;
+  margin-bottom: $h4MarginBottom;
+  margin-top: 0;
+}
+@define-placeholder h5 {
+  font-size: $h5FontSize;
+  line-height: $h5LineHeight;
+  padding-top: $h5PaddingTop;
+  margin-bottom: $h5MarginBottom;
+  margin-top: 0;
+}
+@define-placeholder h6 {
+  font-size: $h6FontSize;
+  line-height: $h6LineHeight;
+  padding-top: $h6PaddingTop;
+  margin-bottom: $h6MarginBottom;
+  margin-top: 0;
+}
