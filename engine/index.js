@@ -176,10 +176,10 @@ function populateFirefoxStatus(versions, features) {
 
 function buildIndex(data) {
   const templateContents = fs.readFileSync('src/tpl/index.html');
-  return handlebars.compile(String(templateContents))(data);
+  return Promise.resolve(handlebars.compile(String(templateContents))(data));
 }
 
-function build(options) {
+function buildStatus(options) {
   return Promise.all([
     fixtureParser.read(),
     browserParser.read(options),
@@ -191,14 +191,16 @@ function build(options) {
     populateBrowserFeatureData(browserParser.results, fixtureParser.results);
     populateSpecStatus(browserParser.results, fixtureParser.results);
     return {
-      'index.html': buildIndex({
-        features: fixtureParser.results,
-        firefoxVersions: firefoxVersionParser.results,
-      }),
+      created: (new Date()).toISOString(),
+      features: fixtureParser.results,
+      firefoxVersions: firefoxVersionParser.results,
     };
   }).catch((err) => {
     console.error(err);
   });
 }
 
-export default build;
+export default {
+  buildStatus: buildStatus,
+  buildIndex: buildIndex,
+};

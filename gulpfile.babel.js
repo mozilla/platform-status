@@ -30,6 +30,7 @@ sourceMapSupport.install();
 
 import browserSyncCreator from 'browser-sync';
 const browserSync = browserSyncCreator.create();
+const statusFileanme = path.join('./dist/status.json');
 
 import engine from './engine/index.js';
 
@@ -85,16 +86,21 @@ gulp.task('deploy', ['build'], () => {
   });
 });
 
-gulp.task('build:engine', () => {
+gulp.task('build:status', () => {
   const cacheDir = path.join('./dist', 'cache');
   mkdirp.sync(cacheDir);
   const options = {
     cacheDir: cacheDir,
   };
-  return engine(options).then((files) => {
-    for (const filename of Object.keys(files)) {
-      fs.writeFileSync('./dist/' + filename, files[filename]);
-    }
+  return engine.buildStatus(options).then((status) => {
+    fs.writeFileSync(statusFileanme, JSON.stringify(status, null, 2));
+  });
+});
+
+gulp.task('build:index', ['build:status'], () => {
+  const status = JSON.parse(fs.readFileSync(statusFileanme));
+  return engine.buildIndex(status).then((contents) => {
+    fs.writeFileSync(path.join('./dist', 'index.html'), contents);
   });
 });
 
@@ -144,7 +150,7 @@ gulp.task('build:css', () => {
     .pipe(gulp.dest('./dist'));
 });
 
-gulp.task('build:dist', ['build:root', 'build:engine', 'build:js', 'build:css']);
+gulp.task('build:dist', ['build:root', 'build:status', 'build:index', 'build:js', 'build:css']);
 
 function offline() {
   return oghliner.offline({
