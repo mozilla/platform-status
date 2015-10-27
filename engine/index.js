@@ -5,10 +5,12 @@ import handlebars from 'handlebars';
 import fetch from 'node-fetch';
 import FixtureParser from './fixtureParser.js';
 import BrowserParser from './browserParser.js';
+import FirefoxVersionParser from './firefoxVersionParser.js';
 
 const fixtureDir = path.resolve('./features');
 const fixtureParser = new FixtureParser(fixtureDir);
 const browserParser = new BrowserParser();
+const firefoxVersionParser = new FirefoxVersionParser();
 
 function normalizeStatus(status) {
   switch (status.trim().toLowerCase()) {
@@ -111,6 +113,40 @@ function populateBrowserFeatureData(browserData, features) {
   });
 }
 
+function populateSpecStatus(browserData, features) {
+  features.forEach((feature) => {
+    const browserFeatureData = browserData.chrome.get(feature.chrome_ref);
+    if (!browserFeatureData.standardization) {
+      return;
+    }
+    let normalized;
+    const status = browserFeatureData.standardization.text;
+    switch (status) {
+    case 'De-facto standard':
+      normalized = 'de-facto-standard';
+      break;
+    case 'Editor\'s draft':
+      normalized = 'editors-draft';
+      break;
+    case 'Established standard':
+      normalized = 'established-standard';
+      break;
+    case 'No public standards discussion':
+      normalized = 'no-public-discussion';
+      break;
+    case 'Public discussion':
+      normalized = 'public-discussion';
+      break;
+    case 'Working draft or equivalent':
+      normalized = 'working-draft-or-equivalent';
+      break;
+    default:
+      throw new Error('Unmapped standardization status: ' + status);
+    }
+    feature.standardization = normalized;
+  });
+}
+
 function populateBugzillaData(features) {
   return Promise.all(features.map((feature) => {
     if (!feature.bugzilla) {
@@ -125,6 +161,19 @@ function populateBugzillaData(features) {
   }));
 }
 
+function populateFirefoxStatus(versions, features) {
+  features.forEach((feature) => {
+    if (!isNaN(feature.firefox_status)) {
+      const version = parseInt(feature.firefox_status, 10);
+      if (version <= versions.stable) {
+        feature.firefox_status = 'shipped';
+      } else {
+        feature.firefox_status = 'in-development';
+      }
+    }
+  });
+}
+
 function buildIndex(data) {
   const templateContents = fs.readFileSync('src/tpl/index.html');
   return handlebars.compile(String(templateContents))(data);
@@ -134,12 +183,18 @@ function build(options) {
   return Promise.all([
     fixtureParser.read(),
     browserParser.read(options),
+    firefoxVersionParser.read(options),
   ]).then(() => {
     return populateBugzillaData(fixtureParser.results);
   }).then(() => {
+    populateFirefoxStatus(firefoxVersionParser.results, fixtureParser.results);
     populateBrowserFeatureData(browserParser.results, fixtureParser.results);
+    populateSpecStatus(browserParser.results, fixtureParser.results);
     return {
-      'index.html': buildIndex({ features: fixtureParser.results }),
+      'index.html': buildIndex({
+        features: fixtureParser.results,
+        firefoxVersions: firefoxVersionParser.results,
+      }),
     };
   }).catch((err) => {
     console.error(err);

@@ -41,64 +41,80 @@ define([
 
       // Actual test starts here
 
-      // Please keep this list alphabetically sorted and lowercase
-      var expectedFiles = [ 'bundle.css', 'bundle.css.map', 'bundle.js', 'bundle.js.map', 'index.html', 'offline-worker.js'];
+      // Please keep this list alphabetically sorted. It is case sensitive.
+      var expectedFiles = [
+        'dist/bundle.css',
+        'dist/bundle.css.map',
+        'dist/bundle.js',
+        'dist/bundle.js.map',
+        'dist/cache/httpsrawgithubusercontentcommicrosoftedgestatusproductionappstaticiestatus.json',
+        'dist/cache/httpssvnmozillaorglibsproductdetailsjsonfirefoxversions.json',
+        'dist/cache/httpssvnwebkitorgrepositorywebkittrunksourcejavascriptcorefeatures.json',
+        'dist/cache/httpssvnwebkitorgrepositorywebkittrunksourcewebcorefeatures.json',
+        'dist/cache/httpswwwchromestatuscomfeatures.json',
+        'dist/fonts/OpenSans-Bold-webfont.woff',
+        'dist/fonts/OpenSans-BoldItalic-webfont.woff',
+        'dist/fonts/OpenSans-ExtraBold-webfont.woff',
+        'dist/fonts/OpenSans-ExtraBoldItalic-webfont.woff',
+        'dist/fonts/OpenSans-Italic-webfont.woff',
+        'dist/fonts/OpenSans-Light-webfont.woff',
+        'dist/fonts/OpenSans-LightItalic-webfont.woff',
+        'dist/fonts/OpenSans-Regular-webfont.woff',
+        'dist/fonts/OpenSans-Semibold-webfont.woff',
+        'dist/fonts/OpenSans-SemiboldItalic-webfont.woff',
+        'dist/index.html',
+        'dist/offline-worker.js'
+      ];
 
-      return new Promise(function (resolve, reject) {
-        fs.readdir('dist', function (err, files) {
-          if (err) {
-            reject(err);
-            return;
-          }
-
-          var promises = files.map(processExistingFile);
-
-          return Promise.all(promises).then(function () {
-            if (expectedFiles.length !== 0) {
-              reject(new Error('File(s) not found: ' + expectedFiles));
-              return;
-            }
-
-            resolve();
-          }).catch(reject);
-        });
+      return processPath('dist').then(function () {
+        if (expectedFiles.length !== 0) {
+          throw new Error('File(s) not found: ' + expectedFiles);
+        }
       });
 
-      function processExistingFile(filename) {
-        var index = expectedFiles.indexOf(filename.toLowerCase());
-        if (index === -1) {
-          return Promise.reject(new Error('Unexpected file: ' + filename));
-        }
-        expectedFiles.splice(index, 1);
-
-        var p1 = new Promise(function (resolve, reject) {
-          fs.access('dist/index.html', fs.F_OK | fs.R_OK, function (err) {
+      function processPath(path) {
+        return new Promise(function (resolve, reject) {
+          fs.stat(path, function(err, stats) {
             if (err) {
-              reject(err);
-              return;
+              return reject(path + ': ' + err);
             }
 
-            resolve();
+            if (stats.isFile()) {
+              return fs.access(path, fs.F_OK | fs.R_OK, function (err) {
+                if (err) {
+                  return reject(path + ': ' + err);
+                }
+
+                var index = expectedFiles.indexOf(path);
+                if (index === -1) {
+                  return reject(new Error('Unexpected file: ' + path));
+                }
+                expectedFiles.splice(index, 1);
+
+                return resolve();
+              });
+            }
+
+            if (stats.isDirectory()) {
+              var promises = [];
+              return fs.readdir(path, function (err, files) {
+                if (err) {
+                  return reject(path + ': ' + err);
+                }
+
+                files.forEach(function (filename) {
+                  var filepath = path + '/' + filename;
+                  var p = processPath(filepath)
+                  promises.push(p);
+                });
+
+                return Promise.all(promises).then(resolve).catch(reject);
+              });
+            }
+
+            return reject(path + ' is not a file or a directory');
           });
         });
-
-        var p2 = new Promise(function (resolve, reject) {
-          fs.stat('dist/index.html', function(err, stats) {
-            if (err) {
-              reject(err);
-              return;
-            }
-
-            if (!stats.isFile()) {
-              reject(new Error(filename + ' is not a file'));
-              return;
-            }
-
-            resolve();
-          });
-        });
-
-        return Promise.all([p1, p2]);
       }
     });
   });
