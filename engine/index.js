@@ -5,10 +5,12 @@ import handlebars from 'handlebars';
 import fetch from 'node-fetch';
 import FixtureParser from './fixtureParser.js';
 import BrowserParser from './browserParser.js';
+import FirefoxVersionParser from './firefoxVersionParser.js';
 
 const fixtureDir = path.resolve('./features');
 const fixtureParser = new FixtureParser(fixtureDir);
 const browserParser = new BrowserParser();
+const firefoxVersionParser = new FirefoxVersionParser();
 
 function normalizeStatus(status) {
   switch (status.trim().toLowerCase()) {
@@ -159,6 +161,19 @@ function populateBugzillaData(features) {
   }));
 }
 
+function populateFirefoxStatus(versions, features) {
+  features.forEach((feature) => {
+    if (!isNaN(feature.firefox_status)) {
+      const version = parseInt(feature.firefox_status, 10);
+      if (version <= versions.stable) {
+        feature.firefox_status = 'shipped';
+      } else {
+        feature.firefox_status = 'in-development';
+      }
+    }
+  });
+}
+
 function buildIndex(data) {
   const templateContents = fs.readFileSync('src/tpl/index.html');
   return handlebars.compile(String(templateContents))(data);
@@ -168,13 +183,18 @@ function build(options) {
   return Promise.all([
     fixtureParser.read(),
     browserParser.read(options),
+    firefoxVersionParser.read(options),
   ]).then(() => {
     return populateBugzillaData(fixtureParser.results);
   }).then(() => {
+    populateFirefoxStatus(firefoxVersionParser.results, fixtureParser.results);
     populateBrowserFeatureData(browserParser.results, fixtureParser.results);
     populateSpecStatus(browserParser.results, fixtureParser.results);
     return {
-      'index.html': buildIndex({ features: fixtureParser.results }),
+      'index.html': buildIndex({
+        features: fixtureParser.results,
+        firefoxVersions: firefoxVersionParser.results,
+      }),
     };
   }).catch((err) => {
     console.error(err);
