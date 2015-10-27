@@ -173,8 +173,13 @@ function build(options) {
   }).then(() => {
     populateBrowserFeatureData(browserParser.results, fixtureParser.results);
     populateSpecStatus(browserParser.results, fixtureParser.results);
+    const status = {
+      created: (new Date()).toISOString(),
+      features: fixtureParser.results,
+    };
     return {
-      'index.html': buildIndex({ features: fixtureParser.results }),
+      'status.json': JSON.stringify(status, null, 2),
+      'index.html': buildIndex(status),
     };
   }).catch((err) => {
     console.error(err);
