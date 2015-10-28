@@ -47,8 +47,10 @@
     "yargs": "^3.27.0"
   },
   "scripts": {
-    "test": "./node_modules/gulp/bin/gulp.js test",
-    "start": "./node_modules/gulp/bin/gulp.js watch"
+    "build": "./node_modules/gulp/bin/gulp.js build",
+    "lint": "./node_modules/gulp/bin/gulp.js lint",
+    "start": "./node_modules/gulp/bin/gulp.js watch",
+    "test": "npm run lint && npm run build && node tests/support/runtests.js"
   },
   "repository": {
     "type": "git",
