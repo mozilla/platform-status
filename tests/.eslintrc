@@ -1,0 +1,11 @@
+{
+  "env": {
+    "amd": true
+  },
+  "rules": {
+    "func-names": 0,
+    "no-var": 0,
+    "comma-dangle": 0,
+    "vars-on-top": 0
+  }
+}

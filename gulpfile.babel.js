@@ -39,7 +39,7 @@ gulp.task('clean', () => {
 
 gulp.task('lint', () => {
   return gulp
-    .src(['./*.js', './engine/*.js', './src/*.js'])
+    .src(['./*.js', './engine/*.js', './src/*.js', './tests/**/*.js'])
     .pipe(plugins.eslint())
     .pipe(plugins.eslint.format())
     .pipe(plugins.eslint.failOnError());
