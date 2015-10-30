@@ -1,11 +1,13 @@
 ---
 title: Streams API
 category: file
-bugzilla: 891286
+bugzilla: 1128959
 firefox_status: in-development
-spec_url: https://w3c.github.io/streams-api/
+spec_url: https://streams.spec.whatwg.org/
 spec_repo: https://github.com/whatwg/streams
 chrome_ref: 6605041225957376
+webkit_ref: Streams
+ie_ref: Streams API
 ---
 
 Representing and handling a stream of data in JavaScript.
