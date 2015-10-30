@@ -61,6 +61,9 @@ define([
         'dist/fonts/OpenSans-Regular-webfont.woff',
         'dist/fonts/OpenSans-Semibold-webfont.woff',
         'dist/fonts/OpenSans-SemiboldItalic-webfont.woff',
+        'dist/images/favicon-196.png',
+        'dist/images/favicon.ico',
+        'dist/images/ios-icon-180.png',
         'dist/index.html',
         'dist/status.json',
         'dist/offline-worker.js'

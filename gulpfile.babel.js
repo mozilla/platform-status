@@ -71,7 +71,7 @@ gulp.task('build:index', ['build:status'], () => {
 
 gulp.task('build:root', () => {
   return gulp
-    .src(['./src/*.*', './src/fonts/*.*'], {base: './src'})
+    .src(['./src/*.*', './src/fonts/*.*', './src/images/*.*'], {base: './src'})
     .pipe(gulp.dest('./dist'));
 });
 
