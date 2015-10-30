@@ -20,26 +20,27 @@ function validateWarning(msg) {
 function normalizeStatus(status, browser) {
   switch (status.trim().toLowerCase()) {
   case '':
+    return 'unknown';
   case 'no active development':
-  case 'no longer pursuing':
   case 'not currently planned':
-    return 'none';
+    return 'not-planned';
   case 'deprecated':
+  case 'no longer pursuing':
   case 'removed':
     return 'deprecated';
   case 'under consideration':
+  case 'proposed':
     return 'under-consideration';
   case 'in development':
   case 'behind a flag':
-  case 'proposed': // ?
-  case 'prototyping': // ?
+  case 'prototyping':
+  case 'preview release':
     return 'in-development';
   case 'shipped':
   case 'enabled by default':
   case 'done':
   case 'partial support':
-  case 'preview release': // ?
-  case 'prefixed': // ?
+  case 'prefixed':
     return 'shipped';
   default:
     validateWarning('Unmapped status: "' + status + '" for "' + browser + '"');
