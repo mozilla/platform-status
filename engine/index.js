@@ -121,7 +121,7 @@ function populateBrowserFeatureData(browserData, features) {
   features.forEach((feature) => {
     allBrowserFeatures.map(([key, BrowserFeatureConstructor]) => {
       const browserFeatureData = browserData[key].get(feature[key + '_ref']);
-      feature[key + '_status'] = 'none';
+      feature[key + '_status'] = 'unknown';
       if (browserFeatureData) {
         const browserFeature = new BrowserFeatureConstructor(browserFeatureData);
         feature[key + '_status'] = browserFeature.status;
@@ -163,7 +163,7 @@ function populateSpecStatus(browserData, features) {
       normalized = 'invalid';
       break;
     }
-    feature.standardization = normalized;
+    feature.spec_status = normalized;
   });
 }
 
@@ -177,6 +177,8 @@ function populateBugzillaData(features) {
         return response.json();
       }).then((json) => {
         feature.bugzilla_status = json.bugs[0].status;
+      }).catch(() => {
+        feature.bugzilla = null;
       });
   }));
 }
@@ -261,9 +263,23 @@ function validate(data) {
   });
 }
 
-function buildIndex(data) {
-  const templateContents = fs.readFileSync('src/tpl/index.html');
-  return Promise.resolve(handlebars.compile(String(templateContents))(data));
+let alt = null;
+handlebars.registerHelper('alt', (state, field, variance) => {
+  if (!alt) {
+    alt = JSON.parse(fs.readFileSync('./src/tpl/alt.json'));
+  }
+  const value = alt[field][state] || null;
+  if (!value || typeof variance !== 'string') {
+    return value;
+  }
+  return value[variance];
+});
+
+function buildIndex(status) {
+  const templateContents = fs.readFileSync('src/tpl/index.html', {
+    encoding: 'utf-8',
+  });
+  return Promise.resolve(handlebars.compile(templateContents)(status));
 }
 
 function buildStatus(options) {
