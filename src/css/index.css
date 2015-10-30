@@ -12,25 +12,7 @@ html, body {
 body {
 	@extend base-font;
 	@extend base-rhythm;
-	display: flex;
-	justify-content: center;
-
 	background: #1e1e21;
-	color: #fff;
-}
-
-h1, h2, h3, h4 {
-	@extend base-font-light;
-	letter-spacing: -.035em;
-}
-h1 {
-	@extend h1;
-}
-h2 {
-	@extend h2;
-}
-h3 {
-	@extend h3;
 }
 
 a {
@@ -44,8 +26,39 @@ a {
   }
 }
 
-#main {
-	max-width: 1280px;
+.row {
+	display: flex;
+	justify-content: center;
+	padding: $gutterX $gutterY;
+}
+.row-inner {
+	width: 1280px;
+}
+
+h1 {
+	@extend h1;
+	padding-top: 0;
+	margin-bottom: 0;
+	letter-spacing: -.035em;
+	color: #fff;
+}
+h2 {
+	@extend base-font-light;
+	@extend h4;
+	padding-top: 0;
+	margin-bottom: $gutterY;
+	color: $textColorLight;
+	font-style: italic;
+}
+
+article {
+	background-color: #fff;
+	color: #333;
+}
+
+h3 {
+	@extend h2;
+	@extend base-font-light;
 }
 
 #features {
@@ -68,24 +81,71 @@ a {
 
 .feature-summary {
 	margin: 0;
+	color: #a2b4c7;
 }
 
 .feature-links ul {
 	list-style: none;
 	margin: 0;
 	padding: 0;
-	display: flex;
-	flex-direction: row;
 }
 .feature-links li {
+	display: inline-block;
 	margin-right: $gutterX;
 }
-
-.feature-statuses ul {
+.feature-status ul {
 	list-style: none;
 	margin: 0;
 	padding: 0;
+	display: flex;
+	flex-direction: row;
+	height: 40px;
 }
-.feature-statuses ul li {
-
+.status {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+	width: 19px;
+	text-indent: -9999px;
+	background-position: 9px 8px;
+	background-repeat: no-repeat;
+	/*box-shadow: -1px 0 1px rgba(0, 0, 0, 0.2);*/
+	margin-right: 1px;
+	background-size: 16px;
+}
+.status.state-firefox {
+	width: 40px;
+	margin-right: 0;
+	background-size: 32px;
+	background-position: 20px 5px;
+}
+.status.state-chrome {
+	background-image: url(https://raw.githubusercontent.com/alrra/browser-logos/master/chrome/chrome_32x32.png);
+}
+.status.state-firefox {
+	background-image: url(https://raw.githubusercontent.com/alrra/browser-logos/master/firefox/firefox_64x64.png);
+}
+.status.state-edge {
+	background-image: url(https://raw.githubusercontent.com/alrra/browser-logos/master/edge/edge_32x32.png);
+}
+.status.state-webkit {
+	background-image: url(https://raw.githubusercontent.com/alrra/browser-logos/master/safari/safari_32x32.png);
+}
+.status.state-unknown {
+	background-color: #bbb;
+}
+.status.state-not-planned {
+	background-color: #D0021B;
+}
+.status.state-deprecated {
+	background-color: #D0021B;
+}
+.status.state-under-consideration {
+	background-color: #F8E71C;
+}
+.status.state-in-development {
+	background-color: #B8E986;
+}
+.status.state-shipped {
+	background-color: #7ED321;
 }

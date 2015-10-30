@@ -1,6 +1,6 @@
 /* vim: set filetype=javascript sw=2 tw=80 : */
 
-define(function (require) {
+define(function() {
   // the page object is created as a constructor
   // so we can provide the remote Command object
   // at runtime
@@ -12,7 +12,7 @@ define(function (require) {
     constructor: IndexPage,
 
     // Returns a promise that resolves to the title of the page
-    get title () {
+    get title() {
       return this.remote
         .getPageTitle();
     },

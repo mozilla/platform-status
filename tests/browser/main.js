@@ -10,29 +10,28 @@ define([
   'intern/chai!assert',
   // This `Page` object gives us access to things on index.html
   'tests/support/pages/main'
-], function (bdd, assert, IndexPage) {
-
-  bdd.describe('main page', function () {
+], function(bdd, assert, IndexPage) {
+  bdd.describe('main page', function() {
     var page;
 
-    bdd.before(function () {
+    bdd.before(function() {
       // executes before test suite starts
       page = new IndexPage(this.remote);
     });
 
-    bdd.after(function () {
+    bdd.after(function() {
       // executes after test suite ends
     });
 
-    bdd.beforeEach(function () {
+    bdd.beforeEach(function() {
       // executes before each test
     });
 
-    bdd.afterEach(function () {
+    bdd.afterEach(function() {
       // executes after each test
     });
 
-    bdd.it('should have correct title', function () {
+    bdd.it('should have correct title', function() {
       // Don't throw an error and the test will pass
       // throw new Error('This will cause the test to fail');
       //
@@ -45,7 +44,7 @@ define([
       //
       // `this.remote` is how we control the test browser for functional
       // tests.
-      page.title.then(function (title) {
+      page.title.then(function(title) {
         assert(title, 'title exists');
         assert.equals(title, 'Platatus!');
       });

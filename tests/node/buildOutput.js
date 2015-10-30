@@ -1,4 +1,3 @@
-/* vim: set filetype=javascript sw=2 tw=80 : */
 
 define([
   // This file uses BDD style. Other styles are available
@@ -7,25 +6,25 @@ define([
   'intern/chai!assert',
   // This is how to load regular Node modules.
   'intern/dojo/node!fs',
-], function (bdd, assert, fs) {
+], function(bdd, assert, fs) {
   bdd.describe('Build process', function() {
-    bdd.before(function () {
+    bdd.before(function() {
       // executes before test suite starts
     });
 
-    bdd.after(function () {
+    bdd.after(function() {
       // executes after test suite ends
     });
 
-    bdd.beforeEach(function () {
+    bdd.beforeEach(function() {
       // executes before each test
     });
 
-    bdd.afterEach(function () {
+    bdd.afterEach(function() {
       // executes after each test
     });
 
-    bdd.it('should output readable expected files and only expected files', function () {
+    bdd.it('should output readable expected files and only expected files', function() {
       // Don't throw an error and the test will pass
       // throw new Error('This will cause the test to fail');
       //
@@ -62,27 +61,25 @@ define([
         'dist/fonts/OpenSans-Regular-webfont.woff',
         'dist/fonts/OpenSans-Semibold-webfont.woff',
         'dist/fonts/OpenSans-SemiboldItalic-webfont.woff',
+        'dist/images/favicon-196.png',
+        'dist/images/favicon.ico',
+        'dist/images/ios-icon-180.png',
         'dist/index.html',
+        'dist/status.json',
         'dist/offline-worker.js'
       ];
 
-      return processPath('dist').then(function () {
-        if (expectedFiles.length !== 0) {
-          throw new Error('File(s) not found: ' + expectedFiles);
-        }
-      });
-
       function processPath(path) {
-        return new Promise(function (resolve, reject) {
-          fs.stat(path, function(err, stats) {
-            if (err) {
-              return reject(path + ': ' + err);
+        return new Promise(function(resolve, reject) {
+          fs.stat(path, function(statErr, stats) {
+            if (statErr) {
+              return reject(path + ': ' + statErr);
             }
 
             if (stats.isFile()) {
-              return fs.access(path, fs.F_OK | fs.R_OK, function (err) {
-                if (err) {
-                  return reject(path + ': ' + err);
+              return fs.access(path, fs.F_OK | fs.R_OK, function(accessErr) {
+                if (accessErr) {
+                  return reject(path + ': ' + accessErr);
                 }
 
                 var index = expectedFiles.indexOf(path);
@@ -96,19 +93,19 @@ define([
             }
 
             if (stats.isDirectory()) {
-              var promises = [];
-              return fs.readdir(path, function (err, files) {
-                if (err) {
-                  return reject(path + ': ' + err);
+              return fs.readdir(path, function(readErr, files) {
+                if (readErr) {
+                  return reject(path + ': ' + readErr);
                 }
 
-                files.forEach(function (filename) {
+                var promises = files.map(function(filename) {
                   var filepath = path + '/' + filename;
-                  var p = processPath(filepath)
-                  promises.push(p);
+                  return processPath(filepath);
                 });
 
-                return Promise.all(promises).then(resolve).catch(reject);
+                return Promise.all(promises)
+                  .then(resolve)
+                  .catch(reject);
               });
             }
 
@@ -116,6 +113,12 @@ define([
           });
         });
       }
+
+      return processPath('dist').then(function() {
+        if (expectedFiles.length !== 0) {
+          throw new Error('File(s) not found: ' + expectedFiles);
+        }
+      });
     });
   });
 });

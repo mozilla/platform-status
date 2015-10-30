@@ -1,0 +1,94 @@
+{
+  "status": {
+    "unknown": {
+      "short": "?",
+      "long": "No public signals"
+    },
+    "not-planned": {
+      "short": "Not planned",
+      "long": "Not currently planned"
+    },
+    "deprecated": {
+      "short": "Removed",
+      "long": "Deprecated"
+    },
+    "under-consideration": {
+      "short": "Considering",
+      "long": "Under Consideration"
+    },
+    "in-development": {
+      "short": "Developing",
+      "long": "In Development"
+    },
+    "shipped": {
+      "short": "Shipped",
+      "long": "Shipped"
+    }
+  },
+  "browser": {
+    "firefox": {
+      "abbr": "FF",
+      "short": "Firefox",
+      "long": "Mozilla Firefox"
+    },
+    "chrome": {
+      "abbr": "CH",
+      "short": "Chrome",
+      "long": "Google Chrome"
+    },
+    "webkit": {
+      "abbr": "SA",
+      "short": "Safari",
+      "long": "Apple Safari"
+    },
+    "edge": {
+      "abbr": "IE",
+      "short": "Edge",
+      "long": "Microsoft Edge"
+    }
+  },
+  "channel": {
+    "stable": {
+      "short": "Release",
+      "long": "Firefox"
+    },
+    "beta": {
+      "short": "Beta",
+      "long": "Firefox Beta"
+    },
+    "aurora": {
+      "short": "DevEdition",
+      "long": "Firefox Developer Edition"
+    },
+    "nightly": {
+      "short": "Nightly",
+      "long": "Firefox Nightly"
+    }
+  },
+  "spec": {
+    "de-facto-standard": {
+      "short": "Standard",
+      "long": "De-facto standard"
+    },
+    "editors-draft": {
+      "short": "Editor draft",
+      "long": "Editor's draft"
+    },
+    "established-standard": {
+      "short": "Standard",
+      "long": "Established standard"
+    },
+    "no-public-discussion": {
+      "short": "No discussion",
+      "long": "No public standards discussion"
+    },
+    "public-discussion": {
+      "short": "Discussion",
+      "long": "Public discussion"
+    },
+    "working-draft-or-equivalent": {
+      "short": "Working draft",
+      "long": "Working draft or equivalent"
+    }
+  }
+}

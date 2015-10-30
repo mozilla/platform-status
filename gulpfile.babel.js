@@ -29,6 +29,7 @@ sourceMapSupport.install();
 
 import browserSyncCreator from 'browser-sync';
 const browserSync = browserSyncCreator.create();
+const statusFilename = './dist/status.json';
 
 import engine from './engine/index.js';
 
@@ -38,7 +39,7 @@ gulp.task('clean', () => {
 
 gulp.task('lint', () => {
   return gulp
-    .src(['./*.js', './engine/*.js', './src/*.js'])
+    .src(['./*.js', './engine/*.js', './src/*.js', './tests/**/*.js'])
     .pipe(plugins.eslint())
     .pipe(plugins.eslint.format())
     .pipe(plugins.eslint.failOnError());
@@ -50,22 +51,27 @@ gulp.task('deploy', ['build'], () => {
   });
 });
 
-gulp.task('build:engine', () => {
+gulp.task('build:status', () => {
   const cacheDir = path.join('./dist', 'cache');
   mkdirp.sync(cacheDir);
   const options = {
     cacheDir: cacheDir,
   };
-  return engine(options).then((files) => {
-    for (const filename of Object.keys(files)) {
-      fs.writeFileSync('./dist/' + filename, files[filename]);
-    }
+  return engine.buildStatus(options).then((status) => {
+    fs.writeFileSync(statusFilename, JSON.stringify(status, null, 2));
+  });
+});
+
+gulp.task('build:index', ['build:status'], () => {
+  const status = JSON.parse(fs.readFileSync(statusFilename));
+  return engine.buildIndex(status).then((contents) => {
+    fs.writeFileSync(path.join('./dist', 'index.html'), contents);
   });
 });
 
 gulp.task('build:root', () => {
   return gulp
-    .src(['./src/*.*', './src/fonts/*.*'], {base: './src'})
+    .src(['./src/*.*', './src/fonts/*.*', './src/images/*.*'], {base: './src'})
     .pipe(gulp.dest('./dist'));
 });
 
@@ -109,7 +115,7 @@ gulp.task('build:css', () => {
     .pipe(gulp.dest('./dist'));
 });
 
-gulp.task('build:dist', ['build:root', 'build:engine', 'build:js', 'build:css']);
+gulp.task('build:dist', ['build:root', 'build:status', 'build:index', 'build:js', 'build:css']);
 
 function offline() {
   return oghliner.offline({
@@ -134,9 +140,9 @@ gulp.task('watch', ['build'], () => {
     },
   });
   gulp.watch(['./src/*.*'], ['build:root']);
-  gulp.watch(['./src/css/*.css'], ['build:css']);
+  gulp.watch(['./src/css/**/*.css'], ['build:css']);
   gulp.watch(['./src/js/*.js'], ['build:js']);
-  gulp.watch(['./engine/*.js', './features/*.md', './src/tpl/*.html'], ['build:engine']);
+  gulp.watch(['./engine/*.js', './features/*.md', './src/tpl/*.html'], ['build:index']);
   gulp.watch(['./dist/**/*.*', '!./dist/offline-worker.js'], debounce(offline, 200));
   gulp.watch(['./dist/offline-worker.js'], browserSync.reload);
 });
