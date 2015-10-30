@@ -9,14 +9,27 @@ define([
       load: function (resourceId, require, load) {
         // Get the raw source code…
         fs.readFile(require.toUrl(resourceId), function (err, sourceCode) {
+          if (err) {
+            throw err;
+          }
+
           // …then compile it into JavaScript code…
           var code = babel.transform(sourceCode).code;
 
-          // …then execute the compiled function. In this case,
-          // the compiled code returns its value. An AMD module would
-          // call a `define` function, and a CJS module would set its
-          // values on `exports` or `module.exports`.
-          load(new Function(code)());
+          var path = './tests/support/var/' + resourceId.replace(/\//g, '-').replace(/\./g, '') + '.js';
+
+          // write the ES5 into a temporary js file
+          fs.writeFile(path, code, function (err) {
+            if (err) {
+              throw err;
+            }
+
+            // load the temporary ES5 js file as a node module
+            require(['intern/dojo/node!.' + path], function (value) {
+              // return the result
+              load(value);
+            });
+          });
         });
       },
     };
