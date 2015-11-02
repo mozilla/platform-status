@@ -1,9 +1,10 @@
 import cache from './cache.js';
 
 export default class FirefoxVersionParser {
-  results = {}
-
-  url = 'https://svn.mozilla.org/libs/product-details/json/firefox_versions.json';
+  constructor() {
+    this.results = {}
+    this.url = 'https://svn.mozilla.org/libs/product-details/json/firefox_versions.json';
+  }
 
   majorVersion(version) {
     return parseInt(version.substr(0, version.indexOf('.')), 10);
