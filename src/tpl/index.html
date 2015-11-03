@@ -27,16 +27,16 @@
   <link rel="stylesheet" href="bundle.css">
 </head>
 <body>
-  <header class="row">
-    <div class="row-inner">
+  <div class="row">
+    <header class="row-inner">
       <div id="tabzilla">
         <a href="https://www.mozilla.org/">Mozilla</a>
       </div>
       <h1>Firefox</h1>
       <h2>Platform Status</h2>
-    </div>
-  </header>
-  <main class="row">
+    </header>
+  </div>
+  <article class="row">
     <ul class="row-inner" id="features">
       {{#each features}}
         <li class="feature" id="{{slug}}" tabindex="0">
@@ -85,7 +85,7 @@
         </li>
       {{/each}}
     </ul>
-  </main>
+  </article>
   <script src="bundle.js" async defer></script>
 </body>
 </html>

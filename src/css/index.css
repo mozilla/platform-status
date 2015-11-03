@@ -41,6 +41,7 @@ a {
 }
 header {
 	padding: 0 0 calc($gutterY / 2) 0;
+	width: 1000px;
 }
 
 h1 {
