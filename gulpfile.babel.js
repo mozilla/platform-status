@@ -71,10 +71,7 @@ gulp.task('build:index', ['build:status'], () => {
 
 gulp.task('build:tabzilla', () => {
   return gulp
-    .src(
-      ['./node_modules/mozilla-tabzilla/**/*.png'],
-      {base: './node_modules/mozilla-tabzilla'}
-    )
+    .src(['./node_modules/mozilla-tabzilla/**/*.png'], {base: './node_modules/mozilla-tabzilla'})
     .pipe(gulp.dest('./dist'));
   });
 
@@ -116,7 +113,7 @@ gulp.task('build:css', () => {
       browers: ['last 1 version'],
     }),
     cssMqpacker(),
-    // cssReporter(),
+    cssReporter(),
   ];
   return gulp
     .src('./src/css/*.css')

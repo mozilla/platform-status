@@ -2,7 +2,7 @@ import cache from './cache.js';
 
 export default class FirefoxVersionParser {
   constructor() {
-    this.results = {}
+    this.results = {};
     this.url = 'https://svn.mozilla.org/libs/product-details/json/firefox_versions.json';
   }
 
