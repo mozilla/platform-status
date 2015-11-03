@@ -29,10 +29,11 @@ a {
 .row {
 	display: flex;
 	justify-content: center;
-	padding: 0 $gutterX;
+	padding: 0 0 0 $gutterX;
 }
 .row-inner {
-	width: 1000px;
+	min-width: 300px;
+	max-width: 1000px;
 }
 header {
 	padding: 0 0 calc($gutterY / 2) 0;
@@ -63,8 +64,9 @@ article {
 h3 {
 	@extend h2;
 	@extend base-font-light;
-	padding-top: calc($gutterY * 0.62);
-	margin-bottom: calc($gutterY * 0.38);
+	padding-top: 0;
+	margin-bottom: 0;
+	line-height: calc($gutterY * 2);
 }
 
 #features {
@@ -79,11 +81,11 @@ h3 {
 	padding-bottom: 1px;
 }
 .feature:focus {
-	outline: none;
 }
 .feature-header {
 	display: flex;
 	flex-direction: row;
+  min-width: 0;
 }
 .feature-title {
 	flex: 1;
@@ -93,7 +95,8 @@ h3 {
 .feature-meta {
 	padding-bottom: calc($gutterY / 1.5);
 	display: none;
-	padding: calc($gutterY / 2) 0;
+	padding: calc($gutterY / 2);
+	padding-right: calc($gutterX / 2);
 	@media (min-width: $breakMobileLandscape) {
 		display: block;
 	}
