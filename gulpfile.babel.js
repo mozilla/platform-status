@@ -69,9 +69,21 @@ gulp.task('build:index', ['build:status'], () => {
   });
 });
 
+gulp.task('build:tabzilla', () => {
+  return gulp
+    .src(
+      ['./node_modules/mozilla-tabzilla/**/*.png'],
+      {base: './node_modules/mozilla-tabzilla'}
+    )
+    .pipe(gulp.dest('./dist'));
+  });
+
 gulp.task('build:root', () => {
   return gulp
-    .src(['./src/*.*', './src/fonts/*.*', './src/images/*.*'], {base: './src'})
+    .src(
+      ['./src/*.*', './src/fonts/*.*', './src/images/*.*'],
+      {base: './src'}
+    )
     .pipe(gulp.dest('./dist'));
 });
 
@@ -104,7 +116,7 @@ gulp.task('build:css', () => {
       browers: ['last 1 version'],
     }),
     cssMqpacker(),
-    cssReporter(),
+    // cssReporter(),
   ];
   return gulp
     .src('./src/css/*.css')
@@ -115,7 +127,7 @@ gulp.task('build:css', () => {
     .pipe(gulp.dest('./dist'));
 });
 
-gulp.task('build:dist', ['build:root', 'build:status', 'build:index', 'build:js', 'build:css']);
+gulp.task('build:dist', ['build:root', 'build:tabzilla', 'build:status', 'build:index', 'build:js', 'build:css']);
 
 function offline() {
   return oghliner.offline({

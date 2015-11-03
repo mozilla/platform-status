@@ -1,14 +1,23 @@
 {{#*inline "browserStatus"}}
-  <li class="status state-{{browser}} state-{{status}}" title="{{alt browser 'browser' 'long'}} - {{alt status 'status' 'long'}}">
-  {{#if url}}<a target="_blank" href="{{url}}">{{/if}} <span>{{alt status 'status' 'short'}}</span>{{#if url}}</a>{{/if}}
+  <li class="status state-{{browser}} state-{{status}}" title="{{alt status 'status' 'long'}} - {{alt browser 'browser' 'long'}}">
+    {{#if url}}<a class="status-inner" target="_blank" href="{{url}}">{{/if}}
+    {{#if url_slug}}<a class="status-inner" href="#{{url_slug}}">{{/if}}
+      {{#if version}}
+        <span class="status-version">{{version}}</span>
+      {{else}}
+        <span class="status-text">{{alt status 'status' 'short'}}</span>
+      {{/if}}
+    {{#if url}}</a>{{/if}}
+    {{#if url_slug}}</a>{{/if}}
 {{/inline}}
 
 <!DOCTYPE html>
 <html>
 <head>
   <meta charset="utf-8">
-  <title>Platatus!</title>
-  <link rel="stylesheet" href="./bundle.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Firefox Platform Status</title>
+  <link rel="stylesheet" href="bundle.css">
   <link rel="apple-touch-icon" type="image/png" sizes="180x180" href="images/ios-icon-180.png">
   <link rel="icon" type="image/png" sizes="196x196" href="images/favicon-196.png">
   <link rel="shortcut icon" href="images/favicon.ico">
@@ -16,6 +25,9 @@
 <body>
   <div class="row">
     <header class="row-inner">
+      <div id="tabzilla">
+        <a href="https://www.mozilla.org/">Mozilla</a>
+      </div>
       <h1>Firefox</h1>
       <h2>Platform Status</h2>
     </header>
@@ -23,38 +35,53 @@
   <article class="row">
     <ul class="row-inner" id="features">
       {{#each features}}
-        <li class="feature">
-          <div class="feature-meta">
+        <li class="feature" id="{{slug}}" tabindex="0">
+          <div class="feature-header">
             <h3 class="feature-title">{{title}}</h3>
+            <div class="feature-status">
+              <ul>
+                {{> browserStatus browser="chrome" url=chrome_url status=chrome_status}}
+                {{> browserStatus browser="webkit" url=webkit_url status=webkit_status}}
+                {{> browserStatus browser="edge" url=ie_url status=ie_status}}
+                {{> browserStatus browser="firefox" status=firefox_status version=firefox_version url_slug=slug}}
+              </ul>
+            </div>
+          </div>
+          <div class="feature-meta">
             <p class="feature-summary">{{summary}}</p>
             <div class="feature-links">
               <ul>
               {{#if mdn_url}}
-                <li class="feature-link-mdn"><a target="_blank" href="{{mdn_url}}">Docs</a></li>
+                <li>
+                  <a target="_blank" href="{{mdn_url}}" title="Documentation on Mozilla Developer Network (MDN)">
+                    <i class="icon icon-mdn"></i>
+                    Docs
+                  </a>
+                </li>
               {{/if}}
               {{#if spec_url}}
-                <li class="feature-link-spec"><a target="_blank" href="{{spec_url}}">
-                  {{alt spec_status 'spec' 'short'}}
-                </a></li>
+                <li>
+                  <a target="_blank" href="{{spec_url}}" title="{{alt spec_status 'spec' 'long'}}">
+                    <i class="icon icon-spec"></i>
+                    {{alt spec_status 'spec' 'short'}}
+                  </a>
+                </li>
               {{/if}}
               {{#if bugzilla}}
-                <li class="feature-link-bugzilla"><a target="_blank" href="https://bugzilla.mozilla.org/show_bug.cgi?id={{bugzilla}}">{{bugzilla_status}}</a></li>
+                <li>
+                  <a target="_blank" href="https://bugzilla.mozilla.org/show_bug.cgi?id={{bugzilla}}" title="Implementation bug at bugzilla.mozilla.org">
+                    <i class="icon icon-bugzilla"></i>
+                    {{bugzilla_status}}
+                  </a>
+                </li>
               {{/if}}
               </ul>
             </div>
-          </div>
-          <div class="feature-status">
-            <ul>
-              {{> browserStatus browser="chrome" url=chrome_url status=chrome_status}}
-              {{> browserStatus browser="webkit" url=webkit_url status=webkit_status}}
-              {{> browserStatus browser="edge" url=ie_url status=ie_status}}
-              {{> browserStatus browser="firefox" status=firefox_status}}
-            </ul>
           </div>
         </li>
       {{/each}}
     </ul>
   </article>
-  <script src="./bundle.js"></script>
+  <script src="bundle.js"></script>
 </body>
 </html>
