@@ -73,7 +73,7 @@ gulp.task('build:tabzilla', () => {
   return gulp
     .src(['./node_modules/mozilla-tabzilla/**/*.png'], {base: './node_modules/mozilla-tabzilla'})
     .pipe(gulp.dest('./dist'));
-  });
+});
 
 gulp.task('build:root', () => {
   return gulp
