@@ -65,8 +65,9 @@ define([
         'dist/media/img/tabzilla-static-high-res.png',
         'dist/media/img/tabzilla-static.png',
         'dist/index.html',
-        'dist/status.json',
-        'dist/offline-worker.js'
+        'dist/manifest.json',
+        'dist/offline-worker.js',
+        'dist/status.json'
       ];
 
       function processPath(path) {

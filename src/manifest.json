@@ -1,0 +1,15 @@
+{
+  "short_name": "Platform Status",
+  "name": "Firefox Platform Status",
+  "start_url": "./?utm_source=manifest",
+  "icons": [
+    {
+      "src": "/images/favicon-196.png",
+      "sizes": "196x196",
+      "type": "image/png"
+    }
+  ],
+  "background_color": "#1e1e21",
+  "theme_color": "#00549e",
+  "display": "standalone"
+}

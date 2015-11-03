@@ -15,24 +15,28 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
   <title>Firefox Platform Status</title>
-  <link rel="stylesheet" href="bundle.css">
-  <link rel="apple-touch-icon" type="image/png" sizes="180x180" href="images/ios-icon-180.png">
-  <link rel="icon" type="image/png" sizes="196x196" href="images/favicon-196.png">
   <link rel="shortcut icon" href="images/favicon.ico">
+  <link rel="icon" type="image/png" sizes="196x196" href="images/favicon-196.png">
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#00549e">
+  <link rel="apple-touch-icon" type="image/png" sizes="180x180" href="images/ios-icon-180.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <link rel="stylesheet" href="bundle.css">
 </head>
 <body>
-  <div class="row">
-    <header class="row-inner">
+  <header class="row">
+    <div class="row-inner">
       <div id="tabzilla">
         <a href="https://www.mozilla.org/">Mozilla</a>
       </div>
       <h1>Firefox</h1>
       <h2>Platform Status</h2>
-    </header>
   </div>
-  <article class="row">
+  </header>
+  <main class="row">
     <ul class="row-inner" id="features">
       {{#each features}}
         <li class="feature" id="{{slug}}" tabindex="0">
