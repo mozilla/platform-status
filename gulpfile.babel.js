@@ -14,12 +14,10 @@ const plugins = loadPlugins({
 });
 import cssnext from 'postcss-cssnext';
 import cssImport from 'postcss-import';
-import autoprefixer from 'autoprefixer';
 import cssNested from 'postcss-nested';
 import cssExtend from 'postcss-simple-extend';
 import cssSimpleVars from 'postcss-simple-vars';
 import cssMqpacker from 'css-mqpacker';
-import cssnano from 'cssnano';
 import mkdirp from 'mkdirp';
 
 import babelRegister from 'babel-core/register';
@@ -28,7 +26,7 @@ import sourceMapSupport from 'source-map-support';
 sourceMapSupport.install();
 
 const develop = process.env.NODE_ENV !== 'production';
-console.log(`Building for ${develop ? 'development' : 'production'}`)
+console.log(`Building for ${develop ? 'development' : 'production'}`);
 
 import browserSyncCreator from 'browser-sync';
 const browserSync = browserSyncCreator.create();
