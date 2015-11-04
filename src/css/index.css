@@ -22,10 +22,10 @@ body {
 }
 
 a {
-  color: $linkSpaceBlue;
+  color: $linkBlue;
   text-decoration: none;
   &:hover, &:focus, &:active {
-    color: lighten($linkSpaceBlue, 10%);
+    color: $linkBlue;
     text-decoration: underline;
   }
 }
@@ -33,14 +33,13 @@ a {
 .row {
 	display: flex;
 	justify-content: center;
-	padding: 0 0 0 $gutterX;
 }
 .row-inner {
 	min-width: 300px;
-	max-width: 1000px;
+	max-width: 1020px;
 }
 header {
-	padding: 0 0 calc($gutterY / 2) 0;
+	padding: 0 0 calc($gutterY / 2) $gutterX;
 	width: 1000px;
 }
 
@@ -83,10 +82,14 @@ h3 {
 .feature {
 	margin: 0;
 	padding: 0;
-	padding-bottom: 1px;
+	padding-left: $gutterX;
+	@media (min-width: $breakMobileLandscape) {
+		padding: calc($gutterX / 2) $gutterX;
+	}
 }
 .feature:focus {
-	outline: 1px solid $textColorLight;
+	outline: none;
+	background-color: $backgroundLightWarm;
 }
 .feature-header {
 	display: flex;
@@ -99,10 +102,9 @@ h3 {
 }
 
 .feature-meta {
+	padding-top: calc($gutterY / 2);
 	padding-bottom: calc($gutterY / 1.5);
 	display: none;
-	padding: calc($gutterY / 2);
-	padding-right: calc($gutterX / 2);
 	@media (min-width: $breakMobileLandscape) {
 		display: block;
 	}
@@ -113,26 +115,26 @@ h3 {
 	}
 }
 .feature-summary {
-	color: $textColorTertiary;
 	margin: 0;
 	padding-bottom: calc($gutterY / 2);
-	/*@media (min-width: $breakTablet) {
-		flex: 1;
-	}*/
+	color: $textColorLightWarm;
 }
 .feature-links {
-	/*@media (min-width: $breakTablet) {
-		width: calc($gutterY * 18);
-	}*/
-}
-.feature-links ul {
-	list-style: none;
-	margin: 0;
-	padding: 0;
-}
-.feature-links li {
-	display: inline-block;
-	margin-right: calc($gutterX / 2);
+	ul {
+		list-style: none;
+		margin: 0;
+		padding: 0;
+	}
+	li {
+		display: inline-block;
+		margin-right: calc($gutterX / 2);
+	}
+	a {
+		color: $textColorLightWarm;
+		&:hover, &:focus, &:active {
+			color: $linkBlue;
+		}
+	}
 }
 .icon {
 	display: inline-block;
@@ -179,20 +181,26 @@ h3 {
 	list-style: none;
 	margin: 0;
 	padding: 0;
-	width: $gutterX;
-	background-position: 50% calc($gutterY * 2 - 9px);
+	width: calc($gutterX * 2);
+	background-position: 50% calc($gutterY * 1.4);
 	background-repeat: no-repeat;
-	/*box-shadow: -1px 0 1px rgba(0, 0, 0, 0.2);*/
-	margin-right: 1px;
-	background-size: 16px;
+	background-size: 24px;
+	border-top: 1px solid rgba(0, 0, 0, 0);
 	@media (min-width: $breakTablet) {
-		width: 79px;
+		width: 80px;
 		background-size: 32px;
 		background-position: 50% calc(($gutterY * 2) / 1.618);
+		border-top: none;
 	}
 	display: flex;
 	justify-content: stretch;
 	align-items: stretch;
+}
+.status:not(:first-child) {
+	border-left: 1px solid rgba(0, 0, 0, 0);
+}
+.status:not(:last-child) {
+	border-right: 1px solid rgba(0, 0, 0, 0);
 }
 .status-inner {
 	flex: 1;
@@ -202,30 +210,13 @@ h3 {
 	&:hover, &:focus, &:active {
     text-decoration: none;
   }
-	@media (min-width: $breakTablet) {
-		height: 61.8%;
-	}
-}
-.status-text {
-	@extend is-truncated;
-	color: #fff;
-	text-shadow: 0 0 1px rgba(0, 0, 0, 0.5);
-	font-size: $smallFontSize;
-	display: none;
-	@media (min-width: $breakTablet) {
-		display: block;
-	}
-}
-.status-version {
-	color: #fff;
-	text-shadow: 0 0 1px rgba(0, 0, 0, 0.5);
-	font-weight: 600;
+	height: 61.8%;
 }
 .status.state-firefox {
-	width: 40px;
+	width: calc($gutterX * 3);
 	margin-right: 0;
 	background-size: 32px;
-	background-position: 50% 50%;
+	background-position: 50% calc(($gutterY * 2) / 1.4);
 	@media (min-width: $breakTablet) {
 		background-size: 48px;
 		width: 120px;
@@ -249,21 +240,62 @@ h3 {
 	background-image: url(https://raw.githubusercontent.com/alrra/browser-logos/master/safari/safari_64x64.png);
 }
 
+/* Color wheel for #81bc2e */
+$stateUnknown: #bbb;
+$stateNotPlanned: #cf4033;
+$stateDeprecated: #cf4033;
+$stateConsidering: #cf9733;
+$stateDeveloping: #c5cc32;
+$stateShipped: #81bc2e;
+
+/* Color wheel for #ed3c25 */
+$stateUnknown: #bbb;
+$stateNotPlanned: #ed3c25;
+$stateDeprecated: #ed3c25;
+$stateConsidering: #eda825;
+$stateDeveloping: #dce724;
+$stateShipped: #7ed321;
+$stateShade: -15%;
+$stateAlpha: 50%;
+
 .status.state-unknown {
-	background-color: #bbb;
+	background-color: $stateUnknown;
+	border-color: color($stateUnknown lightness($stateShade) alpha($stateAlpha));
+	opacity: 0.6;
 }
 .status.state-not-planned {
-	background-color: #cf4033;
+	background-color: $stateNotPlanned;
+	border-color: color($stateNotPlanned lightness($stateShade) alpha($stateAlpha));
 }
 .status.state-deprecated {
-	background-color: #cf4033;
+	background-color: $stateDeprecated;
+	border-color: color($stateDeprecated lightness($stateShade) alpha($stateAlpha));
 }
 .status.state-under-consideration {
-	background-color: #cf9733;
+	background-color: $stateConsidering;
+	border-color: color($stateConsidering lightness($stateShade) alpha($stateAlpha));
 }
 .status.state-in-development {
-	background-color: #c5cc32;
+	background-color: $stateDeveloping;
+	border-color: color($stateDeveloping lightness($stateShade) alpha($stateAlpha));
 }
 .status.state-shipped {
-	background-color: #81bc2e;
+	background-color: $stateShipped;
+	border-color: color($stateShipped lightness($stateShade) alpha($stateAlpha));
+}
+.status-text, .status-version {
+	color: #fff;
+	text-shadow: 0 0 1px rgba(0, 0, 0, 0.8);
+	font-weight: 600;
+	text-transform: uppercase;
+}
+.status-text {
+	@extend is-truncated;
+	font-size: $smallFontSize;
+	display: none;
+	@media (min-width: $breakTablet) {
+		display: block;
+	}
+}
+.status-version {
 }

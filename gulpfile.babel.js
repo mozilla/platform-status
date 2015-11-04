@@ -15,17 +15,20 @@ const plugins = loadPlugins({
 import cssnext from 'postcss-cssnext';
 import cssImport from 'postcss-import';
 import autoprefixer from 'autoprefixer';
-import cssMqpacker from 'css-mqpacker';
 import cssNested from 'postcss-nested';
 import cssExtend from 'postcss-simple-extend';
 import cssSimpleVars from 'postcss-simple-vars';
-import cssReporter from 'postcss-reporter';
+import cssMqpacker from 'css-mqpacker';
+import cssnano from 'cssnano';
 import mkdirp from 'mkdirp';
 
 import babelRegister from 'babel-core/register';
 babelRegister();
 import sourceMapSupport from 'source-map-support';
 sourceMapSupport.install();
+
+const develop = process.env.NODE_ENV !== 'production';
+console.log(`Building for ${develop ? 'development' : 'production'}`)
 
 import browserSyncCreator from 'browser-sync';
 const browserSync = browserSyncCreator.create();
@@ -69,6 +72,17 @@ gulp.task('build:index', ['build:status'], () => {
   });
 });
 
+gulp.task('build:html', ['build:index', 'build:css'], () => {
+  gulp
+    .src('./dist/*.html')
+    // TODO: Uncomment when compression works
+    // .pipe(plugins.if(!develop, plugins.inlineSource({
+    //   compress: false,
+    // })))
+    .pipe(plugins.if(!develop, plugins.minifyHtml()))
+    .pipe(gulp.dest('./dist/'));
+});
+
 gulp.task('build:tabzilla', () => {
   return gulp
     .src(['./node_modules/mozilla-tabzilla/**/*.png'], {base: './node_modules/mozilla-tabzilla'})
@@ -96,6 +110,7 @@ gulp.task('build:js', () => {
   .pipe(plugins.sourcemaps.init({
     loadMaps: true,
   }))
+  .pipe(plugins.if(!develop, plugins.uglify()))
   .pipe(plugins.sourcemaps.write('.'))
   .pipe(gulp.dest('./dist'));
 });
@@ -106,17 +121,17 @@ gulp.task('build:css', () => {
     cssExtend(),
     cssNested(),
     cssSimpleVars(),
+    cssMqpacker(),
     cssnext({
       browers: ['last 1 version'],
+      compress: true,
+      messages: {
+        console: true,
+      },
     }),
-    autoprefixer({
-      browers: ['last 1 version'],
-    }),
-    cssMqpacker(),
-    cssReporter(),
   ];
   return gulp
-    .src('./src/css/*.css')
+    .src('./src/css/index.css')
     .pipe(plugins.sourcemaps.init())
     .pipe(plugins.postcss(processors))
     .pipe(plugins.concat('bundle.css'))
@@ -124,15 +139,15 @@ gulp.task('build:css', () => {
     .pipe(gulp.dest('./dist'));
 });
 
-gulp.task('build:dist', ['build:root', 'build:tabzilla', 'build:status', 'build:index', 'build:js', 'build:css']);
+gulp.task('build:dist', ['build:root', 'build:tabzilla', 'build:status', 'build:html', 'build:js', 'build:css']);
 
 function offline() {
   return oghliner.offline({
     rootDir: 'dist/',
     fileGlobs: [
       'index.html',
-      '*.js',
-      '*.css',
+      'bundle.js',
+      'images/*.png',
     ],
   });
 }
@@ -151,7 +166,7 @@ gulp.task('watch', ['build'], () => {
   gulp.watch(['./src/*.*'], ['build:root']);
   gulp.watch(['./src/css/**/*.css'], ['build:css']);
   gulp.watch(['./src/js/*.js'], ['build:js']);
-  gulp.watch(['./engine/*.js', './features/*.md', './src/tpl/*.html'], ['build:index']);
+  gulp.watch(['./engine/*.js', './features/*.md', './src/tpl/*.html'], ['build:html']);
   gulp.watch(['./dist/**/*.*', '!./dist/offline-worker.js'], debounce(offline, 200));
   gulp.watch(['./dist/offline-worker.js'], browserSync.reload);
 });
