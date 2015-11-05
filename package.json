@@ -42,7 +42,7 @@
     "mozilla-tabzilla": "^0.5.1",
     "oghliner": "^0.10.0",
     "postcss-cssnext": "^2.1.0",
-    "postcss-import": "^7.1.0",
+    "postcss-import": "^7.1.3",
     "postcss-nested": "^1.0.0",
     "postcss-reporter": "^1.3.0",
     "postcss-simple-extend": "^1.0.0",
