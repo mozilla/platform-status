@@ -46,7 +46,7 @@ define([
       // tests.
       page.title.then(function(title) {
         assert(title, 'title exists');
-        assert.equals(title, 'Platatus!');
+        assert.equals(title, 'Firefox Platform Status');
       });
     });
   });

@@ -76,6 +76,8 @@ class ChromeBrowserFeature extends BrowserFeature {
   }
 }
 
+ChromeBrowserFeature.defaultUrl = 'https://www.chromestatus.com/features';
+
 class WebKitBrowserFeature extends BrowserFeature {
   constructor(data) {
     super(data);
@@ -94,6 +96,8 @@ class WebKitBrowserFeature extends BrowserFeature {
   }
 }
 
+WebKitBrowserFeature.defaultUrl = 'https://www.webkit.org/status.html';
+
 class IEBrowserFeature extends BrowserFeature {
   constructor(data) {
     super(data);
@@ -111,6 +115,8 @@ class IEBrowserFeature extends BrowserFeature {
   }
 }
 
+IEBrowserFeature.defaultUrl = 'https://dev.modern.ie/platform/status/';
+
 const allBrowserFeatures = [
   ['chrome', ChromeBrowserFeature],
   ['webkit', WebKitBrowserFeature],
@@ -122,6 +128,7 @@ function populateBrowserFeatureData(browserData, features) {
     allBrowserFeatures.map(([key, BrowserFeatureConstructor]) => {
       const browserFeatureData = browserData[key].get(feature[key + '_ref']);
       feature[key + '_status'] = 'unknown';
+      feature[key + '_url'] = BrowserFeatureConstructor.defaultUrl;
       if (browserFeatureData) {
         const browserFeature = new BrowserFeatureConstructor(browserFeatureData);
         feature[key + '_status'] = browserFeature.status;
@@ -187,6 +194,7 @@ function populateFirefoxStatus(versions, features) {
   features.forEach((feature) => {
     if (!isNaN(feature.firefox_status)) {
       const version = parseInt(feature.firefox_status, 10);
+      feature.firefox_version = version;
       if (version <= versions.stable) {
         feature.firefox_status = 'shipped';
       } else {
