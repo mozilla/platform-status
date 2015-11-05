@@ -83,8 +83,8 @@ gulp.task('build:html', ['build:index', 'build:css'], () => {
 
 gulp.task('build:tabzilla', () => {
   return gulp
-    .src(['./node_modules/mozilla-tabzilla/**/*.png'], {base: './node_modules/mozilla-tabzilla'})
-    .pipe(gulp.dest('./dist'));
+    .src(['./node_modules/mozilla-tabzilla/media/img/*.png'])
+    .pipe(gulp.dest('./dist/images'));
 });
 
 gulp.task('build:root', () => {
@@ -133,6 +133,7 @@ gulp.task('build:css', () => {
     .pipe(plugins.sourcemaps.init())
     .pipe(plugins.postcss(processors))
     .pipe(plugins.concat('bundle.css'))
+    .pipe(plugins.replace('../media/img/', 'images/'))
     .pipe(plugins.sourcemaps.write('.'))
     .pipe(gulp.dest('./dist'));
 });
@@ -145,6 +146,7 @@ function offline() {
     fileGlobs: [
       'index.html',
       'bundle.js',
+      'bundle.css',
       'images/*.png',
     ],
   });

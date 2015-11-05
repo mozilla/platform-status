@@ -87,7 +87,7 @@ h3 {
 		padding: calc($gutterX / 2) $gutterX;
 	}
 }
-.feature:focus {
+.feature:hover, .feature:focus {
 	outline: none;
 	background-color: $backgroundLightWarm;
 }
@@ -117,7 +117,7 @@ h3 {
 .feature-summary {
 	margin: 0;
 	padding-bottom: calc($gutterY / 2);
-	color: $textColorLightWarm;
+	color: $textColorTertiary;
 }
 .feature-links {
 	ul {
