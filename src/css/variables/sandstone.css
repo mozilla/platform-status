@@ -25,7 +25,7 @@ $linkSpacePurple:    rgb(147,111,188);
 $mozillaRed: #c13832;
 
 $buttonGreen: #81bc2e;
-$buttonGreenDark: darken($buttonGreen, 10%);
+/*$buttonGreenDark: darken($buttonGreen, 10%);*/
 $buttonTextColor: #fff;
 $buttonBlue: #43a6e2;
 $buttonBlueDark: #277ac1;
@@ -33,25 +33,6 @@ $buttonBlueDark: #277ac1;
 /* new mozID visual style */
 $mozIDBlue: #0c99d5;
 $mozIDGrey: #56565a;
-
-@define-placeholder base-font {
-  font-family: $baseFontFamily;
-}
-
-@define-placeholder base-font-italic {
-  /*font-family: $baseFontFamily;*/
-  font-style: italic;
-}
-
-@define-placeholder base-font-light {
-  /*font-family: $baseFontFamily;*/
-  font-weight: 300;
-}
-
-@define-placeholder base-font-extrabold {
-  /*font-family: $baseFontFamily;*/
-  font-weight: 800;
-}
 
 /* Button shadows */
 
