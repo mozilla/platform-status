@@ -7,7 +7,7 @@ define({
     },
   },
 
-  suites: [ 'nodeTests/buildOutput' ],
+  suites: [ 'nodeTests/buildOutput', 'nodeTests/engine' ],
 
   // A regexp to exclude from code coverage calculations
   excludeInstrumentation: /^(?:tests|node_modules)\//,
