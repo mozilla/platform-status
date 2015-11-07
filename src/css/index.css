@@ -12,7 +12,7 @@ html, body {
 @import '../../node_modules/mozilla-tabzilla/css/tabzilla.css';
 
 body {
-	@extend base-font;
+	font-family: $baseFontFamily;
 	@extend base-rhythm;
 	background: #1e1e21;
 	background-image: radial-gradient(ellipse farthest-side at top left, #00549e 0, #000 100%);
@@ -52,10 +52,10 @@ h1 {
 	font-weight: 600;
 }
 h2 {
-	@extend base-font-light;
-	@extend h4;
+	font-weight: 300;
+	font-size: $h4FontSize;
 	padding-top: 0;
-	margin-bottom: $gutterY;
+	margin: 0 0 $gutterY 0;
 	color: $textColorLight;
 	font-style: italic;
 }
@@ -63,14 +63,6 @@ h2 {
 article {
 	background-color: #fff;
 	color: $textColorPrimary;
-}
-
-h3 {
-	@extend h2;
-	@extend base-font-light;
-	padding-top: 0;
-	margin-bottom: 0;
-	line-height: calc($gutterY * 2);
 }
 
 #features {
@@ -99,6 +91,15 @@ h3 {
 .feature-title {
 	flex: 1;
 	@extend is-truncated;
+	@extend h5;
+	padding-top: 0;
+	margin-bottom: 0;
+	line-height: calc($gutterY * 2);
+	padding-right: $gutterX;
+	@media (min-width: $breakMobileLandscape) {
+		font-size: $h3FontSize;
+		font-weight: 300;
+	}
 }
 
 .feature-meta {
@@ -181,113 +182,150 @@ h3 {
 	list-style: none;
 	margin: 0;
 	padding: 0;
-	width: calc($gutterX * 2);
-	background-position: 50% calc($gutterY * 1.4);
+	display: flex;
+	justify-content: stretch;
+	align-items: stretch;
+	width: calc($gutterY);
+	background-position: 50% calc($gutterY + 1px);
 	background-repeat: no-repeat;
-	background-size: 24px;
-	border-top: 1px solid rgba(0, 0, 0, 0);
+	background-size: 16px;
+	color: $textColorSecondary;
+	font-weight: 700;
+	font-size: $smallFontSize;
+	text-transform: uppercase;
+	border: 1px solid rgba(0, 0, 0, 0);
 	@media (min-width: $breakTablet) {
-		width: 80px;
+		color: #fff;
+		font-weight: 600;
+		font-size: $fontSize;
+		text-shadow: 0 0 1px rgba(0, 0, 0, 0.8);
+		width: calc($gutterY * 4);
 		background-size: 32px;
 		background-position: 50% calc(($gutterY * 2) / 1.618);
 		border-top: none;
 	}
-	display: flex;
-	justify-content: stretch;
-	align-items: stretch;
-}
-.status:not(:first-child) {
-	border-left: 1px solid rgba(0, 0, 0, 0);
-}
-.status:not(:last-child) {
-	border-right: 1px solid rgba(0, 0, 0, 0);
+	/*&:first-child {
+		border-left: none;
+	}
+	&:last-child {
+		border-right: none;
+	}*/
+
+	&.state-firefox {
+		@media (min-width: $breakTablet) {
+			background-size: 48px;
+			width: calc($gutterY * 6);
+			background-position: 50% calc($gutterY);
+		}
+	}
+	&.state-chrome {
+		background-image: url(https://raw.githubusercontent.com/alrra/browser-logos/master/chrome/chrome_64x64.png);
+	}
+	&.state-firefox {
+		background-image: url(https://raw.githubusercontent.com/alrra/browser-logos/master/firefox/firefox_128x128.png);
+	}
+	&.state-edge {
+		background-image: url(https://raw.githubusercontent.com/alrra/browser-logos/master/edge/edge_64x64.png);
+	}
+	&.state-webkit {
+		background-image: url(https://raw.githubusercontent.com/alrra/browser-logos/master/safari/safari_64x64.png);
+	}
 }
 .status-inner {
 	flex: 1;
 	display: flex;
 	justify-content: center;
 	align-items: center;
+	color: inherit;
 	&:hover, &:focus, &:active {
     text-decoration: none;
   }
 	height: 61.8%;
 }
-.status.state-firefox {
-	width: calc($gutterX * 3);
-	margin-right: 0;
-	background-size: 32px;
-	background-position: 50% calc(($gutterY * 2) / 1.4);
-	@media (min-width: $breakTablet) {
-		background-size: 48px;
-		width: 120px;
-		background-position: 50% calc(($gutterY * 2) / 1.618 - ($gutterX / 2));
-	}
-}
-.status.state-firefox .status-text {
-	font-size: inherit;
-	font-weight: 600;
-}
-.status.state-chrome {
-	background-image: url(https://raw.githubusercontent.com/alrra/browser-logos/master/chrome/chrome_64x64.png);
-}
-.status.state-firefox {
-	background-image: url(https://raw.githubusercontent.com/alrra/browser-logos/master/firefox/firefox_128x128.png);
-}
-.status.state-edge {
-	background-image: url(https://raw.githubusercontent.com/alrra/browser-logos/master/edge/edge_64x64.png);
-}
-.status.state-webkit {
-	background-image: url(https://raw.githubusercontent.com/alrra/browser-logos/master/safari/safari_64x64.png);
-}
 
 /* Color wheel for #81bc2e */
-$stateUnknown: #bbb;
+/*$stateUnknown: #bbb;
 $stateNotPlanned: #cf4033;
 $stateDeprecated: #cf4033;
 $stateConsidering: #cf9733;
 $stateDeveloping: #c5cc32;
-$stateShipped: #81bc2e;
+$stateShipped: #81bc2e;*/
 
 /* Color wheel for #ed3c25 */
-$stateUnknown: #bbb;
+/*$stateUnknown: #bbb;
 $stateNotPlanned: #ed3c25;
 $stateDeprecated: #ed3c25;
 $stateConsidering: #eda825;
 $stateDeveloping: #dce724;
-$stateShipped: #7ed321;
-$stateShade: -15%;
-$stateAlpha: 50%;
+$stateShipped: #7ed321;*/
+
+/* github issue labels */
+$stateUnknown: #bbb;
+$stateNotPlanned: #e11d21;
+$stateDeprecated: #e11d21;
+$stateConsidering: #eb6420;
+$stateDeveloping: #fbca04;
+$stateShipped: #009800;
+
+/* github issue labels, light */
+$stateUnknownLight: #bbb;
+$stateNotPlannedLight: #f7c6c7;
+$stateDeprecatedLight: #f7c6c7;
+$stateConsideringLight: #fad8c7;
+$stateDevelopingLight: #fef2c0;
+$stateShippedLight: #bfe5bf;
+
+$stateShade: -2%;
+$stateAlpha: 100%;
 
 .status.state-unknown {
-	background-color: $stateUnknown;
-	border-color: color($stateUnknown lightness($stateShade) alpha($stateAlpha));
+	background-color: $stateUnknownLight;
+	border-color: color($stateUnknownLight lightness($stateShade) alpha($stateAlpha));
+	@media (min-width: $breakTablet) {
+		background-color: $stateUnknown;
+		border-color: color($stateUnknown lightness($stateShade) alpha($stateAlpha));
+	}
 	opacity: 0.6;
 }
 .status.state-not-planned {
-	background-color: $stateNotPlanned;
-	border-color: color($stateNotPlanned lightness($stateShade) alpha($stateAlpha));
+	background-color: $stateNotPlannedLight;
+	border-color: color($stateNotPlannedLight lightness($stateShade) alpha($stateAlpha));
+	@media (min-width: $breakTablet) {
+		background-color: $stateNotPlanned;
+		border-color: color($stateNotPlanned lightness($stateShade) alpha($stateAlpha));
+	}
 }
 .status.state-deprecated {
-	background-color: $stateDeprecated;
-	border-color: color($stateDeprecated lightness($stateShade) alpha($stateAlpha));
+	background-color: $stateDeprecatedLight;
+	border-color: color($stateDeprecatedLight lightness($stateShade) alpha($stateAlpha));
+	@media (min-width: $breakTablet) {
+		background-color: $stateDeprecated;
+		border-color: color($stateDeprecated lightness($stateShade) alpha($stateAlpha));
+	}
 }
 .status.state-under-consideration {
-	background-color: $stateConsidering;
-	border-color: color($stateConsidering lightness($stateShade) alpha($stateAlpha));
+	background-color: $stateConsideringLight;
+	border-color: color($stateConsideringLight lightness($stateShade) alpha($stateAlpha));
+	@media (min-width: $breakTablet) {
+		background-color: $stateConsidering;
+		border-color: color($stateConsidering lightness($stateShade) alpha($stateAlpha));
+	}
 }
 .status.state-in-development {
-	background-color: $stateDeveloping;
-	border-color: color($stateDeveloping lightness($stateShade) alpha($stateAlpha));
+	background-color: $stateDevelopingLight;
+	border-color: color($stateDevelopingLight lightness($stateShade) alpha($stateAlpha));
+	@media (min-width: $breakTablet) {
+		background-color: $stateDeveloping;
+		border-color: color($stateDeveloping lightness($stateShade) alpha($stateAlpha));
+	}
 }
 .status.state-shipped {
-	background-color: $stateShipped;
-	border-color: color($stateShipped lightness($stateShade) alpha($stateAlpha));
-}
-.status-text, .status-version {
-	color: #fff;
-	text-shadow: 0 0 1px rgba(0, 0, 0, 0.8);
-	font-weight: 600;
-	text-transform: uppercase;
+	background-color: $stateShippedLight;
+	border-color: color($stateShippedLight lightness($stateShade) alpha($stateAlpha));
+	@media (min-width: $breakTablet) {
+		background-color: $stateShipped;
+		border-color: color($stateShipped lightness($stateShade) alpha($stateAlpha));
+	}
 }
 .status-text {
 	@extend is-truncated;
@@ -298,4 +336,8 @@ $stateAlpha: 50%;
 	}
 }
 .status-version {
+	color: $stateShipped;
+	@media (min-width: $breakTablet) {
+		color: inherit;
+	}
 }

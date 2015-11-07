@@ -1,14 +1,14 @@
 {{#*inline "browserStatus"}}
   <li class="status state-{{browser}} state-{{status}}" title="{{alt status 'status' 'long'}} - {{alt browser 'browser' 'long'}}">
     {{#if url}}<a class="status-inner" target="_blank" href="{{url}}">{{/if}}
-    {{#if url_slug}}<a class="status-inner" href="#{{url_slug}}">{{/if}}
+    {{#if url_slug}}<span class="status-inner">{{/if}}
       {{#if version}}
         <span class="status-version">{{version}}</span>
       {{else}}
         <span class="status-text">{{alt status 'status' 'short'}}</span>
       {{/if}}
     {{#if url}}</a>{{/if}}
-    {{#if url_slug}}</a>{{/if}}
+    {{#if url_slug}}</span>{{/if}}
 {{/inline}}
 
 <!DOCTYPE html>
