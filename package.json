@@ -21,7 +21,7 @@
     "cssnext": "^1.8.4",
     "del": "^2.0.2",
     "eslint": "^1.6.0",
-    "eslint-config-airbnb": "^0.1.0",
+    "eslint-config-airbnb": "^1.0.0",
     "file-exists": "^0.1.1",
     "gulp": "^3.9.0",
     "gulp-autoprefixer": "^3.0.2",
