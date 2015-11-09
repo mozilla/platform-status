@@ -6,6 +6,7 @@ firefox_status: 4
 mdn_url: https://developer.mozilla.org/en-US/docs/Web/API/WebSocket
 spec_url: https://html.spec.whatwg.org/multipage/comms.html#network
 chrome_ref: 6555138000945152
+webkit_status: shipped
 ie_ref: WebSocket
 ---
 
