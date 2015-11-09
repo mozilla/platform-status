@@ -1,11 +1,11 @@
 /* vim: set filetype=javascript sw=2 tw=80 : */
 
 define(function(require) {
-  const bdd = require('intern!bdd'),
-  const assert = require('intern/chai!assert'),
+  const bdd = require('intern!bdd');
+  const assert = require('intern/chai!assert');
 
   // This `Page` object gives us access to things on index.html
-  const mainPage = require('tests/support/pages/main'),
+  const IndexPage = require('tests/support/pages/main');
 
   // Create a sub-suite with `bdd.describe`. Sub-suites can
   // have their own sub-suites; just use `bdd.describe`
@@ -39,8 +39,7 @@ define(function(require) {
   bdd.describe('Browser functional tests', function() {
     bdd.describe('main page', function() {
       bdd.it('should have correct title', function() {
-
-        page = new IndexPage(this.remote);
+        const page = new IndexPage(this.remote);
 
         page.title.then(function(title) {
           assert(title, 'title exists');
