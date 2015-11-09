@@ -3,11 +3,10 @@
 define({
   loaderOptions: {
     paths: {
-      nodeTests: 'tests/node',
     },
   },
 
-  suites: [ 'nodeTests/buildOutput', 'nodeTests/engine' ],
+  suites: [ 'tests/nodeUnit' ],
 
   // A regexp to exclude from code coverage calculations
   excludeInstrumentation: /^(?:tests|node_modules)\//,
