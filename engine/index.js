@@ -179,8 +179,8 @@ function populateSpecStatus(browserData, features) {
 // limit is, but 20 seems to work.
 const bugzillaBottleneck = new Bottleneck(20);
 
-function bugzillaFetch(url) {
-  return bugzillaBottleneck.schedule(fetch, url);
+function bugzillaFetch(bugzillaUrl) {
+  return bugzillaBottleneck.schedule(fetch, bugzillaUrl);
 }
 
 function getBugzillaBugData(bugId) {
@@ -328,13 +328,12 @@ handlebars.registerHelper('alt', (state, field, variance) => {
   return value[variance];
 });
 
-handlebars.registerHelper('if_eq', function(a, b, opts) {
-  if(a == b) {
+handlebars.registerHelper('if_eq', function comparison(left, right, opts) { // No fat-arrow since we want don't want lexical 'this'
+  if (left === right) {
     return opts.fn(this);
-  } else {
-    return opts.inverse(this);
   }
-})
+  return opts.inverse(this);
+});
 
 function buildIndex(status) {
   const templateContents = fs.readFileSync('src/tpl/index.html', {
