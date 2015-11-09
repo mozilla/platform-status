@@ -141,7 +141,7 @@ function populateBrowserFeatureData(browserData, features) {
 function populateSpecStatus(browserData, features) {
   features.forEach((feature) => {
     const browserFeatureData = browserData.chrome.get(feature.chrome_ref);
-    if (!browserFeatureData.standardization) {
+    if (!browserFeatureData || !browserFeatureData.standardization) {
       return;
     }
     let normalized;
