@@ -78,7 +78,7 @@ ensureSelenium().then(function() {
 
     const seleniumProcess = childProcess.spawn('java', ['-jar', seleniumPath], { stdio: [fd, fd, fd] });
 
-    // Wait 1s after starting the Selenium server to give it time
+    // Wait 3s after starting the Selenium server to give it time
     // to start accepting connections
     setTimeout(function() {
       const browserTestsProcess = childProcess.spawn('./node_modules/intern/bin/intern-runner.js', ['config=tests/intern-browser'], { stdio: 'inherit' });
@@ -88,6 +88,6 @@ ensureSelenium().then(function() {
           process.exit(1);
         }
       });
-    }, 1000);
+    }, 3000);
   });
 });
