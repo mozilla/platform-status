@@ -77,7 +77,11 @@
                 <li>
                   <a target="_blank" href="https://bugzilla.mozilla.org/show_bug.cgi?id={{bugzilla}}" title="Implementation bug at bugzilla.mozilla.org">
                     <i class="icon icon-bugzilla"></i>
-                    {{bugzilla_status}}
+                    {{#if_eq firefox_status "shipped"}}
+                      Fixed
+                    {{else}}
+                      {{bugzilla_resolved_count}}/{{bugzilla_dependant_count}} Resolved
+                    {{/if_eq}}
                   </a>
                 </li>
               {{/if}}

@@ -3,6 +3,7 @@ import fs from 'fs';
 import url from 'url';
 import handlebars from 'handlebars';
 import fetch from 'node-fetch';
+import Bottleneck from 'bottleneck';
 import FixtureParser from './fixtureParser.js';
 import BrowserParser from './browserParser.js';
 import FirefoxVersionParser from './firefoxVersionParser.js';
@@ -174,19 +175,63 @@ function populateSpecStatus(browserData, features) {
   });
 }
 
+// Bugzilla has a limit on concurrent connections. I haven't found what the
+// limit is, but 20 seems to work.
+const bugzillaBottleneck = new Bottleneck(20);
+
+function bugzillaFetch(url) {
+  return bugzillaBottleneck.schedule(fetch, url);
+}
+
+function getBugzillaBugData(bugId) {
+  return bugzillaFetch('https://bugzilla.mozilla.org/rest/bug?id=' + bugId)
+  .then((response) => {
+    return response.json();
+  })
+  .then((json) => {
+    if (!json.bugs.length) {
+      throw new Error('Bug not found(secure bug?)');
+    }
+    return json.bugs[0];
+  })
+  .catch((reason) => {
+    validateWarning('Failed to get bug data for: ' + bugId + ': ' + reason);
+    return null;
+  });
+}
+
 function populateBugzillaData(features) {
   return Promise.all(features.map((feature) => {
     if (!feature.bugzilla) {
       return null;
     }
-    return fetch('https://bugzilla.mozilla.org/rest/bug?id=' + feature.bugzilla)
-      .then((response) => {
-        return response.json();
-      }).then((json) => {
-        feature.bugzilla_status = json.bugs[0].status;
-      }).catch(() => {
-        feature.bugzilla = null;
+    return getBugzillaBugData(feature.bugzilla)
+    .then((bugData) => {
+      if (!bugData) {
+        feature.bugzilla_status = null;
+        return null;
+      }
+      feature.bugzilla_status = bugData.status;
+      feature.bugzilla_resolved_count = 0;
+      if (bugData.status === 'RESOLVED') {
+        feature.bugzilla_resolved_count++;
+      }
+      // Check all the dependent bugs to count how many are resolved.
+      return Promise.all(bugData.depends_on.map(getBugzillaBugData))
+      .then((dependantBugs) => {
+        // Add one to show status of the tracking bug itself.
+        feature.bugzilla_dependant_count = dependantBugs.length + 1;
+        for (const dependantBug of dependantBugs) {
+          if (!dependantBug) {
+            // Probably was secure bug.
+            continue;
+          }
+          if (dependantBug.status === 'RESOLVED') {
+            feature.bugzilla_resolved_count++;
+          }
+        }
       });
+    });
   }));
 }
 
@@ -282,6 +327,14 @@ handlebars.registerHelper('alt', (state, field, variance) => {
   }
   return value[variance];
 });
+
+handlebars.registerHelper('if_eq', function(a, b, opts) {
+  if(a == b) {
+    return opts.fn(this);
+  } else {
+    return opts.inverse(this);
+  }
+})
 
 function buildIndex(status) {
   const templateContents = fs.readFileSync('src/tpl/index.html', {
