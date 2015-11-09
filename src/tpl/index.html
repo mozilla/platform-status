@@ -60,27 +60,22 @@
               {{#if mdn_url}}
                 <li>
                   <a target="_blank" href="{{mdn_url}}" title="Documentation on Mozilla Developer Network (MDN)">
-                    <i class="icon icon-mdn"></i>
-                    Docs
+                    <i aria-hidden="true" class="icon icon-mdn"></i>Docs
                   </a>
                 </li>
               {{/if}}
               {{#if spec_url}}
                 <li>
                   <a target="_blank" href="{{spec_url}}" title="{{alt spec_status 'spec' 'long'}}">
-                    <i class="icon icon-spec"></i>
-                    {{alt spec_status 'spec' 'short'}}
+                    <i aria-hidden="true" class="icon icon-spec"></i>{{alt spec_status 'spec' 'short'}}
                   </a>
                 </li>
               {{/if}}
               {{#if bugzilla}}
                 <li>
                   <a target="_blank" href="https://bugzilla.mozilla.org/show_bug.cgi?id={{bugzilla}}" title="Implementation bug at bugzilla.mozilla.org">
-                    <i class="icon icon-bugzilla"></i>
-                    {{#if_eq firefox_status "shipped"}}
-                      Fixed
-                    {{else}}
-                      {{bugzilla_resolved_count}}/{{bugzilla_dependant_count}} Resolved
+                    <i aria-hidden="true" class="icon icon-bugzilla"></i>{{#if_eq firefox_status "shipped"}}Fixed
+                    {{else}}{{bugzilla_resolved_count}}/{{bugzilla_dependant_count}} Resolved
                     {{/if_eq}}
                   </a>
                 </li>
