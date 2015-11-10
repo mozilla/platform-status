@@ -15,7 +15,6 @@ define({
   },
 
   loaderOptions: {
-    packages: [ { name: 'browserTests', location: './tests/browser' } ]
   },
 
   // Unit tests that you want to run in browsers go here. These tests
@@ -25,7 +24,7 @@ define({
 
   // End-to-end tests (ones that load specific pages)
   // go here. Pages can be loaded and interacted with.
-  functionalSuites: [ 'browserTests/main' ],
+  functionalSuites: [ 'tests/browserFunctional' ],
 
   excludeInstrumentation: /^(?:tests|node_modules)\//
 });

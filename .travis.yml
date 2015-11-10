@@ -20,5 +20,4 @@ notifications:
   irc:
     channels:
       - "irc.mozilla.org#wadi"
-    use_notice: true
     skip_join: true

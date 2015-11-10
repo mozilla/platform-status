@@ -31,8 +31,10 @@ a {
 }
 
 .row {
-	display: flex;
-	justify-content: center;
+	@media (min-width: $breakMobileLandscape) {
+		display: flex;
+		justify-content: center;
+	}
 }
 .row-inner {
 	min-width: 300px;
@@ -144,6 +146,7 @@ article {
 	width: $gutterY;
 	height: $gutterX;
 	background-size: $gutterX;
+	margin-right: $gutterX / 2;
 }
 .icon-spec {
 	background-image: url(images/html5.png);
