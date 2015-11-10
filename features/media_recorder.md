@@ -1,6 +1,6 @@
 ---
 title: Media Recorder
-category: apps
+category: apps, multimedia
 bugzilla: 803414
 firefox_status: 29
 mdn_url: https://developer.mozilla.org/en-US/docs/Web/API/MediaRecorder
