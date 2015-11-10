@@ -146,6 +146,7 @@ article {
 	width: $gutterY;
 	height: $gutterX;
 	background-size: $gutterX;
+	margin-right: $gutterX / 2;
 }
 .icon-spec {
 	background-image: url(images/html5.png);
