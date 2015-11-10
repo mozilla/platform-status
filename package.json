@@ -57,7 +57,7 @@
     "build": "gulp build",
     "lint": "gulp lint",
     "start": "gulp watch",
-    "test": "npm run lint && npm run build && node tests/support/runtests.js"
+    "test": "npm run lint && npm run build && intern-client config=tests/intern-node && intern-runner config=tests/intern-browser"
   },
   "repository": {
     "type": "git",

@@ -10,12 +10,8 @@ define({
 
   maxConcurrency: 2,
 
-  // https://theintern.github.io/digdug/NullTunnel.html
-  tunnel: 'NullTunnel',
+  tunnel: 'tests/support/SeleniumTunnel.js',
   tunnelOptions: {
-    hostname: 'localhost',
-    port: 4444,
-    pathname: '/wd/hub/',
   },
 
   loaderOptions: {
