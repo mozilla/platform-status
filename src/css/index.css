@@ -31,8 +31,10 @@ a {
 }
 
 .row {
-	display: flex;
-	justify-content: center;
+	@media (min-width: $breakMobileLandscape) {
+		display: flex;
+		justify-content: center;
+	}
 }
 .row-inner {
 	min-width: 300px;
