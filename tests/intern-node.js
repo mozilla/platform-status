@@ -2,10 +2,12 @@
 
 define({
   loaderOptions: {
-    packages: [ { name: 'nodeTests', location: './tests/node' } ]
+    paths: {
+    },
   },
 
-  suites: [ 'nodeTests/buildOutput' ],
+  suites: [ 'tests/nodeUnit' ],
 
-  excludeInstrumentation: /^(?:tests|node_modules)\//
+  // A regexp to exclude from code coverage calculations
+  excludeInstrumentation: /^(?:tests|node_modules)\//,
 });
