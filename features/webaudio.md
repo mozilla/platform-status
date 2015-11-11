@@ -1,6 +1,6 @@
 ---
 title: Web Audio API
-category: apps
+category: multimedia, apps
 bugzilla: 779297
 firefox_status: 23
 mdn_url: https://developer.mozilla.org/en-US/docs/Web/API/Web_Audio_API
