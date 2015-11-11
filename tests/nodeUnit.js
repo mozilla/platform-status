@@ -40,11 +40,6 @@ define(function(require) {
           'dist/bundle.css.map',
           'dist/bundle.js',
           'dist/bundle.js.map',
-          'dist/cache/httpsrawgithubusercontentcommicrosoftedgestatusproductionappstaticiestatus.json',
-          'dist/cache/httpssvnmozillaorglibsproductdetailsjsonfirefoxversions.json',
-          'dist/cache/httpssvnwebkitorgrepositorywebkittrunksourcejavascriptcorefeatures.json',
-          'dist/cache/httpssvnwebkitorgrepositorywebkittrunksourcewebcorefeatures.json',
-          'dist/cache/httpswwwchromestatuscomfeatures.json',
           'dist/images/bugzilla.png',
           'dist/images/bugzilla@2x.png',
           'dist/images/favicon-196.png',
@@ -64,8 +59,15 @@ define(function(require) {
           'dist/status.json'
         ];
 
+        var ignoreDirs = [
+          'dist/cache',
+        ];
+
         function processPath(path) {
           return new Promise(function(resolve, reject) {
+            if (ignoreDirs.indexOf(path) > -1) {
+              resolve();
+            }
             fs.stat(path, function(statErr, stats) {
               if (statErr) {
                 return reject(path + ': ' + statErr);
