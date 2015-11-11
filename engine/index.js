@@ -2,11 +2,11 @@ import path from 'path';
 import fs from 'fs';
 import url from 'url';
 import handlebars from 'handlebars';
-import fetch from 'node-fetch';
 import Bottleneck from 'bottleneck';
 import FixtureParser from './fixtureParser.js';
 import BrowserParser from './browserParser.js';
 import FirefoxVersionParser from './firefoxVersionParser.js';
+import cache from './cache.js';
 
 const fixtureDir = path.resolve('./features');
 const fixtureParser = new FixtureParser(fixtureDir);
@@ -179,15 +179,12 @@ function populateSpecStatus(browserData, features) {
 // limit is, but 20 seems to work.
 const bugzillaBottleneck = new Bottleneck(20);
 
-function bugzillaFetch(bugzillaUrl) {
-  return bugzillaBottleneck.schedule(fetch, bugzillaUrl);
+function bugzillaFetch(bugzillaUrl, options) {
+  return bugzillaBottleneck.schedule(cache.readJson, bugzillaUrl, options.cacheDir);
 }
 
-function getBugzillaBugData(bugId) {
-  return bugzillaFetch('https://bugzilla.mozilla.org/rest/bug?id=' + bugId)
-  .then((response) => {
-    return response.json();
-  })
+function getBugzillaBugData(bugId, options) {
+  return bugzillaFetch('https://bugzilla.mozilla.org/rest/bug?id=' + bugId, options)
   .then((json) => {
     if (!json.bugs.length) {
       throw new Error('Bug not found(secure bug?)');
@@ -200,12 +197,12 @@ function getBugzillaBugData(bugId) {
   });
 }
 
-function populateBugzillaData(features) {
+function populateBugzillaData(features, options) {
   return Promise.all(features.map((feature) => {
     if (!feature.bugzilla) {
       return null;
     }
-    return getBugzillaBugData(feature.bugzilla)
+    return getBugzillaBugData(feature.bugzilla, options)
     .then((bugData) => {
       if (!bugData) {
         feature.bugzilla_status = null;
@@ -217,7 +214,9 @@ function populateBugzillaData(features) {
         feature.bugzilla_resolved_count++;
       }
       // Check all the dependent bugs to count how many are resolved.
-      return Promise.all(bugData.depends_on.map(getBugzillaBugData))
+      return Promise.all(bugData.depends_on.map((bugId) => {
+        return getBugzillaBugData(bugId, options);
+      }))
       .then((dependantBugs) => {
         // Add one to show status of the tracking bug itself.
         feature.bugzilla_dependant_count = dependantBugs.length + 1;
@@ -349,7 +348,7 @@ function buildStatus(options) {
     browserParser.read(options),
     firefoxVersionParser.read(options),
   ]).then(() => {
-    return populateBugzillaData(fixtureParser.results);
+    return populateBugzillaData(fixtureParser.results, options);
   }).then(() => {
     populateFirefoxStatus(firefoxVersionParser.results, fixtureParser.results);
     populateBrowserFeatureData(browserParser.results, fixtureParser.results);

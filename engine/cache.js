@@ -5,7 +5,11 @@ import fileExists from 'file-exists';
 
 export default {
   readJson: (src, cacheDir) => {
-    const cacheFilename = path.join(cacheDir, src.substr(0, src.length - 5).replace(/[^a-zA-Z0-9]/g, '').toLowerCase() + '.json');
+    let cacheFilename = src;
+    if (cacheFilename.endsWith('.json')) {
+      cacheFilename = cacheFilename.substr(0, src.length - 5);
+    }
+    cacheFilename = path.join(cacheDir, cacheFilename.replace(/[^a-zA-Z0-9]/g, '').toLowerCase() + '.json');
     if (fileExists(cacheFilename)) {
       return Promise.resolve(JSON.parse(fs.readFileSync(cacheFilename)));
     }
