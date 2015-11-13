@@ -11,4 +11,4 @@ ie_ref: Web Audio API
 webkit_status: shipped
 ---
 
-A system for controlling audio on the Web, allowing developers to choose audio sources, add effects to audio, create audio visualizations, apply spatial effects (such as panning)  and much more.
+High-level JavaScript API for processing and synthesizing audio in web applications.

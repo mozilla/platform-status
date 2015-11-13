@@ -10,4 +10,4 @@ chrome_ref: 6488656873259008
 ie_ref: Web Application Manifest
 ---
 
-The App Manifest specification defines metadata for use by user agents.
+JSON-based manifest that provides developers with a centralized place to put metadata associated with a web application.

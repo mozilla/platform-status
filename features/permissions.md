@@ -9,4 +9,4 @@ spec_repo: https://github.com/w3c/permissions
 chrome_ref: 6376494003650560
 ---
 
-The Permissions API provides a consistent programmatic way to query the status of API permissions attributed to the current context.
+Provides a consistent programmatic way to query the status of API permissions attributed to the current context.

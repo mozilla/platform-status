@@ -10,4 +10,4 @@ chrome_ref: 6191285283061760
 ie_ref: Screen Orientation API
 ---
 
-The Screen.orientation property give the current orientation of the screen.
+Allows to read the screen orientation, to be informed when it changes, and to lock it.

@@ -10,4 +10,4 @@ webkit_status: shipped
 ie_ref: WebSocket
 ---
 
-The WebSocket API allows creating and managing a WebSocket connection to a server, as well as sending and receiving data on the connection.
+Allows creating and managing a WebSocket connection to a server, as well as sending and receiving data on the connection.

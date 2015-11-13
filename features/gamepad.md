@@ -10,4 +10,4 @@ chrome_ref: 5118776383111168
 ie_ref: GamePad API
 ---
 
-An API to access and respond to signals from gamepads and other game controllers.
+Access and respond to signals from gamepads and other game controllers.
