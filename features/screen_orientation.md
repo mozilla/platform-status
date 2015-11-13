@@ -10,4 +10,4 @@ chrome_ref: 6191285283061760
 ie_ref: Screen Orientation API
 ---
 
-Allows to read the screen orientation, to be informed when it changes, and to lock it.
+Allows reading to the current screen orientations, getting events on orientation changes and locking orientation state.
