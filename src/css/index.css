@@ -31,7 +31,8 @@ a {
 }
 
 .row {
-	@media (min-width: $breakMobileLandscape) {
+	display: flex;
+	@media (min-width: $breakDesktop) {
 		display: flex;
 		justify-content: center;
 	}
@@ -41,8 +42,8 @@ a {
 	max-width: 1020px;
 }
 header {
+	flex: 1;
 	padding: 0 0 calc($gutterY / 2) $gutterX;
-	width: 1000px;
 }
 
 h1 {
@@ -197,6 +198,7 @@ article {
 	font-size: $smallFontSize;
 	text-transform: uppercase;
 	border: 1px solid rgba(0, 0, 0, 0);
+	border-bottom: none;
 	@media (min-width: $breakTablet) {
 		color: #fff;
 		font-weight: 600;
@@ -238,48 +240,33 @@ article {
 	flex: 1;
 	display: flex;
 	justify-content: center;
-	align-items: center;
+	align-items: flex-start;
 	color: inherit;
 	&:hover, &:focus, &:active {
     text-decoration: none;
+		color: inherit;
   }
-	height: 61.8%;
 }
 
-/* Color wheel for #81bc2e */
-/*$stateUnknown: #bbb;
-$stateNotPlanned: #cf4033;
-$stateDeprecated: #cf4033;
-$stateConsidering: #cf9733;
-$stateDeveloping: #c5cc32;
-$stateShipped: #81bc2e;*/
+$stateUnknown: $lightGray;
+$stateNotPlanned: $firefoxOrangeVibrant;
+$stateDeprecated: $firefoxOrangeVibrant;
+$stateConsidering: $marketOrangeVibrant;
+$stateDeveloping: $flameYellowVibrant;
+$stateShipped: $geckoGreenVibrant;
 
-/* Color wheel for #ed3c25 */
-/*$stateUnknown: #bbb;
-$stateNotPlanned: #ed3c25;
-$stateDeprecated: #ed3c25;
-$stateConsidering: #eda825;
-$stateDeveloping: #dce724;
-$stateShipped: #7ed321;*/
-
-/* github issue labels */
-$stateUnknown: #bbb;
-$stateNotPlanned: #e11d21;
-$stateDeprecated: #e11d21;
-$stateConsidering: #eb6420;
-$stateDeveloping: #fbca04;
-$stateShipped: #009800;
-
-/* github issue labels, light */
-$stateUnknownLight: #bbb;
-$stateNotPlannedLight: #f7c6c7;
-$stateDeprecatedLight: #f7c6c7;
-$stateConsideringLight: #fad8c7;
-$stateDevelopingLight: #fef2c0;
-$stateShippedLight: #bfe5bf;
+$stateUnknownLight: $lightGray;
+$stateNotPlannedLight: $firefoxOrangeTint;
+$stateDeprecatedLight: $firefoxOrangeTint;
+$stateConsideringLight: $marketOrangeTint;
+$stateDevelopingLight: $flameYellowTint;
+$stateShippedLight: $geckoGreenTint;
 
 $stateShade: -2%;
 $stateAlpha: 100%;
+$fadeStart: 70%;
+$fadeMid: 10%;
+$fadeHeight: 25%;
 
 .status.state-unknown {
 	background-color: $stateUnknownLight;
@@ -287,8 +274,10 @@ $stateAlpha: 100%;
 	@media (min-width: $breakTablet) {
 		background-color: $stateUnknown;
 		border-color: color($stateUnknown lightness($stateShade) alpha($stateAlpha));
+		.status-inner {
+			background-image: linear-gradient(to top, color($stateUnknown alpha($fadeStart)), color($stateUnknown alpha(50%)) $fadeMid, color($stateUnknown alpha(0%)) $fadeHeight);
+		}
 	}
-	opacity: 0.6;
 }
 .status.state-not-planned {
 	background-color: $stateNotPlannedLight;
@@ -296,6 +285,9 @@ $stateAlpha: 100%;
 	@media (min-width: $breakTablet) {
 		background-color: $stateNotPlanned;
 		border-color: color($stateNotPlanned lightness($stateShade) alpha($stateAlpha));
+		.status-inner {
+			background-image: linear-gradient(to top, color($stateNotPlanned alpha($fadeStart)), color($stateNotPlanned alpha(50%)) $fadeMid, color($stateNotPlanned alpha(0%)) $fadeHeight);
+		}
 	}
 }
 .status.state-deprecated {
@@ -304,6 +296,9 @@ $stateAlpha: 100%;
 	@media (min-width: $breakTablet) {
 		background-color: $stateDeprecated;
 		border-color: color($stateDeprecated lightness($stateShade) alpha($stateAlpha));
+		.status-inner {
+			background-image: linear-gradient(to top, color($stateDeprecated alpha($fadeStart)), color($stateDeprecated alpha(50%)) $fadeMid, color($stateDeprecated alpha(0%)) $fadeHeight);
+		}
 	}
 }
 .status.state-under-consideration {
@@ -312,6 +307,9 @@ $stateAlpha: 100%;
 	@media (min-width: $breakTablet) {
 		background-color: $stateConsidering;
 		border-color: color($stateConsidering lightness($stateShade) alpha($stateAlpha));
+		.status-inner {
+			background-image: linear-gradient(to top, color($stateConsidering alpha($fadeStart)), color($stateConsidering alpha(50%)) $fadeMid, color($stateConsidering alpha(0%)) $fadeHeight);
+		}
 	}
 }
 .status.state-in-development {
@@ -320,6 +318,9 @@ $stateAlpha: 100%;
 	@media (min-width: $breakTablet) {
 		background-color: $stateDeveloping;
 		border-color: color($stateDeveloping lightness($stateShade) alpha($stateAlpha));
+		.status-inner {
+			background-image: linear-gradient(to top, color($stateDeveloping alpha($fadeStart)), color($stateDeveloping alpha(50%)) $fadeMid, color($stateDeveloping alpha(0%)) $fadeHeight);
+		}
 	}
 }
 .status.state-shipped {
@@ -328,6 +329,9 @@ $stateAlpha: 100%;
 	@media (min-width: $breakTablet) {
 		background-color: $stateShipped;
 		border-color: color($stateShipped lightness($stateShade) alpha($stateAlpha));
+		.status-inner {
+			background-image: linear-gradient(to top, color($stateShipped alpha($fadeStart)), color($stateShipped alpha(50%)) $fadeMid, color($stateShipped alpha(0%)) $fadeHeight);
+		}
 	}
 }
 .status-text {
