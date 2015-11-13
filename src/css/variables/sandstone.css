@@ -1,26 +1,26 @@
-$baseFontFamily:    'Open Sans', sans-serif;
+$baseFontFamily: 'Open Sans', sans-serif;
 
-$baseFontSize:      14px;
-$baseLine:          20px;
-$smallFontSize:     12px;
-$largeFontSize:     16px;
+$baseFontSize: 14px;
+$baseLine: 20px;
+$smallFontSize: 12px;
+$largeFontSize: 16px;
 
-$textColorPrimary:   #333;
+$textColorPrimary: #333;
 $textColorSecondary: #484848;
-$textColorTertiary:  #666;
-$textColorLight:     #bbb;
+$textColorTertiary: #666;
+$textColorLight: #bbb;
 $backgroundLightWarm: #f6f4ec;
 $textColorLightWarm: #b1b1ad;
 
 $textColorSpaceYellow: #ffbb38;
 $blueprintTextColorSecondary: #a2b4c7;
 
-$linkRed:            rgb(175,50,50);
-$linkBlue:           rgb(0,150,221);
-$linkBlueHover:      rgb(0,83,159);
-$linkSkyBlue:        rgb(103,167,208);
-$linkSpaceBlue:      rgb(47,138,202);
-$linkSpacePurple:    rgb(147,111,188);
+$linkRed: rgb(175,50,50);
+$linkBlue: rgb(0,150,221);
+$linkBlueHover: rgb(0,83,159);
+$linkSkyBlue: rgb(103,167,208);
+$linkSpaceBlue: rgb(47,138,202);
+$linkSpacePurple: rgb(147,111,188);
 
 $mozillaRed: #c13832;
 
@@ -33,14 +33,14 @@ $buttonBlueDark: #277ac1;
 $borderColor: #d6d6d6;
 
 /* Breakpoints for common devices */
-$breakDesktopWide:        1400px;
-$breakDesktop:            1000px;
-$breakTablet:             760px;
-$breakMobileLandscape:    480px;
-$breakMobile:             320px;
+$breakDesktopWide: 1400px;
+$breakDesktop: 1000px;
+$breakTablet: 760px;
+$breakMobileLandscape: 480px;
+$breakMobile: 320px;
 
-$widthDesktopWide:        1400px;
-$widthDesktop:            1000px;
-$widthTablet:             760px;
-$widthMobileLandscape:    440px;
-$widthMobile:             320px;
+$widthDesktopWide: 1400px;
+$widthDesktop: 1000px;
+$widthTablet: 760px;
+$widthMobileLandscape: 440px;
+$widthMobile: 320px;
