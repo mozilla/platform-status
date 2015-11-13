@@ -4,7 +4,7 @@
   "description": "",
   "main": "gulpfile.babel.js",
   "dependencies": {
-    "babel-runtime": "^5.8.25",
+    "babel-runtime": "^6.1.18",
     "glob": "^6.0.1",
     "gray-matter": "^2.0.1",
     "markdown-it": "^5.0.0",
