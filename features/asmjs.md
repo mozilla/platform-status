@@ -10,4 +10,4 @@ webkit_ref: ASM.js
 ie_ref: ASM.js
 ---
 
-A highly-optimizable subset of JavaScript.
+A strict & highly-optimizable subset of JavaScript that can be used as low-level compile target.
