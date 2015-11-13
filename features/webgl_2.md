@@ -10,4 +10,4 @@ webkit_ref: WebGL 2
 ie_ref: WebGL 2.0
 ---
 
-An update to WebGL, based on OpenGL ES 3.0.
+An update to WebGL, based on [OpenGL ES 3.0](https://www.khronos.org/opengles/3_X/).
