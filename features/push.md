@@ -9,4 +9,4 @@ chrome_ref: 5416033485586432
 ie_ref: Push API
 ---
 
-Gives web applications the ability to receive messages pushed to them from a server even when the site is not focussed or even open in the user-agent.
+Receive messages pushed to the client from a server even when the site isn't focused or even open in the user-agent.

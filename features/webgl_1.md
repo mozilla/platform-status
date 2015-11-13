@@ -10,4 +10,4 @@ webkit_ref: WebGL 1
 ie_ref: WebGL  (Canvas 3D)
 ---
 
-An API closely conforming to OpenGL ES 2.0 for rendering 3D and 2D graphics in a HTML5 <canvas> element.
+An API closely conforming to [OpenGL ES 2.0](https://www.khronos.org/opengles/2_X/) for rendering 3D and 2D graphics in a `<canvas>` element.

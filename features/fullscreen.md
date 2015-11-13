@@ -11,4 +11,4 @@ webkit_status: shipped
 ie_ref: Fullscreen API
 ---
 
-The fullscreen API provides an easy way for web content to be presented using the user's entire screen.
+Provides an easy way for web content to be presented using the user's entire screen.

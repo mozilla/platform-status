@@ -9,4 +9,4 @@ spec_repo: https://github.com/w3c/mediacapture-fromelement
 chrome_ref: 4817998447640576
 ---
 
-The `HTMLCanvasElement.captureStream()` API allows real-time video capture of the surface of the canvas.
+Allows real-time video capture of the surface of the canvas.

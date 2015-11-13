@@ -11,4 +11,4 @@ webkit_status: shipped
 ie_ref: Media Source Extensions
 ---
 
-An API that allows creating media streams via JavaScript and play them using <audio> and <video> elements.
+Allows creating media streams via JavaScript and play them using `<audio>` and `<video>` elements.

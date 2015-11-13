@@ -11,4 +11,4 @@ webkit_status: shipped
 ie_ref: Page Visibility API
 ---
 
-An API to programmatically determine the visibility state of a page, and to be notified if the visibility state changes.
+Programmatically determine the visibility state of a page, and to be notified if the visibility state changes.

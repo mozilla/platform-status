@@ -10,4 +10,4 @@ chrome_ref: 6730533392351232
 ie_ref: Fetch API
 ---
 
-The Fetch specification defines requests, responses, and the process that binds them; fetching.
+Low level API for fetching network resources that is more powerful and flexible than [XMLHttpRequest](https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest).
