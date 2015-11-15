@@ -5,7 +5,7 @@ define(function() {
   // so we can provide the remote Command object
   // at runtime
   function IndexPage(remote) {
-    this.remote = remote;
+    this.remote = remote.get(require.toUrl('dist/index.html'));
   }
 
   IndexPage.prototype = {
@@ -13,8 +13,7 @@ define(function() {
 
     // Returns a promise that resolves to the title of the page
     get title() {
-      return this.remote
-        .getPageTitle();
+      return this.remote.getPageTitle();
     },
   };
 

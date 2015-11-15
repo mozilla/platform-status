@@ -29,6 +29,9 @@ define(function(require) {
   // Within a test, `this` refers to a test suite object. You can use it
   // to skip the test or do other test-specific things.
   //
+  // `this.remote` is a `Command` object:
+  //    https://theintern.github.io/leadfoot/Command.html
+  //
   // `this.remote` is how we control the test browser for functional
   // tests. Instead of using it directly, we pass it to the constructors
   // for "page objects". We use those page objects to control the page
@@ -41,9 +44,9 @@ define(function(require) {
       bdd.it('should have correct title', function() {
         const page = new IndexPage(this.remote);
 
-        page.title.then(function(title) {
+        return page.title.then(function(title) {
           assert(title, 'title exists');
-          assert.equals(title, 'Firefox Platform Status');
+          assert.equal(title, 'Firefox Platform Status');
         });
       });
     });
