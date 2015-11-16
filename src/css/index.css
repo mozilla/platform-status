@@ -19,6 +19,7 @@ body {
 	background-size: 100% 500px;
 	background-repeat: no-repeat;
 	background-position: top center;
+	-webkit-text-size-adjust: 100%;
 }
 
 a {
