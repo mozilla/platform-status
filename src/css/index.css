@@ -19,6 +19,7 @@ body {
 	background-size: 100% 500px;
 	background-repeat: no-repeat;
 	background-position: top center;
+	color: $textColorPrimary;
 	-webkit-text-size-adjust: 100%;
 }
 
@@ -66,7 +67,6 @@ h2 {
 
 article {
 	background-color: #fff;
-	color: $textColorPrimary;
 }
 
 #features {
@@ -110,6 +110,7 @@ article {
 	padding-top: calc($gutterY / 2);
 	padding-bottom: calc($gutterY / 1.5);
 	display: none;
+	color: $textColorTertiary;
 	@media (min-width: $breakMobileLandscape) {
 		display: block;
 	}
@@ -122,7 +123,6 @@ article {
 .feature-summary {
 	margin: 0;
 	padding-bottom: calc($gutterY / 2);
-	color: $textColorTertiary;
 }
 .feature-links {
 	ul {
@@ -135,7 +135,7 @@ article {
 		margin-right: calc($gutterX / 2);
 	}
 	a {
-		color: $textColorLightWarm;
+		color: $linkBlue;
 		&:hover, &:focus, &:active {
 			color: $linkBlue;
 		}
@@ -204,7 +204,7 @@ article {
 		color: #fff;
 		font-weight: 600;
 		font-size: $fontSize;
-		text-shadow: 0 0 1px rgba(0, 0, 0, 0.8);
+		text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.3), 0 0 1px rgba(0, 0, 0, 0.3);
 		width: calc($gutterY * 4);
 		background-size: 32px;
 		background-position: 50% calc(($gutterY * 2) / 1.618);
@@ -250,11 +250,11 @@ article {
 }
 
 $stateUnknown: $lightGray;
-$stateNotPlanned: $firefoxOrangeVibrant;
-$stateDeprecated: $firefoxOrangeVibrant;
-$stateConsidering: $marketOrangeVibrant;
-$stateDeveloping: $flameYellowVibrant;
-$stateShipped: $geckoGreenVibrant;
+$stateNotPlanned: $firefoxOrange;
+$stateDeprecated: $firefoxOrange;
+$stateConsidering: $marketOrange;
+$stateDeveloping: $flameYellow;
+$stateShipped: $geckoGreen;
 
 $stateUnknownLight: $lightGray;
 $stateNotPlannedLight: $firefoxOrangeTint;
