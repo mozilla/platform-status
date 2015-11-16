@@ -1,0 +1,6 @@
+{
+  "name": "Platatus",
+  "description": "Firefox Platform Status",
+  "repository": "https://github.com/mozilla/platatus",
+  "keywords": ["mozilla", "firefox"]
+}
