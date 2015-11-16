@@ -102,7 +102,11 @@ article {
 	padding-right: $gutterX;
 	@media (min-width: $breakMobileLandscape) {
 		font-size: $h3FontSize;
+		letter-spacing: -.035em;
 		font-weight: 300;
+		@media (min-width: $breakDesktopWide) {
+			font-size: $h2FontSize;
+		}
 	}
 }
 
@@ -206,22 +210,22 @@ article {
 		font-size: $fontSize;
 		text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.3), 0 0 1px rgba(0, 0, 0, 0.3);
 		width: calc($gutterY * 4);
+		transition: width 0.2s ease-in-out;
 		background-size: 32px;
-		background-position: 50% calc(($gutterY * 2) / 1.618);
+		background-position: 50% calc(($gutterY * 1.6) / 1.618);
 		border-top: none;
+		@media (min-width: $breakDesktop) {
+			font-size: $fontSize;
+		}
 	}
-	/*&:first-child {
-		border-left: none;
-	}
-	&:last-child {
-		border-right: none;
-	}*/
-
 	&.state-firefox {
 		@media (min-width: $breakTablet) {
 			background-size: 48px;
-			width: calc($gutterY * 6);
-			background-position: 50% calc($gutterY);
+			width: calc($gutterY * 8);
+			background-position: 50% calc($gutterY - 5px);
+			.status-text {
+				display: flex;
+			}
 		}
 	}
 	&.state-chrome {
@@ -235,6 +239,13 @@ article {
 	}
 	&.state-webkit {
 		background-image: url(https://raw.githubusercontent.com/alrra/browser-logos/master/safari/safari_64x64.png);
+	}
+}
+@media (min-width: $breakDesktop) {
+	.feature:hover {
+		.status:not(.state-firefox) {
+			width: calc($gutterY * 6);
+		}
 	}
 }
 .status-inner {
@@ -339,8 +350,15 @@ $fadeHeight: 25%;
 	@extend is-truncated;
 	font-size: $smallFontSize;
 	display: none;
-	@media (min-width: $breakTablet) {
-		display: block;
+	@media (min-width: $breakDesktop) {
+		font-size: $fontSize;
+	}
+}
+@media (min-width: $breakTablet) {
+	.feature:hover {
+		.status-text {
+			display: block;
+		}
 	}
 }
 .status-version {
