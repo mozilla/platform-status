@@ -209,7 +209,7 @@ article {
 		font-weight: 600;
 		font-size: $fontSize;
 		text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.3), 0 0 1px rgba(0, 0, 0, 0.3);
-		width: calc($gutterY * 4);
+		width: calc($gutterY * 3);
 		transition: width 0.2s ease-in-out;
 		background-size: 32px;
 		background-position: 50% calc(($gutterY * 1.6) / 1.618);
@@ -242,7 +242,7 @@ article {
 	}
 }
 @media (min-width: $breakDesktop) {
-	.feature:hover {
+	.feature:hover, .feature:focus {
 		.status:not(.state-firefox) {
 			width: calc($gutterY * 6);
 		}
@@ -355,7 +355,7 @@ $fadeHeight: 25%;
 	}
 }
 @media (min-width: $breakTablet) {
-	.feature:hover {
+	.feature:hover, .feature:focus {
 		.status-text {
 			display: block;
 		}
