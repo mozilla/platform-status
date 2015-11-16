@@ -1,4 +1,5 @@
 /* vim: set filetype=javascript sw=2 tw=80 : */
+/* eslint-disable guard-for-in */
 
 /**
  * This module defines a tunnel that is used by Intern to
@@ -57,9 +58,7 @@ define(function(require) {
   function SeleniumTunnel(kwArgs) {
     Evented.apply(this, arguments);
     for (var key in kwArgs) {
-      if (1) {
-        Object.defineProperty(this, key, Object.getOwnPropertyDescriptor(kwArgs, key));
-      }
+      Object.defineProperty(this, key, Object.getOwnPropertyDescriptor(kwArgs, key));
     }
 
     this.architecture = process.arch;
