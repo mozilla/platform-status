@@ -128,7 +128,9 @@ function populateBrowserFeatureData(browserData, features) {
   features.forEach((feature) => {
     allBrowserFeatures.map(([key, BrowserFeatureConstructor]) => {
       const browserFeatureData = browserData[key].get(feature[key + '_ref']);
-      feature[key + '_status'] = 'unknown';
+      if (!feature[key + '_status']) {
+        feature[key + '_status'] = 'unknown';
+      }
       feature[key + '_url'] = BrowserFeatureConstructor.defaultUrl;
       if (browserFeatureData) {
         const browserFeature = new BrowserFeatureConstructor(browserFeatureData);
