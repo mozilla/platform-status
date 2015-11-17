@@ -1,4 +1,3 @@
-/* vim: set filetype=javascript sw=2 tw=80 : */
 /* eslint-disable guard-for-in */
 
 /**

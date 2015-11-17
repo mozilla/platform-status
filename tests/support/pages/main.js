@@ -1,5 +1,3 @@
-/* vim: set filetype=javascript sw=2 tw=80 : */
-
 define(function() {
   // the page object is created as a constructor
   // so we can provide the remote Command object

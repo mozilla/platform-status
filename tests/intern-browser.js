@@ -1,5 +1,3 @@
-/* vim: set filetype=javascript sw=2 tw=80 : */
-
 define({
   capabilities: {
   },

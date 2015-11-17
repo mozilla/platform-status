@@ -1,5 +1,3 @@
-/* vim: set filetype=javascript sw=2 tw=80 : */
-
 define(function(require) {
   const bdd = require('intern!bdd');
   const assert = require('intern/chai!assert');
