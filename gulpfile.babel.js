@@ -35,7 +35,7 @@ const statusFilename = './dist/status.json';
 import engine from './engine/index.js';
 
 gulp.task('clean', () => {
-  return del(['./dist']);
+  return del(['./dist', './bld']);
 });
 
 gulp.task('lint', () => {
@@ -53,7 +53,7 @@ gulp.task('deploy', ['build'], () => {
 });
 
 gulp.task('build:status', () => {
-  const cacheDir = path.join('./dist', 'cache');
+  const cacheDir = path.join('./bld', 'cache');
   mkdirp.sync(cacheDir);
   const options = {
     cacheDir: cacheDir,

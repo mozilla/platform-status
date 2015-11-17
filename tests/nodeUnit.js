@@ -60,7 +60,6 @@ define(function(require) {
         ];
 
         var ignoreDirs = [
-          'dist/cache',
         ];
 
         function processPath(path) {
