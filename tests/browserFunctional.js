@@ -50,10 +50,18 @@ define(function(require) {
         });
       });
 
+      bdd.it('should have link to GitHub repo', function() {
+        const page = new IndexPage(this.remote);
+
+        return page.followRepoLink().getPageTitle().then(function(title) {
+          assert.equal(title, 'mozilla/platatus · GitHub');
+        });
+      });
+
       bdd.it('should have link to file issues', function() {
         const page = new IndexPage(this.remote);
 
-        return page.followFileIssueLink.getPageTitle().then(function(title) {
+        return page.followFileIssueLink().getPageTitle().then(function(title) {
           // TODO: We probably want to sign in and verify that we're actually
           // on the right page
           assert.equal(title, 'Sign in · GitHub');
