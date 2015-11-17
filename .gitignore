@@ -1,5 +1,4 @@
 node_modules/
 *.log
 dist/
-bld/
 tests/support/var/

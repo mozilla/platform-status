@@ -31,32 +31,34 @@ define(function(require) {
   //
   // `this.remote` is null for unit tests.
 
+  const publicDir = 'dist/public';
+
   bdd.describe('Node unit', function() {
     bdd.describe('Build process', function() {
       bdd.it('should output readable expected files and only expected files', function() {
         // Please keep this list alphabetically sorted. It is case sensitive.
         var expectedFiles = [
-          'dist/bundle.css',
-          'dist/bundle.css.map',
-          'dist/bundle.js',
-          'dist/bundle.js.map',
-          'dist/images/bugzilla.png',
-          'dist/images/bugzilla@2x.png',
-          'dist/images/favicon-196.png',
-          'dist/images/favicon.ico',
-          'dist/images/github.png',
-          'dist/images/github@2x.png',
-          'dist/images/html5.png',
-          'dist/images/html5@2x.png',
-          'dist/images/ios-icon-180.png',
-          'dist/images/mdn.png',
-          'dist/images/mdn@2x.png',
-          'dist/images/tabzilla-static.png',
-          'dist/images/tabzilla-static-high-res.png',
-          'dist/index.html',
-          'dist/manifest.json',
-          'dist/offline-worker.js',
-          'dist/status.json'
+          'dist/public/bundle.css',
+          'dist/public/bundle.css.map',
+          'dist/public/bundle.js',
+          'dist/public/bundle.js.map',
+          'dist/public/images/bugzilla.png',
+          'dist/public/images/bugzilla@2x.png',
+          'dist/public/images/favicon-196.png',
+          'dist/public/images/favicon.ico',
+          'dist/public/images/github.png',
+          'dist/public/images/github@2x.png',
+          'dist/public/images/html5.png',
+          'dist/public/images/html5@2x.png',
+          'dist/public/images/ios-icon-180.png',
+          'dist/public/images/mdn.png',
+          'dist/public/images/mdn@2x.png',
+          'dist/public/images/tabzilla-static.png',
+          'dist/public/images/tabzilla-static-high-res.png',
+          'dist/public/index.html',
+          'dist/public/manifest.json',
+          'dist/public/offline-worker.js',
+          'dist/public/status.json'
         ];
 
         var ignoreDirs = [
@@ -110,7 +112,7 @@ define(function(require) {
           });
         }
 
-        return processPath('dist').then(function() {
+        return processPath(publicDir).then(function() {
           if (expectedFiles.length !== 0) {
             throw new Error('File(s) not found: ' + expectedFiles);
           }

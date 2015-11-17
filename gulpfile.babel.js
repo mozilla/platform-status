@@ -28,14 +28,24 @@ sourceMapSupport.install();
 const develop = process.env.NODE_ENV !== 'production';
 console.log(`Building for ${develop ? 'development' : 'production'}`);
 
+const distDir = './dist';
+const publicDir = path.join(distDir, 'public');
+const cacheDir = path.join(distDir, 'cache');
+
+const workerFilename = 'offline-worker.js';
+const workerPath = path.join(publicDir, workerFilename);
+
+const indexHtmlFilename = 'index.html';
+const indexHtmlPath = path.join(publicDir, indexHtmlFilename);
+
 import browserSyncCreator from 'browser-sync';
 const browserSync = browserSyncCreator.create();
-const statusFilename = './dist/status.json';
+const statusFilepath = path.join(publicDir, 'status.json');
 
 import engine from './engine/index.js';
 
 gulp.task('clean', () => {
-  return del(['./dist', './bld']);
+  return del([distDir]);
 });
 
 gulp.task('lint', () => {
@@ -48,43 +58,42 @@ gulp.task('lint', () => {
 
 gulp.task('deploy', ['build'], () => {
   return oghliner.deploy({
-    rootDir: 'dist',
+    rootDir: publicDir,
   });
 });
 
 gulp.task('build:status', () => {
-  const cacheDir = path.join('./bld', 'cache');
   mkdirp.sync(cacheDir);
   const options = {
     cacheDir: cacheDir,
   };
   return engine.buildStatus(options).then((status) => {
-    fs.writeFileSync(statusFilename, JSON.stringify(status, null, 2));
+    fs.writeFileSync(statusFilepath, JSON.stringify(status, null, 2));
   });
 });
 
 gulp.task('build:index', ['build:status'], () => {
-  const status = JSON.parse(fs.readFileSync(statusFilename));
+  const status = JSON.parse(fs.readFileSync(statusFilepath));
   return engine.buildIndex(status).then((contents) => {
-    fs.writeFileSync(path.join('./dist', 'index.html'), contents);
+    fs.writeFileSync(indexHtmlPath, contents);
   });
 });
 
 gulp.task('build:html', ['build:index', 'build:css'], () => {
   gulp
-    .src('./dist/*.html')
+    .src(path.join(publicDir, '*.html'))
     // TODO: Uncomment when compression works
     // .pipe(plugins.if(!develop, plugins.inlineSource({
     //   compress: false,
     // })))
     .pipe(plugins.if(!develop, plugins.minifyHtml()))
-    .pipe(gulp.dest('./dist/'));
+    .pipe(gulp.dest(publicDir));
 });
 
 gulp.task('build:tabzilla', () => {
   return gulp
     .src(['./node_modules/mozilla-tabzilla/media/img/*.png'])
-    .pipe(gulp.dest('./dist/images'));
+    .pipe(gulp.dest(path.join(publicDir, 'images')));
 });
 
 gulp.task('build:root', () => {
@@ -93,7 +102,7 @@ gulp.task('build:root', () => {
       ['./src/*.*', './src/fonts/*.*', './src/images/*.*'],
       {base: './src'}
     )
-    .pipe(gulp.dest('./dist'));
+    .pipe(gulp.dest(publicDir));
 });
 
 gulp.task('build:js', () => {
@@ -110,7 +119,7 @@ gulp.task('build:js', () => {
   }))
   .pipe(plugins.if(!develop, plugins.uglify()))
   .pipe(plugins.sourcemaps.write('.'))
-  .pipe(gulp.dest('./dist'));
+  .pipe(gulp.dest(publicDir));
 });
 
 gulp.task('build:css', () => {
@@ -135,16 +144,16 @@ gulp.task('build:css', () => {
     .pipe(plugins.concat('bundle.css'))
     .pipe(plugins.replace('../media/img/', 'images/'))
     .pipe(plugins.sourcemaps.write('.'))
-    .pipe(gulp.dest('./dist'));
+    .pipe(gulp.dest(publicDir));
 });
 
 gulp.task('build:dist', ['build:root', 'build:tabzilla', 'build:status', 'build:html', 'build:js', 'build:css']);
 
 function offline() {
   return oghliner.offline({
-    rootDir: 'dist/',
+    rootDir: publicDir,
     fileGlobs: [
-      'index.html',
+      indexHtmlFilename,
       'bundle.js',
       'bundle.css',
       'images/*.png',
@@ -158,7 +167,7 @@ gulp.task('watch', ['build'], () => {
   browserSync.init({
     open: false,
     server: {
-      baseDir: './dist',
+      baseDir: publicDir,
       ghostMode: false,
       notify: false,
     },
@@ -167,8 +176,8 @@ gulp.task('watch', ['build'], () => {
   gulp.watch(['./src/css/**/*.css'], ['build:css']);
   gulp.watch(['./src/js/*.js'], ['build:js']);
   gulp.watch(['./engine/*.js', './features/*.md', './src/tpl/*.html'], ['build:html']);
-  gulp.watch(['./dist/**/*.*', '!./dist/offline-worker.js'], debounce(offline, 200));
-  gulp.watch(['./dist/offline-worker.js'], browserSync.reload);
+  gulp.watch([path.join(publicDir, '**/*.*'), '!' + workerPath], debounce(offline, 200));
+  gulp.watch([workerPath], browserSync.reload);
 });
 
 gulp.task('default', ['build']);

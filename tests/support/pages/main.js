@@ -5,7 +5,7 @@ define(function() {
   // so we can provide the remote Command object
   // at runtime
   function IndexPage(remote) {
-    this.remote = remote.get(require.toUrl('dist/index.html'));
+    this.remote = remote.get(require.toUrl('dist/public/index.html'));
   }
 
   IndexPage.prototype = {
