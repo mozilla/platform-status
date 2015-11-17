@@ -15,6 +15,20 @@ define(function() {
     get title() {
       return this.remote.getPageTitle();
     },
+
+    get followFileIssueLink() {
+      const remote = this.remote;
+
+      return remote.findByTagName('body').then(function(body) {
+        return body.findByTagName('footer').then(function(footer) {
+          return footer.findByTagName('a').then(function(anchor) {
+            return anchor.getProperty('href').then(function(url) {
+              return remote.get(url);
+            });
+          });
+        });
+      });
+    },
   };
 
   return IndexPage;
