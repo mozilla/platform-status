@@ -57,8 +57,8 @@
     "intern": "^3.0.6"
   },
   "scripts": {
-    "postinstall": "if $BUILD_POSTINSTALL; then npm run build; fi",
-    "build": "gulp build",
+    "postinstall": "if $BUILD_POSTINSTALL; then ./node_modules/.bin/gulp build; fi",
+    "build": "./node_modules/.bin/gulp build",
     "server": "node server.js",
     "lint": "gulp lint",
     "start": "gulp watch",
