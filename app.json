@@ -7,7 +7,7 @@
     "postdeploy": "npm run build"
   },
   "env": {
-    "NPM_CONFIG_PRODUCTION": {
+    "BUILD_POSTINSTALL": {
       "required": true
     }
   },
