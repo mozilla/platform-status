@@ -1,11 +1,12 @@
 ---
-title: Shared Array Buffers
+title: wasm.js
 category: apps, games
-bugzilla: 1054841
-firefox_status: 45
-spec_url: https://github.com/lars-t-hansen/ecmascript_sharedmem
-spec_repo: https://github.com/lars-t-hansen/ecmascript_sharedmem
-chrome_ref: 4570991992766464
+firefox_status: in-development
+bugzilla: 1188259
+spec_url: https://github.com/WebAssembly/spec
+spec_status: working-draft-or-equivalent
+chrome_status: in-development
+ie_status: in-development
 ---
 
-Fine-grained borrowing and sharing for `ArrayBuffer` between workers.
+*WebAssembly* is a low-level, portable, size- and load-time-efficient binary code format; designed to serve as a compilation target for the web.

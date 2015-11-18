@@ -2,14 +2,13 @@ import fs from 'fs';
 import path from 'path';
 import fetch from 'node-fetch';
 import fileExists from 'file-exists';
+import crypto from 'crypto';
 
 export default {
   readJson: (src, cacheDir) => {
-    let cacheFilename = src;
-    if (cacheFilename.endsWith('.json')) {
-      cacheFilename = cacheFilename.substr(0, src.length - 5);
-    }
-    cacheFilename = path.join(cacheDir, cacheFilename.replace(/[^a-zA-Z0-9]/g, '').toLowerCase() + '.json');
+    const shasum = crypto.createHash('sha1');
+    shasum.update(src);
+    const cacheFilename = path.join(cacheDir, shasum.digest('hex') + '.json');
     if (fileExists(cacheFilename)) {
       return Promise.resolve(JSON.parse(fs.readFileSync(cacheFilename)));
     }

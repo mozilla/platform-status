@@ -1,5 +1,3 @@
-/* vim: set filetype=javascript sw=2 tw=80 : */
-
 define(function(require) {
   const bdd = require('intern!bdd');
   const assert = require('intern/chai!assert');
@@ -44,6 +42,7 @@ define(function(require) {
           'dist/public/bundle.js.map',
           'dist/public/images/bugzilla.png',
           'dist/public/images/bugzilla@2x.png',
+          'dist/public/images/favicon-192.png',
           'dist/public/images/favicon-196.png',
           'dist/public/images/favicon.ico',
           'dist/public/images/github.png',

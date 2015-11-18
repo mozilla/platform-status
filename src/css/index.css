@@ -367,3 +367,8 @@ $fadeHeight: 25%;
 		color: inherit;
 	}
 }
+
+body > footer {
+  text-align: center;
+  color: white;
+}

@@ -128,7 +128,9 @@ function populateBrowserFeatureData(browserData, features) {
   features.forEach((feature) => {
     allBrowserFeatures.map(([key, BrowserFeatureConstructor]) => {
       const browserFeatureData = browserData[key].get(feature[key + '_ref']);
-      feature[key + '_status'] = 'unknown';
+      if (!feature[key + '_status']) {
+        feature[key + '_status'] = 'unknown';
+      }
       feature[key + '_url'] = BrowserFeatureConstructor.defaultUrl;
       if (browserFeatureData) {
         const browserFeature = new BrowserFeatureConstructor(browserFeatureData);
@@ -184,7 +186,7 @@ function bugzillaFetch(bugzillaUrl, options) {
 }
 
 function getBugzillaBugData(bugId, options) {
-  return bugzillaFetch('https://bugzilla.mozilla.org/rest/bug?id=' + bugId, options)
+  return bugzillaFetch('https://bugzilla.mozilla.org/rest/bug?id=' + bugId + '&include_fields=' + options.include_fields.join(','), options)
   .then((json) => {
     if (!json.bugs.length) {
       throw new Error('Bug not found(secure bug?)');
@@ -202,7 +204,7 @@ function populateBugzillaData(features, options) {
     if (!feature.bugzilla) {
       return null;
     }
-    return getBugzillaBugData(feature.bugzilla, options)
+    return getBugzillaBugData(feature.bugzilla, Object.assign(options, { include_fields: ['status', 'depends_on', 'id'] }))
     .then((bugData) => {
       if (!bugData) {
         feature.bugzilla_status = null;
@@ -210,25 +212,15 @@ function populateBugzillaData(features, options) {
       }
       feature.bugzilla_status = bugData.status;
       feature.bugzilla_resolved_count = 0;
-      if (bugData.status === 'RESOLVED') {
-        feature.bugzilla_resolved_count++;
+      // Add one to show status of the tracking bug itself.
+      feature.bugzilla_dependant_count = bugData.depends_on.length + 1;
+      if (!bugData.depends_on.length) {
+        return null;
       }
       // Check all the dependent bugs to count how many are resolved.
-      return Promise.all(bugData.depends_on.map((bugId) => {
-        return getBugzillaBugData(bugId, options);
-      }))
-      .then((dependantBugs) => {
-        // Add one to show status of the tracking bug itself.
-        feature.bugzilla_dependant_count = dependantBugs.length + 1;
-        for (const dependantBug of dependantBugs) {
-          if (!dependantBug) {
-            // Probably was secure bug.
-            continue;
-          }
-          if (dependantBug.status === 'RESOLVED') {
-            feature.bugzilla_resolved_count++;
-          }
-        }
+      return bugzillaFetch('https://bugzilla.mozilla.org/rest/bug?id=' + bugData.depends_on.join(',') + '&status=RESOLVED&include_fields=id', options)
+      .then((dependentResult) => {
+        feature.bugzilla_resolved_count += dependentResult.bugs.length;
       });
     });
   }));

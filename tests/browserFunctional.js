@@ -1,5 +1,3 @@
-/* vim: set filetype=javascript sw=2 tw=80 : */
-
 define(function(require) {
   const bdd = require('intern!bdd');
   const assert = require('intern/chai!assert');
@@ -47,6 +45,24 @@ define(function(require) {
         return page.title.then(function(title) {
           assert(title, 'title exists');
           assert.equal(title, 'Firefox Platform Status');
+        });
+      });
+
+      bdd.it('should have link to GitHub repo', function() {
+        const page = new IndexPage(this.remote);
+
+        return page.followRepoLink().getPageTitle().then(function(title) {
+          assert.equal(title, 'mozilla/platatus · GitHub');
+        });
+      });
+
+      bdd.it('should have link to file issues', function() {
+        const page = new IndexPage(this.remote);
+
+        return page.followFileIssueLink().getPageTitle().then(function(title) {
+          // TODO: We probably want to sign in and verify that we're actually
+          // on the right page
+          assert.equal(title, 'Sign in · GitHub');
         });
       });
     });

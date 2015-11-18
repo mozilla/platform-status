@@ -38,8 +38,6 @@ const workerPath = path.join(publicDir, workerFilename);
 const indexHtmlFilename = 'index.html';
 const indexHtmlPath = path.join(publicDir, indexHtmlFilename);
 
-import browserSyncCreator from 'browser-sync';
-const browserSync = browserSyncCreator.create();
 const statusFilepath = path.join(publicDir, 'status.json');
 
 import engine from './engine/index.js';
@@ -164,6 +162,8 @@ function offline() {
 gulp.task('build', ['build:dist'], offline);
 
 gulp.task('watch', ['build'], () => {
+  const browserSyncCreator = require('browser-sync');
+  const browserSync = browserSyncCreator.create();
   browserSync.init({
     open: false,
     server: {
@@ -176,7 +176,11 @@ gulp.task('watch', ['build'], () => {
   gulp.watch(['./src/css/**/*.css'], ['build:css']);
   gulp.watch(['./src/js/*.js'], ['build:js']);
   gulp.watch(['./engine/*.js', './features/*.md', './src/tpl/*.html'], ['build:html']);
-  gulp.watch([path.join(publicDir, '**/*.*'), '!' + workerPath], debounce(offline, 200));
+  gulp.watch([
+    path.join(publicDir, '**/*.*'),
+    '!' + workerPath,
+    '!' + path.join(cacheDir, '*.json'),
+  ], debounce(offline, 200));
   gulp.watch([workerPath], browserSync.reload);
 });
 

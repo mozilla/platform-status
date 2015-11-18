@@ -1,5 +1,3 @@
-/* vim: set filetype=javascript sw=2 tw=80 : */
-
 define(function() {
   // the page object is created as a constructor
   // so we can provide the remote Command object
@@ -14,6 +12,26 @@ define(function() {
     // Returns a promise that resolves to the title of the page
     get title() {
       return this.remote.getPageTitle();
+    },
+
+    followRepoLink: function() {
+      const remote = this.remote;
+
+      return remote.findByCssSelector('#repoLink').then(function(anchor) {
+        return anchor.getProperty('href').then(function(url) {
+          return remote.get(url);
+        });
+      });
+    },
+
+    followFileIssueLink: function() {
+      const remote = this.remote;
+
+      return remote.findByCssSelector('#issueLink').then(function(anchor) {
+        return anchor.getProperty('href').then(function(url) {
+          return remote.get(url);
+        });
+      });
     },
   };
 
