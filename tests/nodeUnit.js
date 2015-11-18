@@ -40,6 +40,7 @@ define(function(require) {
           'dist/bundle.js.map',
           'dist/images/bugzilla.png',
           'dist/images/bugzilla@2x.png',
+          'dist/images/favicon-192.png',
           'dist/images/favicon-196.png',
           'dist/images/favicon.ico',
           'dist/images/github.png',
