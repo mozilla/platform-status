@@ -28,8 +28,6 @@ sourceMapSupport.install();
 const develop = process.env.NODE_ENV !== 'production';
 console.log(`Building for ${develop ? 'development' : 'production'}`);
 
-import browserSyncCreator from 'browser-sync';
-const browserSync = browserSyncCreator.create();
 const statusFilename = './dist/status.json';
 
 import engine from './engine/index.js';
@@ -155,6 +153,8 @@ function offline() {
 gulp.task('build', ['build:dist'], offline);
 
 gulp.task('watch', ['build'], () => {
+  const browserSyncCreator = require('browser-sync');
+  const browserSync = browserSyncCreator.create();
   browserSync.init({
     open: false,
     server: {
