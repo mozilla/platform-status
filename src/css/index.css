@@ -29,15 +29,18 @@ a {
 }
 
 .row {
-	display: flex;
+	display: block;
 	@media (min-width: $breakDesktop) {
-		display: flex;
+		display: block;
 		justify-content: center;
 	}
 }
 .row-inner {
 	min-width: 300px;
 	max-width: 1020px;
+	margin: 0 auto;
+	flex: 1;
+	padding: calc($gutterY / 2) $gutterX;
 }
 header {
 	background: $developerBlueVibrant;
@@ -108,16 +111,53 @@ article {
 	background-color: #fff;
 }
 
+.search {
+	text-align: center;
+	font-weight: normal;
+	margin: 1em 0;
+	@media (min-width: $breakMobileLandscape) {
+		display: flex;
+		align-items: center;
+		font-size: 1.5em;
+		* + * {
+			margin-left: 1em;
+		}
+	}
+}
+.search-input {
+	font: inherit;
+	font-weight: 300;
+	flex: 1;
+	width: 100%;
+	padding: 0 .5em;
+	line-height: 1.7em;
+}
+.results-meta {
+	display: none;
+	background: #eee;
+	padding: .5em 1em;
+}
+
 #features {
 	list-style: none;
 	margin: calc($gutterY / 2) 0;
 	padding: 0;
 }
 
+#features.searched {
+	display: flex;
+	flex-direction: column;
+}
+#features.searched .feature {
+	display: none;
+}
+#features.searched .feature.match {
+	display: block;
+}
+
 .feature {
-	margin: 0;
-	padding: 0;
-	padding-left: $gutterX;
+	margin: 0 -1em;
+	padding: 0 1em;
 	@media (min-width: $breakMobileLandscape) {
 		padding: calc($gutterY / 2) $gutterX;
 	}

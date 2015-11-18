@@ -38,7 +38,7 @@
   <link rel="stylesheet" href="bundle.css" inline>
 </head>
 <body>
-  <header class="row">
+  <header class="row header">
     <div class="row-inner">
       <div id="tabzilla">
         <a href="https://www.mozilla.org/">Mozilla</a>
@@ -53,62 +53,69 @@
     </header>
   </header>
   <article class="row">
-    <ul class="row-inner" id="features">
-      {{#each features}}
-        <li class="feature" id="{{slug}}" tabindex="0">
-          <a href="#{{slug}}"><i aria-hidden="true" class="feature-anchor"></i></a>
-          <div class="feature-header">
-            <h3 class="feature-title">{{title}}</h3>
-            <div class="feature-status">
-              <ul>
-                {{> browserStatus browser="chrome" url=chrome_url status=chrome_status footnote=chrome_footnote}}
-                {{> browserStatus browser="opera" url=opera_url status=opera_status footnote=opera_footnote}}
-                {{> browserStatus browser="webkit" url=webkit_url status=webkit_status footnote=webkit_footnote}}
-                {{> browserStatus browser="edge" url=ie_url status=ie_status footnote=edge_footnote}}
-                {{> browserStatus browser="firefox" status=firefox_status version=firefox_version url_slug=slug channel=firefox_channel}}
-              </ul>
+    <div class="row-inner">
+      <div class="search">
+        <label for="query">Search features</label>
+        <input type="text" id="query" class="search-input" placeholder="Feature or Keyword" tabindex="1"></label>
+      </div>
+      <div class="results-meta"><span class="search-results-count"></span> <a role="button" href="#" class="search-clear">clear search</a></div>
+      <ul id="features">
+        {{#each features}}
+          <li class="feature" id="{{slug}}" tabindex="0">
+            <a href="#{{slug}}"><i aria-hidden="true" class="feature-anchor"></i></a>
+            <div class="feature-header">
+              <h3 class="feature-title">{{title}}</h3>
+              <div class="feature-status">
+                <ul>
+                  {{> browserStatus browser="chrome" url=chrome_url status=chrome_status footnote=chrome_footnote}}
+                  {{> browserStatus browser="opera" url=opera_url status=opera_status footnote=opera_footnote}}
+                  {{> browserStatus browser="webkit" url=webkit_url status=webkit_status footnote=webkit_footnote}}
+                  {{> browserStatus browser="edge" url=ie_url status=ie_status footnote=edge_footnote}}
+                  {{> browserStatus browser="firefox" status=firefox_status version=firefox_version url_slug=slug channel=firefox_channel}}
+                </ul>
+              </div>
             </div>
-          </div>
-          <div class="feature-meta">
-            <div class="feature-links">
-              <ul>
-              {{#if mdn_url}}
-                <li>
-                  <a target="_blank" href="{{mdn_url}}" title="Documentation on Mozilla Developer Network (MDN)">
-                    <i aria-hidden="true" class="icon icon-mdn"></i>Docs
-                  </a>
-                </li>
-              {{/if}}
-              {{#if spec_url}}
-                <li>
-                  <a target="_blank" href="{{spec_url}}" title="{{alt spec_status 'spec' 'long'}}">
-                    <i aria-hidden="true" class="icon icon-spec"></i>{{alt spec_status 'spec' 'short'}}
-                  </a>
-                </li>
-              {{/if}}
-              {{#if caniuse_ref}}
-                <li>
-                  <a target="_blank" href="http://caniuse.com/#feat={{caniuse_ref}}" title="Global browser support: {{caniuse_usage_perc_y}}% full, {{caniuse_usage_perc_a}}% partial">
-                    <i aria-hidden="true" class="icon icon-caniuse"></i>Can I use {{caniuse_usage_perc_total}}%
-                  </a>
-                </li>
-              {{/if}}
-              {{#if bugzilla}}
-                <li class="link-bug">
-                  <a target="_blank" href="https://bugzilla.mozilla.org/show_bug.cgi?id={{bugzilla}}" title="Implementation bug at bugzilla.mozilla.org">
-                    <i aria-hidden="true" class="icon icon-bugzilla"></i>{{#if_eq firefox_status "shipped"}}Complete
-                    {{else}}{{bugzilla_resolved_count}}/{{bugzilla_dependant_count}} Resolved
-                    {{/if_eq}}
-                  </a>
-                </li>
-              {{/if}}
-              </ul>
+            <div class="feature-meta">
+              <div class="feature-links">
+                <ul>
+                {{#if mdn_url}}
+                  <li>
+                    <a target="_blank" href="{{mdn_url}}" title="Documentation on Mozilla Developer Network (MDN)">
+                      <i aria-hidden="true" class="icon icon-mdn"></i>Docs
+                    </a>
+                  </li>
+                {{/if}}
+                {{#if spec_url}}
+                  <li>
+                    <a target="_blank" href="{{spec_url}}" title="{{alt spec_status 'spec' 'long'}}">
+                      <i aria-hidden="true" class="icon icon-spec"></i>{{alt spec_status 'spec' 'short'}}
+                    </a>
+                  </li>
+                {{/if}}
+                {{#if caniuse_ref}}
+                  <li>
+                    <a target="_blank" href="http://caniuse.com/#feat={{caniuse_ref}}" title="Global browser support: {{caniuse_usage_perc_y}}% full, {{caniuse_usage_perc_a}}% partial">
+                      <i aria-hidden="true" class="icon icon-caniuse"></i>Can I use {{caniuse_usage_perc_total}}%
+                    </a>
+                  </li>
+                {{/if}}
+                {{#if bugzilla}}
+                  <li class="link-bug">
+                    <a target="_blank" href="https://bugzilla.mozilla.org/show_bug.cgi?id={{bugzilla}}" title="Implementation bug at bugzilla.mozilla.org">
+                      <i aria-hidden="true" class="icon icon-bugzilla"></i>{{#if_eq firefox_status "shipped"}}Complete
+                      {{else}}{{bugzilla_resolved_count}}/{{bugzilla_dependant_count}} Resolved
+                      {{/if_eq}}
+                    </a>
+                  </li>
+                {{/if}}
+                </ul>
+              </div>
+              <p class="feature-summary">{{{summary}}}</p>
             </div>
-            <p class="feature-summary">{{{summary}}}</p>
-          </div>
-        </li>
-      {{/each}}
-    </ul>
+          </li>
+        {{/each}}
+      </ul>
+    </div>
   </article>
   <footer class="row">
     <div class="row-inner">
