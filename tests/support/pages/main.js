@@ -13,6 +13,26 @@ define(function() {
     get title() {
       return this.remote.getPageTitle();
     },
+
+    followRepoLink: function() {
+      const remote = this.remote;
+
+      return remote.findByCssSelector('#repoLink').then(function(anchor) {
+        return anchor.getProperty('href').then(function(url) {
+          return remote.get(url);
+        });
+      });
+    },
+
+    followFileIssueLink: function() {
+      const remote = this.remote;
+
+      return remote.findByCssSelector('#issueLink').then(function(anchor) {
+        return anchor.getProperty('href').then(function(url) {
+          return remote.get(url);
+        });
+      });
+    },
   };
 
   return IndexPage;
