@@ -368,7 +368,38 @@ $fadeHeight: 25%;
 	}
 }
 
-body > footer {
-  text-align: center;
-  color: white;
+footer {
+	padding: $gutterY $gutterX;
+	flex: 1;
+	display: flex;
+	flex-direction: column-reverse;
+	@media (min-width: $breakTablet) {
+		padding: calc($gutterY / 2) $gutterX;
+		flex-direction: row;
+	}
+}
+footer ul {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+	text-align: center;
+	margin-bottom: $gutterY;
+	@media (min-width: $breakTablet) {
+		text-align: left;
+		flex: 1;
+		margin-bottom: 0;
+	}
+}
+footer li {
+	display: inline-block;
+	margin: 0;
+	padding: 0 $gutterX 0 0;
+}
+footer p {
+	color: $textColorLight;
+	margin: 0;
+	@media (min-width: $breakTablet) {
+		padding-right: $gutterX;
+		flex: 1;
+	}
 }

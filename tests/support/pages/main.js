@@ -17,7 +17,7 @@ define(function() {
     followRepoLink: function() {
       const remote = this.remote;
 
-      return remote.findByCssSelector('#repoLink').then(function(anchor) {
+      return remote.findByCssSelector('#link-repo').then(function(anchor) {
         return anchor.getProperty('href').then(function(url) {
           return remote.get(url);
         });
@@ -27,7 +27,7 @@ define(function() {
     followFileIssueLink: function() {
       const remote = this.remote;
 
-      return remote.findByCssSelector('#issueLink').then(function(anchor) {
+      return remote.findByCssSelector('#link-issue').then(function(anchor) {
         return anchor.getProperty('href').then(function(url) {
           return remote.get(url);
         });

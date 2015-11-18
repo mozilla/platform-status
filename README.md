@@ -12,7 +12,7 @@ Platatus gives developers a cross-platform and cross-browser roadmap for browser
 
 ## Why
 
-Existing web compatibilty references, like [caniuse](http://caniuse.com/) focus on cross-browser compatibilty but don't cover un-released features and lag behind on features that already shipped. Major browser vendors ([Edge](https://dev.modern.ie/platform/status/), [Chrome](https://www.chromestatus.com/features), [Webkit](https://www.webkit.org/status.html)) are publicising their own platform status with references to their bug tracking and bug owners. Similar to Platatus' goal, Chrome tracks consensus/enthusiasm from other browsers using sources that range from bugs, to IRC logs to tweets.
+Existing web compatibility references, like [caniuse](http://caniuse.com/) focus on cross-browser compatibility but don't cover un-released features and lag behind on features that already shipped. Major browser vendors ([Edge](https://dev.windows.com/en-us/microsoft-edge/platform/status/), [Chrome](https://www.chromestatus.com/features), [Webkit](https://www.webkit.org/status.html)) are publicising their own platform status with references to their bug tracking and bug owners. Similar to Platatus' goal, Chrome tracks consensus/enthusiasm from other browsers using sources that range from bugs, to IRC logs to tweets.
 
 Platatus can send an open and clear message to developers about the state of Mozilla's platform, from proposals of new web features to release.
 
@@ -24,4 +24,4 @@ Platatus can send an open and clear message to developers about the state of Moz
 
 ## Additional Attributions
 
-Portions of the status data are from chromestatus.com and dev.modern.ie, both used under [Creative Commons Attribution 2.5 License](https://creativecommons.org/licenses/by/2.5/legalcode).
+Portions of the status data are from chromestatus.com (CC BY 2.5), dev.windows.com (CC BY 2.5), and webkit.org (LGPL).
