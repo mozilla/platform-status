@@ -167,7 +167,11 @@ gulp.task('watch', ['build'], () => {
   gulp.watch(['./src/css/**/*.css'], ['build:css']);
   gulp.watch(['./src/js/*.js'], ['build:js']);
   gulp.watch(['./engine/*.js', './features/*.md', './src/tpl/*.html'], ['build:html']);
-  gulp.watch(['./dist/**/*.*', '!./dist/offline-worker.js'], debounce(offline, 200));
+  gulp.watch([
+    './dist/**/*.*',
+    '!./dist/offline-worker.js',
+    '!./dist/cache/*.json',
+  ], debounce(offline, 200));
   gulp.watch(['./dist/offline-worker.js'], browserSync.reload);
 });
 
