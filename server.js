@@ -3,6 +3,8 @@ const fs = require('fs');
 const compression = require('compression');
 const app = express();
 
+const distPublicDir = './dist/public';
+
 app.use(function forceSSL(req, res, next) {
   const host = req.get('Host');
   if (!host.startsWith('localhost')) {
@@ -25,10 +27,10 @@ app.use(function corsify(req, res, next) {
 
 app.use(compression());
 
-if (!fs.existsSync('./dist')) {
+if (!fs.existsSync(distPublicDir)) {
   throw new Error('Missing `dist` folder, execute `npm run build` first.');
 }
-app.use(express.static('./dist'));
+app.use(express.static(distPublicDir));
 
 const port = process.env.PORT || 3003;
 app.listen(port, function didListen(err) {
