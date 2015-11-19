@@ -9,7 +9,7 @@
   "dependencies": {
     "babel-core": "^5.8.25",
     "babel-eslint": "^4.1.3",
-    "babel-runtime": "^5.8.25",
+    "babel-runtime": "^6.2.0",
     "babelify": "^6.3.0",
     "bottleneck": "^1.9.1",
     "browserify": "^12.0.0",
