@@ -5,6 +5,5 @@
     "/dist/",
   ],
   "sourceMaps": "inline",
-  "loose": "all",
-  "optional": ["runtime"],
+  "loose": "all"
 }
