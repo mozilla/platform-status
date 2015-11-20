@@ -100,6 +100,7 @@ article {
 	margin-bottom: 0;
 	line-height: calc($gutterY * 2);
 	padding-right: $gutterX;
+	font-weight: 600;
 	@media (min-width: $breakMobileLandscape) {
 		font-size: $h3FontSize;
 		letter-spacing: -.035em;
@@ -199,7 +200,7 @@ article {
 	background-repeat: no-repeat;
 	background-size: 16px;
 	color: $textColorSecondary;
-	font-weight: 700;
+	font-weight: 600;
 	font-size: $smallFontSize;
 	text-transform: uppercase;
 	border: 1px solid rgba(0, 0, 0, 0);
