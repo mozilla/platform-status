@@ -233,7 +233,20 @@ article {
 		background-image: url(https://raw.githubusercontent.com/alrra/browser-logos/master/chrome/chrome_64x64.png);
 	}
 	&.state-firefox {
-		background-image: url(https://raw.githubusercontent.com/alrra/browser-logos/master/firefox/firefox_128x128.png);
+		background-image: url(https://raw.githubusercontent.com/alrra/browser-logos/master/firefox-nightly/firefox-nightly_128x128.png);
+
+		&.state-release {
+			background-image: url(https://raw.githubusercontent.com/alrra/browser-logos/master/firefox/firefox_128x128.png);
+		}
+		&.state-beta {
+			background-image: url(https://raw.githubusercontent.com/alrra/browser-logos/master/firefox-beta/firefox-beta_128x128.png);
+		}
+		&.state-developer-edition {
+			background-image: url(https://raw.githubusercontent.com/alrra/browser-logos/master/firefox-developer-edition/firefox-developer-edition_128x128.png);
+		}
+		&.state-nightly {
+			background-image: url(https://raw.githubusercontent.com/alrra/browser-logos/master/firefox-nightly/firefox-nightly_128x128.png);
+		}
 	}
 	&.state-edge {
 		background-image: url(https://raw.githubusercontent.com/alrra/browser-logos/master/edge/edge_64x64.png);

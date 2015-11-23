@@ -1,5 +1,5 @@
 {{#*inline "browserStatus"}}
-  <li class="status state-{{browser}} state-{{status}}" title="{{alt status 'status' 'long'}} - {{alt browser 'browser' 'long'}}">
+  <li class="status state-{{browser}} state-{{status}} {{#if channel}}state-{{channel}}{{/if}}" title="{{alt status 'status' 'long'}} - {{alt browser 'browser' 'long'}}">
     {{#if url}}<a class="status-inner" target="_blank" href="{{url}}">{{/if}}
     {{#if url_slug}}<span class="status-inner">{{/if}}
       {{#if version}}
@@ -49,7 +49,7 @@
                 {{> browserStatus browser="chrome" url=chrome_url status=chrome_status}}
                 {{> browserStatus browser="webkit" url=webkit_url status=webkit_status}}
                 {{> browserStatus browser="edge" url=ie_url status=ie_status}}
-                {{> browserStatus browser="firefox" status=firefox_status version=firefox_version url_slug=slug}}
+                {{> browserStatus browser="firefox" status=firefox_status version=firefox_version url_slug=slug channel=firefox_channel}}
               </ul>
             </div>
           </div>

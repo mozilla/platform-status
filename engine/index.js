@@ -236,6 +236,16 @@ function populateFirefoxStatus(versions, features) {
       } else {
         feature.firefox_status = 'in-development';
       }
+
+      if (version <= versions.stable) {
+        feature.firefox_channel = 'release';
+      } else if (version === versions.beta) {
+        feature.firefox_channel = 'beta';
+      } else if (version === versions.aurora) {
+        feature.firefox_channel = 'developer-edition';
+      } else if (version === versions.nightly) {
+        feature.firefox_channel = 'nightly';
+      }
     }
   });
 }
