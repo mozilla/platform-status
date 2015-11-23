@@ -196,6 +196,7 @@ article {
 	justify-content: stretch;
 	align-items: stretch;
 	width: calc($gutterY);
+	height: 70px;
 	background-position: 50% calc($gutterY + 1px);
 	background-repeat: no-repeat;
 	background-size: 16px;
