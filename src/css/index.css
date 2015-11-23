@@ -14,13 +14,13 @@ html, body {
 body {
 	font-family: $baseFontFamily;
 	@extend base-rhythm;
-	background: #1e1e21;
-	background-image: radial-gradient(ellipse farthest-side at top left, #00549e 0, #000 100%);
+	-webkit-text-size-adjust: 100%;
+	/*background-image: radial-gradient(ellipse farthest-side at top left, #00549e 0, #000 100%);
 	background-size: 100% 500px;
 	background-repeat: no-repeat;
-	background-position: top center;
+	background-position: top center;*/
 	color: $textColorPrimary;
-	-webkit-text-size-adjust: 100%;
+	background: #fff;
 }
 
 a {
@@ -44,25 +44,74 @@ a {
 	max-width: 1020px;
 }
 header {
+	background: $developerBlueVibrant;
+}
+header .row-inner {
 	flex: 1;
 	padding: 0 0 calc($gutterY / 2) $gutterX;
 }
-
+#tabzilla {
+	display: none;
+	@media (min-width: $breakTablet) {
+		display: block;
+	}
+}
+#title {
+	display: flex;
+	flex-direction: row;
+	padding-top: calc($gutterY / 2);
+	@media (min-width: $breakMobileLandscape) {
+		padding-top: $gutterY;
+	}
+}
 h1 {
+	margin: 0;
+	padding: 0;
+	text-indent: -9999px;
+	height: calc($gutterY * 2);
+	width: calc($gutterY * 2);
+	background-image: url('images/browsers/firefox.svg');
+	background-repeat: no-repeat;
+	background-size: contain;
+	display: block;
 	@extend h1;
+	/*@extend h1;
 	padding-top: $gutterY;
 	margin-bottom: 0;
 	letter-spacing: -.035em;
 	color: #fff;
-	font-weight: 600;
+	font-weight: 600;*/
+	@media (min-width: $breakMobileLandscape) {
+		height: calc($gutterY * 3);
+		width: calc($gutterY * 3);
+	}
 }
 h2 {
+	margin: 0;
+	color: #fff;
+	margin-left: calc($gutterX);
+	font-size: $h3FontSize;
+	line-height: calc($gutterY * 2);
 	font-weight: 300;
-	font-size: $h4FontSize;
-	padding-top: 0;
-	margin: 0 0 $gutterY 0;
-	color: $textColorLight;
-	font-style: italic;
+	letter-spacing: -.035em;
+	@media (min-width: $breakMobileLandscape) {
+		margin-left: calc($gutterX * 2);
+		font-size: $h2FontSize;
+		line-height: calc($gutterY * 1.5);
+		@media (min-width: $breakTablet) {
+			margin-left: calc($gutterX * 3);
+		}
+	}
+	small {
+		display: none;
+		font-style: italic;
+		color: $lightGray;
+		font-size: $h4FontSize;
+	  line-height: calc($gutterY * 1.5);
+		@media (min-width: $breakMobileLandscape) {
+			display: block;
+		}
+	}
 }
 
 article {
@@ -94,7 +143,7 @@ article {
 }
 .feature-title {
 	flex: 1;
-	@extend is-truncated;
+	@extend truncate-text;
 	@extend h5;
 	padding-top: 0;
 	margin-bottom: 0;
@@ -156,27 +205,27 @@ article {
 	margin-right: $gutterX / 2;
 }
 .icon-spec {
-	background-image: url(images/html5.png);
+	background-image: url('images/html5.png');
 	@media (min-resolution: 2dppx) {
-		background-image: url(images/html5@2x.png);
+		background-image: url('images/html5@2x.png');
 	}
 }
 .icon-mdn {
-	background-image: url(images/mdn.png);
+	background-image: url('images/mdn.png');
 	@media (min-resolution: 2dppx) {
-		background-image: url(images/mdn@2x.png);
+		background-image: url('images/mdn@2x.png');
 	}
 }
 .icon-bugzilla {
-	background-image: url(images/bugzilla.png);
+	background-image: url('images/bugzilla.png');
 	@media (min-resolution: 2dppx) {
-		background-image: url(images/bugzilla@2x.png);
+		background-image: url('images/bugzilla@2x.png');
 	}
 }
 .icon-samples {
-	background-image: url(images/github.png);
+	background-image: url('images/github.png');
 	@media (min-resolution: 2dppx) {
-		background-image: url(images/github@2x.png);
+		background-image: url('images/github@2x.png');
 	}
 }
 
@@ -190,21 +239,22 @@ article {
 }
 .status {
 	list-style: none;
+	position: relative;
 	margin: 0;
 	padding: 0;
 	display: flex;
 	justify-content: stretch;
 	align-items: stretch;
 	width: calc($gutterY);
-	background-position: 50% calc($gutterY + 1px);
-	background-repeat: no-repeat;
-	background-size: 16px;
+
+	border: 1px solid rgba(0, 0, 0, 0);
+	border-bottom: none;
+
 	color: $textColorSecondary;
 	font-weight: 600;
 	font-size: $smallFontSize;
 	text-transform: uppercase;
-	border: 1px solid rgba(0, 0, 0, 0);
-	border-bottom: none;
+
 	@media (min-width: $breakTablet) {
 		color: #fff;
 		font-weight: 600;
@@ -212,43 +262,62 @@ article {
 		text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.3), 0 0 1px rgba(0, 0, 0, 0.3);
 		width: calc($gutterY * 3);
 		transition: width 0.2s ease-in-out;
-		background-size: 32px;
-		background-position: 50% calc(($gutterY * 1.6) / 1.618);
 		border-top: none;
 		@media (min-width: $breakDesktop) {
 			font-size: $fontSize;
 		}
 	}
-	&.state-firefox {
-		@media (min-width: $breakTablet) {
-			background-size: 48px;
-			width: calc($gutterY * 8);
-			background-position: 50% calc($gutterY - 5px);
-			.status-text {
-				display: flex;
-			}
-		}
-	}
-	&.state-chrome {
-		background-image: url(https://raw.githubusercontent.com/alrra/browser-logos/master/chrome/chrome_64x64.png);
-	}
-	&.state-firefox {
-		background-image: url(https://raw.githubusercontent.com/alrra/browser-logos/master/firefox/firefox_128x128.png);
-	}
-	&.state-edge {
-		background-image: url(https://raw.githubusercontent.com/alrra/browser-logos/master/edge/edge_64x64.png);
-	}
-	&.state-webkit {
-		background-image: url(https://raw.githubusercontent.com/alrra/browser-logos/master/safari/safari_64x64.png);
+}
+.icon-browser {
+	position: absolute;
+	width: 32px;
+	height: 32px;
+	top: -16px;
+	left: -16px;
+	transform: translate(calc($gutterX + 3px), calc($gutterY * 1.5)) scale(0.5);
+	transform-origin: left center;
+	background-repeat: no-repeat;
+	background-position: center;
+	background-size: 32px;
+	@extend hide-text;
+	@media (min-width: $breakTablet) {
 	}
 }
-@media (min-width: $breakDesktop) {
+.state-firefox {
+	.icon-browser {
+		background-image: url('images/browsers/firefox_64x64.png');
+	}
+	/*@media (min-width: $breakTablet) {
+		background-size: 48px;
+		width: calc($gutterY * 8);
+		background-position: 50% calc($gutterY - 5px);
+		.status-text {
+			display: flex;
+		}
+	}*/
+}
+.state-chrome {
+	.icon-browser {
+		background-image: url('images/browsers/chrome_64x64.png');
+	}
+}
+.state-edge {
+	.icon-browser {
+		background-image: url('images/browsers/edge_64x64.png');
+	}
+}
+.state-webkit {
+	.icon-browser {
+		background-image: url('images/browsers/safari_64x64.png');
+	}
+}
+/*@media (min-width: $breakDesktop) {
 	.feature:hover, .feature:focus {
 		.status:not(.state-firefox) {
 			width: calc($gutterY * 6);
 		}
 	}
-}
+}*/
 .status-inner {
 	flex: 1;
 	display: flex;
@@ -348,7 +417,7 @@ $fadeHeight: 25%;
 	}
 }
 .status-text {
-	@extend is-truncated;
+	@extend truncate-text;
 	font-size: $smallFontSize;
 	display: none;
 	@media (min-width: $breakDesktop) {

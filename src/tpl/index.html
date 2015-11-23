@@ -1,14 +1,23 @@
 {{#*inline "browserStatus"}}
   <li class="status state-{{browser}} state-{{status}}" title="{{alt status 'status' 'long'}} - {{alt browser 'browser' 'long'}}">
-    {{#if url}}<a class="status-inner" target="_blank" href="{{url}}">{{/if}}
-    {{#if url_slug}}<span class="status-inner">{{/if}}
-      {{#if version}}
-        <span class="status-version">{{version}}</span>
-      {{else}}
-        <span class="status-text">{{alt status 'status' 'short'}}</span>
-      {{/if}}
-    {{#if url}}</a>{{/if}}
-    {{#if url_slug}}</span>{{/if}}
+    {{#if url}}
+      <a class="status-inner" target="_blank" href="{{url}}">
+    {{/if}}
+    {{#if url_slug}}
+      <span class="status-inner">
+    {{/if}}
+    <i aria-hidden="true" class="icon-browser">{{alt browser 'browser' 'long'}}</i>
+    {{#if version}}
+      <span class="status-version">{{version}}</span>
+    {{else}}
+      <span class="status-text">{{alt status 'status' 'short'}}</span>
+    {{/if}}
+    {{#if url}}
+      </a>
+    {{/if}}
+    {{#if url_slug}}
+      </span>
+    {{/if}}
 {{/inline}}
 
 <!DOCTYPE html>
@@ -29,15 +38,22 @@
   <link rel="stylesheet" href="bundle.css" inline>
 </head>
 <body>
-  <div class="row">
-    <header class="row-inner">
+  <header class="row">
+    <div class="row-inner">
       <div id="tabzilla">
         <a href="https://www.mozilla.org/">Mozilla</a>
       </div>
-      <h1>Firefox</h1>
-      <h2>Platform Status</h2>
+      <div id="title">
+        <h1>Firefox</h1>
+        <h2>
+          Firefox Platform Status
+          <small>Implementation & standardization roadmap for web platform features</small>
+          <!-- <small>Implementation status and plans for web platform features</small> -->
+          <!-- <small>Implementation and future plans for web platform features</small> -->
+        </h2>
+      </div>
     </header>
-  </div>
+  </header>
   <article class="row">
     <ul class="row-inner" id="features">
       {{#each features}}

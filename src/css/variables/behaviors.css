@@ -1,5 +1,11 @@
-@define-placeholder is-truncated {
+@define-placeholder truncate-text {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+@define-placeholder hide-text {
+  text-indent: 100%;
+  white-space: nowrap;
+  overflow: hidden;
 }
