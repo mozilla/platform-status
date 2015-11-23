@@ -1,5 +1,5 @@
 ---
-title: wasm.js
+title: WebAssembly (WASM)
 category: apps, games
 firefox_status: in-development
 bugzilla: 1188259
