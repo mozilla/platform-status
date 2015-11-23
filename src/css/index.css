@@ -247,6 +247,10 @@ article {
 		.status:not(.state-firefox) {
 			width: calc($gutterY * 6);
 		}
+
+    .status:before {
+      display: none !important;
+    }
 	}
 }
 .status-inner {
@@ -347,6 +351,34 @@ $fadeHeight: 25%;
 		}
 	}
 }
+
+.status.state-shipped:before {
+  content: "\2713";
+}
+.status.state-unknown:before {
+  content: "\2717";
+}
+.status.state-under-consideration:before {
+  content: "\26AF";
+}
+.status.state-not-planned:before {
+  content: "\2716";
+}
+.status.state-in-development:before {
+  content: "\2605";
+}
+
+
+.status:before {
+  text-align: center;
+  display: block;
+  width: 100%;
+}
+.status.state-firefox:before {
+  display: none !important;
+}
+
+
 .status-text {
 	@extend is-truncated;
 	font-size: $smallFontSize;
