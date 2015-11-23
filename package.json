@@ -20,7 +20,7 @@
     "eslint": "^1.6.0",
     "eslint-config-airbnb": "^0.1.0",
     "express": "^4.13.3",
-    "file-exists": "^0.1.1",
+    "file-exists": "^1.0.0",
     "glob": "^6.0.1",
     "gray-matter": "^2.0.1",
     "gulp": "^3.9.0",
