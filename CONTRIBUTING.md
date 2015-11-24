@@ -22,11 +22,11 @@ If you're new to git or github, checkout the guide to [creating a pull request](
 
 ## Should We Add Feature X?
 
-The feature makes a good candidate if any of the following are true:
+This list isn't definitive, but a feature makes a good candidate if any of the following are true:
 
 * a standardization process has started
-* major browsers have started implementing it
-* it been requested by web designers/developers
+* major browsers have started implementing it or are experimenting with it
+* it has been requested by web designers/developers
 
 ## Developing the Site
 
