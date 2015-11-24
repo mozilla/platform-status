@@ -104,6 +104,7 @@ h2 {
 	}
 	small {
 		display: none;
+		letter-spacing: normal;
 		font-style: italic;
 		color: $lightGray;
 		font-size: $h4FontSize;
@@ -242,13 +243,8 @@ article {
 	position: relative;
 	margin: 0;
 	padding: 0;
-	display: flex;
-	justify-content: stretch;
-	align-items: stretch;
 	width: calc($gutterY);
-
-	border: 1px solid rgba(0, 0, 0, 0);
-	border-bottom: none;
+	border-right: 0.15rem solid transparent;
 
 	color: $textColorSecondary;
 	font-weight: 600;
@@ -260,11 +256,12 @@ article {
 		font-weight: 600;
 		font-size: $fontSize;
 		text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.3), 0 0 1px rgba(0, 0, 0, 0.3);
-		width: calc($gutterY * 3);
-		transition: width 0.2s ease-in-out;
+		width: calc($gutterY * 6);
+		transition: transform 0.2s ease-in-out;
 		border-top: none;
 		@media (min-width: $breakDesktop) {
 			font-size: $fontSize;
+			width: calc($gutterY * 8);
 		}
 	}
 }
@@ -281,7 +278,9 @@ article {
 	background-size: 32px;
 	@extend hide-text;
 	@media (min-width: $breakTablet) {
+		transform: translate(calc($gutterX * 1.5), calc($gutterY));
 	}
+	filter: drop-shadow(1px 1px 1px rgba(0, 0, 0, 0.1));
 }
 .state-firefox {
 	.icon-browser {
@@ -311,19 +310,10 @@ article {
 		background-image: url('images/browsers/safari_64x64.png');
 	}
 }
-/*@media (min-width: $breakDesktop) {
-	.feature:hover, .feature:focus {
-		.status:not(.state-firefox) {
-			width: calc($gutterY * 6);
-		}
-	}
-}*/
 .status-inner {
-	flex: 1;
-	display: flex;
-	justify-content: center;
-	align-items: flex-start;
 	color: inherit;
+	display: block;
+	height: 100%;
 	&:hover, &:focus, &:active {
     text-decoration: none;
 		color: inherit;
@@ -344,8 +334,8 @@ $stateConsideringLight: $marketOrangeTint;
 $stateDevelopingLight: $flameYellowTint;
 $stateShippedLight: $geckoGreenTint;
 
-$stateShade: -2%;
-$stateAlpha: 100%;
+$stateShade: -10%;
+$stateAlpha: 50%;
 $fadeStart: 70%;
 $fadeMid: 10%;
 $fadeHeight: 25%;
@@ -357,7 +347,7 @@ $fadeHeight: 25%;
 		background-color: $stateUnknown;
 		border-color: color($stateUnknown lightness($stateShade) alpha($stateAlpha));
 		.status-inner {
-			background-image: linear-gradient(to top, color($stateUnknown alpha($fadeStart)), color($stateUnknown alpha(50%)) $fadeMid, color($stateUnknown alpha(0%)) $fadeHeight);
+			/*background-image: linear-gradient(to top, color($stateUnknown alpha($fadeStart)), color($stateUnknown alpha(50%)) $fadeMid, color($stateUnknown alpha(0%)) $fadeHeight);*/
 		}
 	}
 }
@@ -368,7 +358,7 @@ $fadeHeight: 25%;
 		background-color: $stateNotPlanned;
 		border-color: color($stateNotPlanned lightness($stateShade) alpha($stateAlpha));
 		.status-inner {
-			background-image: linear-gradient(to top, color($stateNotPlanned alpha($fadeStart)), color($stateNotPlanned alpha(50%)) $fadeMid, color($stateNotPlanned alpha(0%)) $fadeHeight);
+			/*background-image: linear-gradient(to top, color($stateNotPlanned alpha($fadeStart)), color($stateNotPlanned alpha(50%)) $fadeMid, color($stateNotPlanned alpha(0%)) $fadeHeight);*/
 		}
 	}
 }
@@ -379,7 +369,7 @@ $fadeHeight: 25%;
 		background-color: $stateDeprecated;
 		border-color: color($stateDeprecated lightness($stateShade) alpha($stateAlpha));
 		.status-inner {
-			background-image: linear-gradient(to top, color($stateDeprecated alpha($fadeStart)), color($stateDeprecated alpha(50%)) $fadeMid, color($stateDeprecated alpha(0%)) $fadeHeight);
+			/*background-image: linear-gradient(to top, color($stateDeprecated alpha($fadeStart)), color($stateDeprecated alpha(50%)) $fadeMid, color($stateDeprecated alpha(0%)) $fadeHeight);*/
 		}
 	}
 }
@@ -390,7 +380,7 @@ $fadeHeight: 25%;
 		background-color: $stateConsidering;
 		border-color: color($stateConsidering lightness($stateShade) alpha($stateAlpha));
 		.status-inner {
-			background-image: linear-gradient(to top, color($stateConsidering alpha($fadeStart)), color($stateConsidering alpha(50%)) $fadeMid, color($stateConsidering alpha(0%)) $fadeHeight);
+			/*background-image: linear-gradient(to top, color($stateConsidering alpha($fadeStart)), color($stateConsidering alpha(50%)) $fadeMid, color($stateConsidering alpha(0%)) $fadeHeight);*/
 		}
 	}
 }
@@ -401,7 +391,7 @@ $fadeHeight: 25%;
 		background-color: $stateDeveloping;
 		border-color: color($stateDeveloping lightness($stateShade) alpha($stateAlpha));
 		.status-inner {
-			background-image: linear-gradient(to top, color($stateDeveloping alpha($fadeStart)), color($stateDeveloping alpha(50%)) $fadeMid, color($stateDeveloping alpha(0%)) $fadeHeight);
+			/*background-image: linear-gradient(to top, color($stateDeveloping alpha($fadeStart)), color($stateDeveloping alpha(50%)) $fadeMid, color($stateDeveloping alpha(0%)) $fadeHeight);*/
 		}
 	}
 }
@@ -412,7 +402,7 @@ $fadeHeight: 25%;
 		background-color: $stateShipped;
 		border-color: color($stateShipped lightness($stateShade) alpha($stateAlpha));
 		.status-inner {
-			background-image: linear-gradient(to top, color($stateShipped alpha($fadeStart)), color($stateShipped alpha(50%)) $fadeMid, color($stateShipped alpha(0%)) $fadeHeight);
+			/*background-image: linear-gradient(to top, color($stateShipped alpha($fadeStart)), color($stateShipped alpha(50%)) $fadeMid, color($stateShipped alpha(0%)) $fadeHeight);*/
 		}
 	}
 }
