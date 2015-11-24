@@ -2,11 +2,12 @@
 
 ## Adding a Feature
 
-If you're new to git or github, checkout the guide to [creating a pull request](https://help.github.com/articles/using-pull-requests/) before continuing.
+The easiest way to add a new feature is to use github's online file editor and create a new pull request from there.
 
-1. Copy the [feature-template.md](https://github.com/mozilla/platatus/blob/master/feature-template.md) file into `features` folder and rename it to reflect the feature name. The filename should be: short, descriptive, lowercase, and use-dashes-for-spaces.
-1. Fill as many values (documented below) as possible in `<the-feature>.md`
-1. Add the file to git, commit it, and open up a pull request.
+1. Create a [new file](https://github.com/mozilla/platatus/new/master/features) in the `features` folder and name it to reflect the feature name. The filename should end with the `.md` extension, be short, be descriptive, be lowercase, and use-dashes-for-spaces.
+1. Copy the contents [feature-template.md](https://github.com/mozilla/platatus/blob/master/feature-template.md) into the file.
+1. Fill as many values (documented below) as possible in `<the-feature>.md`.
+1. Create a pull request from the online editor, or if you're using git from the command line follow the usual steps for making a pull request.
 
 | Property       | Required | Description                                                                                                                                                                                            |
 |----------------|----------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
