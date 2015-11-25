@@ -6,12 +6,14 @@ import Bottleneck from 'bottleneck';
 import FixtureParser from './fixtureParser.js';
 import BrowserParser from './browserParser.js';
 import FirefoxVersionParser from './firefoxVersionParser.js';
+import CanIUseParser from './canIUseParser.js';
 import cache from './cache.js';
 
 const fixtureDir = path.resolve('./features');
 const fixtureParser = new FixtureParser(fixtureDir);
 const browserParser = new BrowserParser();
 const firefoxVersionParser = new FirefoxVersionParser();
+const canIUseParser = new CanIUseParser();
 let validationWarnings;
 
 function validateWarning(msg) {
@@ -236,7 +238,33 @@ function populateFirefoxStatus(versions, features) {
       } else {
         feature.firefox_status = 'in-development';
       }
+
+      if (version <= versions.stable) {
+        feature.firefox_channel = 'release';
+      } else if (version === versions.beta) {
+        feature.firefox_channel = 'beta';
+      } else if (version === versions.aurora) {
+        feature.firefox_channel = 'developer-edition';
+      } else if (version === versions.nightly) {
+        feature.firefox_channel = 'nightly';
+      }
     }
+  });
+}
+
+function populateCanIUsePercent(canIUseData, features) {
+  features.forEach((feature) => {
+    if (!feature.caniuse_ref) {
+      validateWarning(feature.file + ': missing caniuse_ref');
+      return;
+    }
+    const data = canIUseData.data[feature.caniuse_ref];
+    if (!data) {
+      validateWarning(feature.file + ': invalid caniuse_ref ' + feature.caniuse_ref);
+      return;
+    }
+    feature.caniuse_usage_perc_y = data.usage_perc_y;
+    feature.caniuse_usage_perc_a = data.usage_perc_a;
   });
 }
 
@@ -339,12 +367,14 @@ function buildStatus(options) {
     fixtureParser.read(),
     browserParser.read(options),
     firefoxVersionParser.read(options),
+    canIUseParser.read(options),
   ]).then(() => {
     return populateBugzillaData(fixtureParser.results, options);
   }).then(() => {
     populateFirefoxStatus(firefoxVersionParser.results, fixtureParser.results);
     populateBrowserFeatureData(browserParser.results, fixtureParser.results);
     populateSpecStatus(browserParser.results, fixtureParser.results);
+    populateCanIUsePercent(canIUseParser.results, fixtureParser.results);
     const data = {
       created: (new Date()).toISOString(),
       features: fixtureParser.results,

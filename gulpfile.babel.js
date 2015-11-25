@@ -54,12 +54,6 @@ gulp.task('lint', () => {
     .pipe(plugins.eslint.failOnError());
 });
 
-gulp.task('deploy', ['build'], () => {
-  return oghliner.deploy({
-    rootDir: publicDir,
-  });
-});
-
 gulp.task('build:status', () => {
   mkdirp.sync(cacheDir);
   const options = {
