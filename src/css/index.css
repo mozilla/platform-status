@@ -14,13 +14,9 @@ html, body {
 body {
 	font-family: $baseFontFamily;
 	@extend base-rhythm;
-	-webkit-text-size-adjust: 100%;
-	/*background-image: radial-gradient(ellipse farthest-side at top left, #00549e 0, #000 100%);
-	background-size: 100% 500px;
-	background-repeat: no-repeat;
-	background-position: top center;*/
 	color: $textColorPrimary;
 	background: #fff;
+	-webkit-text-size-adjust: 100%;
 }
 
 a {
@@ -65,22 +61,14 @@ header .row-inner {
 	}
 }
 h1 {
+	height: calc($gutterY * 2);
+	width: calc($gutterY * 2);
 	margin: 0;
 	padding: 0;
 	text-indent: -9999px;
-	height: calc($gutterY * 2);
-	width: calc($gutterY * 2);
 	background-image: url('images/firefox.svg');
 	background-repeat: no-repeat;
 	background-size: contain;
-	display: block;
-	@extend h1;
-	/*@extend h1;
-	padding-top: $gutterY;
-	margin-bottom: 0;
-	letter-spacing: -.035em;
-	color: #fff;
-	font-weight: 600;*/
 	@media (min-width: $breakMobileLandscape) {
 		height: calc($gutterY * 3);
 		width: calc($gutterY * 3);
@@ -106,6 +94,7 @@ h2 {
 		display: none;
 		letter-spacing: normal;
 		font-style: italic;
+		font-weight: normal;
 		color: $lightGray;
 		font-size: $h4FontSize;
 	  line-height: calc($gutterY * 1.5);
