@@ -70,7 +70,7 @@ h1 {
 	text-indent: -9999px;
 	height: calc($gutterY * 2);
 	width: calc($gutterY * 2);
-	background-image: url('images/browsers/firefox.svg');
+	background-image: url('images/firefox.svg');
 	background-repeat: no-repeat;
 	background-size: contain;
 	display: block;
