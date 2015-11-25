@@ -48,7 +48,7 @@ header {
 }
 header .row-inner {
 	flex: 1;
-	padding: 0 0 calc($gutterY / 2) $gutterX;
+	padding: 0 0 $gutterY $gutterX;
 }
 #tabzilla {
 	display: none;
@@ -130,7 +130,7 @@ article {
 	padding: 0;
 	padding-left: $gutterX;
 	@media (min-width: $breakMobileLandscape) {
-		padding: calc($gutterX / 2) $gutterX;
+		padding: 0 $gutterX $gutterY;
 	}
 }
 .feature:hover, .feature:focus {
@@ -162,9 +162,8 @@ article {
 }
 
 .feature-meta {
-	padding-top: calc($gutterY / 2);
-	padding-bottom: calc($gutterY / 1.5);
 	display: none;
+	padding: calc($gutterY / 2) 0 0;
 	color: $textColorTertiary;
 	@media (min-width: $breakMobileLandscape) {
 		display: block;
@@ -177,17 +176,29 @@ article {
 }
 .feature-summary {
 	margin: 0;
-	padding-bottom: calc($gutterY / 2);
+	padding-top: calc($gutterY / 2);
 }
 .feature-links {
 	ul {
 		list-style: none;
-		margin: 0;
 		padding: 0;
+		display: flex;
+		margin: 0;
+		margin-right: calc($gutterX);
+		@media (min-width: $breakMobileLandscape) {
+			margin-right: 0;
+		}
 	}
 	li {
-		display: inline-block;
-		margin-right: calc($gutterX / 2);
+		margin-right: calc($gutterX);
+		&:last-child {
+			margin-right: 0;
+		}
+		overflow: hidden;
+		&.link-bug {
+			flex: 1;
+			text-align: right;
+		}
 	}
 	a {
 		color: $linkBlue;
@@ -198,12 +209,12 @@ article {
 }
 .icon {
 	display: inline-block;
-	background-position: center;
+	background-position: bottom center;
 	background-repeat: no-repeat;
-	width: $gutterY;
+	width: $gutterX;
 	height: $gutterX;
 	background-size: $gutterX;
-	margin-right: $gutterX / 2;
+	margin-right: calc($gutterX / 2);
 }
 .icon-spec {
 	background-image: url('images/html5.png');
@@ -237,31 +248,95 @@ article {
 	display: flex;
 	flex-direction: row;
 	height: calc($gutterY * 2);
+	overflow: hidden;
 }
+
 .status {
 	list-style: none;
 	position: relative;
 	margin: 0;
 	padding: 0;
 	width: calc($gutterY);
-	border-right: 0.15rem solid transparent;
+	display: flex;
+	justify-content: stretch;
+	align-items: center;
+	border: 1px solid transparent;
 
 	color: $textColorSecondary;
 	font-weight: 600;
 	font-size: $smallFontSize;
 	text-transform: uppercase;
 
-	@media (min-width: $breakTablet) {
+	@media (min-width: $breakMobileLandscape) {
 		color: #fff;
 		font-weight: 600;
 		font-size: $fontSize;
 		text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.3), 0 0 1px rgba(0, 0, 0, 0.3);
-		width: calc($gutterY * 6);
-		transition: transform 0.2s ease-in-out;
-		border-top: none;
-		@media (min-width: $breakDesktop) {
-			font-size: $fontSize;
-			width: calc($gutterY * 8);
+		width: calc($gutterY * 3);
+		border: none;
+		transition: transform 0.2s ease-out;
+		&:first-child {
+			border-top-left-radius: 0.2rem;
+			border-bottom-left-radius: 0.2rem;
+		}
+		&:last-child {
+			border-top-right-radius: 0.2rem;
+			border-bottom-right-radius: 0.2rem;
+		}
+		&.state-firefox {
+			width: calc($gutterY * 6);
+		}
+		&:not(:first-child) {
+			box-shadow: -2px 0 3px rgba(0, 0, 0, 0.2);
+		}
+		&:nth-child(1) {
+			transform: translateX(calc($gutterY * 6));
+		}
+		&:nth-child(2) {
+			transform: translateX(calc($gutterY * 4));
+		}
+		&:nth-child(3) {
+			transform: translateX(calc($gutterY * 2));
+		}
+		@media (min-width: $breakTablet) {
+			width: calc($gutterY * 6);
+			transition: transform 0.2s ease-in-out;
+			&:nth-child(1) {
+				transform: translateX(calc($gutterY * 12));
+			}
+			&:nth-child(2) {
+				transform: translateX(calc($gutterY * 8));
+			}
+			&:nth-child(3) {
+				transform: translateX(calc($gutterY * 4));
+			}
+
+			@media (min-width: $breakDesktop) {
+				font-size: $fontSize;
+				width: calc($gutterY * 8);
+				&.state-firefox {
+					width: calc($gutterY * 8);
+				}
+				&:nth-child(1) {
+					transform: translateX(calc($gutterY * 18));
+				}
+				&:nth-child(2) {
+					transform: translateX(calc($gutterY * 12));
+				}
+				&:nth-child(3) {
+					transform: translateX(calc($gutterY * 6));
+				}
+			}
+		}
+	}
+}
+@media (min-width: $breakTablet) {
+	.status {
+		will-change: transform;
+	}
+	.feature:hover {
+		.status {
+			transform: translateX(0);
 		}
 	}
 }
@@ -269,31 +344,22 @@ article {
 	position: absolute;
 	width: 32px;
 	height: 32px;
-	top: -16px;
-	left: -16px;
-	transform: translate(calc($gutterX + 3px), calc($gutterY * 1.5)) scale(0.5);
+	top: -8px;
+	left: 0;
+	transform: translate(2px, calc($gutterY / 2)) scale(0.5);
 	transform-origin: left center;
 	background-repeat: no-repeat;
 	background-position: center;
 	background-size: 32px;
 	@extend hide-text;
-	@media (min-width: $breakTablet) {
-		transform: translate(calc($gutterX * 1.5), calc($gutterY));
+	@media (min-width: $breakMobileLandscape) {
+		transform: translate(calc($gutterX / 2), calc($gutterY / 1.5)) scale(0.75);
 	}
-	filter: drop-shadow(1px 1px 1px rgba(0, 0, 0, 0.1));
 }
 .state-firefox {
 	.icon-browser {
 		background-image: url('images/browsers/firefox_64x64.png');
 	}
-	/*@media (min-width: $breakTablet) {
-		background-size: 48px;
-		width: calc($gutterY * 8);
-		background-position: 50% calc($gutterY - 5px);
-		.status-text {
-			display: flex;
-		}
-	}*/
 }
 .state-chrome {
 	.icon-browser {
@@ -309,15 +375,6 @@ article {
 	.icon-browser {
 		background-image: url('images/browsers/safari_64x64.png');
 	}
-}
-.status-inner {
-	color: inherit;
-	display: block;
-	height: 100%;
-	&:hover, &:focus, &:active {
-    text-decoration: none;
-		color: inherit;
-  }
 }
 
 $stateUnknown: $lightGray;
@@ -340,10 +397,10 @@ $fadeStart: 70%;
 $fadeMid: 10%;
 $fadeHeight: 25%;
 
-.status.state-unknown {
+.state-unknown {
 	background-color: $stateUnknownLight;
 	border-color: color($stateUnknownLight lightness($stateShade) alpha($stateAlpha));
-	@media (min-width: $breakTablet) {
+	@media (min-width: $breakMobileLandscape) {
 		background-color: $stateUnknown;
 		border-color: color($stateUnknown lightness($stateShade) alpha($stateAlpha));
 		.status-inner {
@@ -351,10 +408,10 @@ $fadeHeight: 25%;
 		}
 	}
 }
-.status.state-not-planned {
+.state-not-planned {
 	background-color: $stateNotPlannedLight;
 	border-color: color($stateNotPlannedLight lightness($stateShade) alpha($stateAlpha));
-	@media (min-width: $breakTablet) {
+	@media (min-width: $breakMobileLandscape) {
 		background-color: $stateNotPlanned;
 		border-color: color($stateNotPlanned lightness($stateShade) alpha($stateAlpha));
 		.status-inner {
@@ -362,10 +419,10 @@ $fadeHeight: 25%;
 		}
 	}
 }
-.status.state-deprecated {
+.state-deprecated {
 	background-color: $stateDeprecatedLight;
 	border-color: color($stateDeprecatedLight lightness($stateShade) alpha($stateAlpha));
-	@media (min-width: $breakTablet) {
+	@media (min-width: $breakMobileLandscape) {
 		background-color: $stateDeprecated;
 		border-color: color($stateDeprecated lightness($stateShade) alpha($stateAlpha));
 		.status-inner {
@@ -373,10 +430,10 @@ $fadeHeight: 25%;
 		}
 	}
 }
-.status.state-under-consideration {
+.state-under-consideration {
 	background-color: $stateConsideringLight;
 	border-color: color($stateConsideringLight lightness($stateShade) alpha($stateAlpha));
-	@media (min-width: $breakTablet) {
+	@media (min-width: $breakMobileLandscape) {
 		background-color: $stateConsidering;
 		border-color: color($stateConsidering lightness($stateShade) alpha($stateAlpha));
 		.status-inner {
@@ -384,10 +441,10 @@ $fadeHeight: 25%;
 		}
 	}
 }
-.status.state-in-development {
+.state-in-development {
 	background-color: $stateDevelopingLight;
 	border-color: color($stateDevelopingLight lightness($stateShade) alpha($stateAlpha));
-	@media (min-width: $breakTablet) {
+	@media (min-width: $breakMobileLandscape) {
 		background-color: $stateDeveloping;
 		border-color: color($stateDeveloping lightness($stateShade) alpha($stateAlpha));
 		.status-inner {
@@ -395,10 +452,10 @@ $fadeHeight: 25%;
 		}
 	}
 }
-.status.state-shipped {
+.state-shipped {
 	background-color: $stateShippedLight;
 	border-color: color($stateShippedLight lightness($stateShade) alpha($stateAlpha));
-	@media (min-width: $breakTablet) {
+	@media (min-width: $breakMobileLandscape) {
 		background-color: $stateShipped;
 		border-color: color($stateShipped lightness($stateShade) alpha($stateAlpha));
 		.status-inner {
@@ -406,29 +463,41 @@ $fadeHeight: 25%;
 		}
 	}
 }
-.status-text {
+
+.status-inner {
+	color: inherit;
+	flex: 1;
+	&:hover, &:focus, &:active {
+    text-decoration: none;
+		color: inherit;
+  }
+}
+.status-text, .status-version {
 	@extend truncate-text;
+	flex: 1;
+	margin: 0 calc($gutterX) 0 calc($gutterY * 2);
+	@media (min-width: $breakMobileLandscape) {
+		margin-left: calc($gutterX * 3);
+	}
+}
+.status-text {
 	font-size: $smallFontSize;
-	display: none;
+	/*justify-content: flex-end;*/
 	@media (min-width: $breakDesktop) {
 		font-size: $fontSize;
 	}
 }
-@media (min-width: $breakTablet) {
-	.feature:hover, .feature:focus {
-		.status-text {
-			display: block;
-		}
-	}
-}
 .status-version {
 	color: $stateShipped;
-	@media (min-width: $breakTablet) {
+	@media (min-width: $breakMobileLandscape) {
 		color: inherit;
 	}
 }
 
 footer {
+	background: $nightlyBlue;
+}
+footer .row-inner {
 	padding: $gutterY $gutterX;
 	flex: 1;
 	display: flex;
@@ -453,7 +522,10 @@ footer ul {
 footer li {
 	display: inline-block;
 	margin: 0;
-	padding: 0 $gutterX 0 0;
+	padding: 0 calc($gutterX * 2) 0 0;
+}
+footer a {
+	white-space: nowrap;
 }
 footer p {
 	color: $textColorLight;

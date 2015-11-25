@@ -70,7 +70,6 @@
             </div>
           </div>
           <div class="feature-meta">
-            <p class="feature-summary">{{{summary}}}</p>
             <div class="feature-links">
               <ul>
               {{#if mdn_url}}
@@ -88,7 +87,7 @@
                 </li>
               {{/if}}
               {{#if bugzilla}}
-                <li>
+                <li class="link-bug">
                   <a target="_blank" href="https://bugzilla.mozilla.org/show_bug.cgi?id={{bugzilla}}" title="Implementation bug at bugzilla.mozilla.org">
                     <i aria-hidden="true" class="icon icon-bugzilla"></i>{{#if_eq firefox_status "shipped"}}Fixed
                     {{else}}{{bugzilla_resolved_count}}/{{bugzilla_dependant_count}} Resolved
@@ -98,13 +97,14 @@
               {{/if}}
               </ul>
             </div>
+            <p class="feature-summary">{{{summary}}}</p>
           </div>
         </li>
       {{/each}}
     </ul>
   </article>
-  <div class="row">
-    <footer class="row-inner">
+  <footer class="row">
+    <div class="row-inner">
       <p class="license">Content available under a <a href="http://mozilla.org/en-US/foundation/licensing/website-content/" target="_blank">Creative Commons license</a>. Portions of the status data are from
         <a href="https://www.chromestatus.com/features" target="_blank">chromestatus.com</a> (<a href="http://creativecommons.org/licenses/by/2.5/" target="_blank">CC BY 2.5</a>),
         <a href="https://dev.windows.com/en-us/microsoft-edge/platform/status/" target="_blank">dev.windows.com</a> (<a href="http://creativecommons.org/licenses/by/2.5/" target="_blank">CC BY 2.5</a>), and
@@ -113,8 +113,8 @@
         <li><a id="link-repo" href="https://github.com/mozilla/platatus/">View source</a></li>
         <li><a id="link-issue" href="https://github.com/mozilla/platatus/issues/new">Submit feedback</a></li>
       </ul>
-    </footer>
-  </div>
+    </div>
+  </footer>
   <script src="bundle.js" async defer></script>
 </body>
 </html>
