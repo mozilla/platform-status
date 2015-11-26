@@ -347,8 +347,10 @@ article {
 }
 .state-firefox {
 	.icon-browser {
-		transform: translate(calc($gutterX / 3), calc($gutterY / 1.5)) scale(1);
 		background-image: url('images/browsers/firefox_64x64.png');
+		@media (min-width: $breakMobileLandscape) {
+			transform: translate(calc($gutterX / 3), calc($gutterY / 1.5)) scale(1);
+		}
 	}
 	&.state-beta {
 		.icon-browser {
@@ -470,6 +472,7 @@ $fadeHeight: 25%;
 	display: flex;
 	justify-content: center;
 	align-items: center;
+	overflow: hidden;
 	padding-right: calc($gutterX / 2);
 	&:hover, &:focus, &:active {
     text-decoration: none;
@@ -481,9 +484,12 @@ $fadeHeight: 25%;
 	}
 }
 .status-text {
+	@extend truncate-text;
 	font-size: $smallFontSize;
 	flex: 1;
-	padding-right: calc($gutterX / 2);
+	&:not(:last-child) {
+		padding-right: calc($gutterX / 4);
+	}
 	@media (min-width: $breakDesktop) {
 		font-size: $fontSize;
 	}
