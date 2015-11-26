@@ -233,7 +233,7 @@ function populateFirefoxStatus(versions, features) {
     if (!isNaN(feature.firefox_status)) {
       const version = parseInt(feature.firefox_status, 10);
       feature.firefox_version = version;
-      if (version <= versions.stable) {
+      if (version <= versions.aurora) {
         feature.firefox_status = 'shipped';
       } else {
         feature.firefox_status = 'in-development';

@@ -7,10 +7,9 @@
       <span class="status-inner">
     {{/if}}
     <i aria-hidden="true" class="icon-browser">{{alt browser 'browser' 'long'}}</i>
+    <span class="status-text">{{alt status 'status' 'short'}}</span>
     {{#if version}}
       <span class="status-version">{{version}}</span>
-    {{else}}
-      <span class="status-text">{{alt status 'status' 'short'}}</span>
     {{/if}}
     {{#if url}}
       </a>
