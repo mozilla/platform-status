@@ -110,7 +110,7 @@ article {
 
 #features {
 	list-style: none;
-	margin: calc($gutterY) 0;
+	margin: calc($gutterY / 2) 0;
 	padding: 0;
 }
 
@@ -119,7 +119,7 @@ article {
 	padding: 0;
 	padding-left: $gutterX;
 	@media (min-width: $breakMobileLandscape) {
-		padding: 0 $gutterX $gutterY;
+		padding: calc($gutterY / 2) $gutterX;
 	}
 }
 .feature:hover, .feature:focus {
@@ -248,7 +248,7 @@ article {
 	width: calc($gutterY);
 	display: flex;
 	justify-content: stretch;
-	align-items: center;
+	align-items: stretch;
 	border: 1px solid transparent;
 
 	color: $textColorSecondary;
@@ -347,6 +347,7 @@ article {
 }
 .state-firefox {
 	.icon-browser {
+		transform: translate(calc($gutterX / 3), calc($gutterY / 1.5)) scale(1);
 		background-image: url('images/browsers/firefox_64x64.png');
 	}
 	&.state-beta {
@@ -395,6 +396,13 @@ $stateConsideringLight: $marketOrangeTint;
 $stateDevelopingLight: $flameYellowTint;
 $stateShippedLight: $geckoGreenTint;
 
+$stateUnknownFocus: color($lightGray lightness(-7%));
+$stateNotPlannedFocus: color($firefoxOrange lightness(-7%));
+$stateDeprecatedFocus: color($firefoxOrange lightness(-7%));
+$stateConsideringFocus: color($marketOrange lightness(-7%));
+$stateDevelopingFocus: color($flameYellow lightness(-7%));
+$stateShippedFocus: color($geckoGreen lightness(-7%));
+
 $stateShade: -10%;
 $stateAlpha: 50%;
 $fadeStart: 70%;
@@ -403,67 +411,55 @@ $fadeHeight: 25%;
 
 .state-unknown {
 	background-color: $stateUnknownLight;
-	border-color: color($stateUnknownLight lightness($stateShade) alpha($stateAlpha));
 	@media (min-width: $breakMobileLandscape) {
 		background-color: $stateUnknown;
-		border-color: color($stateUnknown lightness($stateShade) alpha($stateAlpha));
-		.status-inner {
-			/*background-image: linear-gradient(to top, color($stateUnknown alpha($fadeStart)), color($stateUnknown alpha(50%)) $fadeMid, color($stateUnknown alpha(0%)) $fadeHeight);*/
+		&:hover {
+			background-color: $stateUnknownFocus;
 		}
 	}
 }
 .state-not-planned {
 	background-color: $stateNotPlannedLight;
-	border-color: color($stateNotPlannedLight lightness($stateShade) alpha($stateAlpha));
 	@media (min-width: $breakMobileLandscape) {
 		background-color: $stateNotPlanned;
-		border-color: color($stateNotPlanned lightness($stateShade) alpha($stateAlpha));
-		.status-inner {
-			/*background-image: linear-gradient(to top, color($stateNotPlanned alpha($fadeStart)), color($stateNotPlanned alpha(50%)) $fadeMid, color($stateNotPlanned alpha(0%)) $fadeHeight);*/
+		&:hover {
+			background-color: $stateNotPlannedFocus;
 		}
 	}
 }
 .state-deprecated {
 	background-color: $stateDeprecatedLight;
-	border-color: color($stateDeprecatedLight lightness($stateShade) alpha($stateAlpha));
 	@media (min-width: $breakMobileLandscape) {
 		background-color: $stateDeprecated;
-		border-color: color($stateDeprecated lightness($stateShade) alpha($stateAlpha));
-		.status-inner {
-			/*background-image: linear-gradient(to top, color($stateDeprecated alpha($fadeStart)), color($stateDeprecated alpha(50%)) $fadeMid, color($stateDeprecated alpha(0%)) $fadeHeight);*/
+		&:hover {
+			background-color: $stateDeprecatedFocus;
 		}
 	}
 }
 .state-under-consideration {
 	background-color: $stateConsideringLight;
-	border-color: color($stateConsideringLight lightness($stateShade) alpha($stateAlpha));
 	@media (min-width: $breakMobileLandscape) {
 		background-color: $stateConsidering;
-		border-color: color($stateConsidering lightness($stateShade) alpha($stateAlpha));
-		.status-inner {
-			/*background-image: linear-gradient(to top, color($stateConsidering alpha($fadeStart)), color($stateConsidering alpha(50%)) $fadeMid, color($stateConsidering alpha(0%)) $fadeHeight);*/
+		&:hover {
+			background-color: $stateDevelopingFocus;
 		}
 	}
 }
 .state-in-development {
 	background-color: $stateDevelopingLight;
-	border-color: color($stateDevelopingLight lightness($stateShade) alpha($stateAlpha));
 	@media (min-width: $breakMobileLandscape) {
 		background-color: $stateDeveloping;
-		border-color: color($stateDeveloping lightness($stateShade) alpha($stateAlpha));
-		.status-inner {
-			/*background-image: linear-gradient(to top, color($stateDeveloping alpha($fadeStart)), color($stateDeveloping alpha(50%)) $fadeMid, color($stateDeveloping alpha(0%)) $fadeHeight);*/
+		&:hover {
+			background-color: $stateDevelopingFocus;
 		}
 	}
 }
 .state-shipped {
 	background-color: $stateShippedLight;
-	border-color: color($stateShippedLight lightness($stateShade) alpha($stateAlpha));
 	@media (min-width: $breakMobileLandscape) {
 		background-color: $stateShipped;
-		border-color: color($stateShipped lightness($stateShade) alpha($stateAlpha));
-		.status-inner {
-			/*background-image: linear-gradient(to top, color($stateShipped alpha($fadeStart)), color($stateShipped alpha(50%)) $fadeMid, color($stateShipped alpha(0%)) $fadeHeight);*/
+		&:hover {
+			background-color: $stateShippedFocus;
 		}
 	}
 }
@@ -471,22 +467,23 @@ $fadeHeight: 25%;
 .status-inner {
 	color: inherit;
 	flex: 1;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	padding-right: calc($gutterX / 2);
 	&:hover, &:focus, &:active {
     text-decoration: none;
 		color: inherit;
   }
-}
-.status-text, .status-version {
-	@extend truncate-text;
-	flex: 1;
-	margin: 0 calc($gutterX) 0 calc($gutterY * 2);
+	padding-left: calc($gutterY * 2);
 	@media (min-width: $breakMobileLandscape) {
-		margin-left: calc($gutterX * 3);
+		padding-left: calc($gutterX * 3);
 	}
 }
 .status-text {
 	font-size: $smallFontSize;
-	/*justify-content: flex-end;*/
+	flex: 1;
+	padding-right: calc($gutterX / 2);
 	@media (min-width: $breakDesktop) {
 		font-size: $fontSize;
 	}
