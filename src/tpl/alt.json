@@ -21,8 +21,8 @@
       "long": "In Development"
     },
     "shipped": {
-      "short": "Shipped",
-      "long": "Shipped"
+      "short": "Landed",
+      "long": "Landed"
     }
   },
   "browser": {

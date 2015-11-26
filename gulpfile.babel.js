@@ -91,7 +91,7 @@ gulp.task('build:tabzilla', () => {
 gulp.task('build:root', () => {
   return gulp
     .src(
-      ['./src/*.*', './src/fonts/*.*', './src/images/*.*'],
+      ['./src/*.*', './src/fonts/*.*', './src/images/**/*.*'],
       {base: './src'}
     )
     .pipe(gulp.dest(publicDir));
@@ -148,7 +148,7 @@ function offline() {
       indexHtmlFilename,
       'bundle.js',
       'bundle.css',
-      'images/*.png',
+      'images/**/*.*',
     ],
   });
 }

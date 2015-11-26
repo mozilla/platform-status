@@ -14,12 +14,8 @@ html, body {
 body {
 	font-family: $baseFontFamily;
 	@extend base-rhythm;
-	background: #1e1e21;
-	background-image: radial-gradient(ellipse farthest-side at top left, #00549e 0, #000 100%);
-	background-size: 100% 500px;
-	background-repeat: no-repeat;
-	background-position: top center;
 	color: $textColorPrimary;
+	background: #fff;
 	-webkit-text-size-adjust: 100%;
 }
 
@@ -44,25 +40,68 @@ a {
 	max-width: 1020px;
 }
 header {
-	flex: 1;
-	padding: 0 0 calc($gutterY / 2) $gutterX;
+	background: $developerBlueVibrant;
 }
-
+header .row-inner {
+	flex: 1;
+	padding: 0 0 $gutterY $gutterX;
+}
+#tabzilla {
+	display: none;
+	@media (min-width: $breakTablet) {
+		display: block;
+	}
+}
+#title {
+	display: flex;
+	flex-direction: row;
+	padding-top: calc($gutterY / 2);
+	@media (min-width: $breakMobileLandscape) {
+		padding-top: $gutterY;
+	}
+}
 h1 {
-	@extend h1;
-	padding-top: $gutterY;
-	margin-bottom: 0;
-	letter-spacing: -.035em;
-	color: #fff;
-	font-weight: 600;
+	height: calc($gutterY * 2);
+	width: calc($gutterY * 2);
+	margin: 0;
+	padding: 0;
+	text-indent: -9999px;
+	background-image: url('images/firefox.svg');
+	background-repeat: no-repeat;
+	background-size: contain;
+	@media (min-width: $breakMobileLandscape) {
+		height: calc($gutterY * 3);
+		width: calc($gutterY * 3);
+	}
 }
 h2 {
+	margin: 0;
+	color: #fff;
+	margin-left: calc($gutterX);
+	font-size: $h3FontSize;
+	line-height: calc($gutterY * 2);
 	font-weight: 300;
-	font-size: $h4FontSize;
-	padding-top: 0;
-	margin: 0 0 $gutterY 0;
-	color: $textColorLight;
-	font-style: italic;
+	letter-spacing: -.035em;
+	@media (min-width: $breakMobileLandscape) {
+		margin-left: calc($gutterX * 2);
+		font-size: $h2FontSize;
+		line-height: calc($gutterY * 1.5);
+		@media (min-width: $breakTablet) {
+			margin-left: calc($gutterX * 3);
+		}
+	}
+	small {
+		display: none;
+		letter-spacing: normal;
+		font-style: italic;
+		font-weight: normal;
+		color: $lightGray;
+		font-size: $h4FontSize;
+	  line-height: calc($gutterY * 1.5);
+		@media (min-width: $breakMobileLandscape) {
+			display: block;
+		}
+	}
 }
 
 article {
@@ -71,7 +110,7 @@ article {
 
 #features {
 	list-style: none;
-	margin: calc($gutterY) 0;
+	margin: calc($gutterY / 2) 0;
 	padding: 0;
 }
 
@@ -80,7 +119,7 @@ article {
 	padding: 0;
 	padding-left: $gutterX;
 	@media (min-width: $breakMobileLandscape) {
-		padding: calc($gutterX / 2) $gutterX;
+		padding: calc($gutterY / 2) $gutterX;
 	}
 }
 .feature:hover, .feature:focus {
@@ -94,7 +133,7 @@ article {
 }
 .feature-title {
 	flex: 1;
-	@extend is-truncated;
+	@extend truncate-text;
 	@extend h5;
 	padding-top: 0;
 	margin-bottom: 0;
@@ -112,9 +151,8 @@ article {
 }
 
 .feature-meta {
-	padding-top: calc($gutterY / 2);
-	padding-bottom: calc($gutterY / 1.5);
 	display: none;
+	padding: calc($gutterY / 2) 0 0;
 	color: $textColorTertiary;
 	@media (min-width: $breakMobileLandscape) {
 		display: block;
@@ -127,17 +165,29 @@ article {
 }
 .feature-summary {
 	margin: 0;
-	padding-bottom: calc($gutterY / 2);
+	padding-top: calc($gutterY / 2);
 }
 .feature-links {
 	ul {
 		list-style: none;
-		margin: 0;
 		padding: 0;
+		display: flex;
+		margin: 0;
+		margin-right: calc($gutterX);
+		@media (min-width: $breakMobileLandscape) {
+			margin-right: 0;
+		}
 	}
 	li {
-		display: inline-block;
-		margin-right: calc($gutterX / 2);
+		margin-right: calc($gutterX);
+		&:last-child {
+			margin-right: 0;
+		}
+		overflow: hidden;
+		&.link-bug {
+			flex: 1;
+			text-align: right;
+		}
 	}
 	a {
 		color: $linkBlue;
@@ -148,35 +198,35 @@ article {
 }
 .icon {
 	display: inline-block;
-	background-position: center;
+	background-position: bottom center;
 	background-repeat: no-repeat;
-	width: $gutterY;
+	width: $gutterX;
 	height: $gutterX;
 	background-size: $gutterX;
-	margin-right: $gutterX / 2;
+	margin-right: calc($gutterX / 2);
 }
 .icon-spec {
-	background-image: url(images/html5.png);
+	background-image: url('images/html5.png');
 	@media (min-resolution: 2dppx) {
-		background-image: url(images/html5@2x.png);
+		background-image: url('images/html5@2x.png');
 	}
 }
 .icon-mdn {
-	background-image: url(images/mdn.png);
+	background-image: url('images/mdn.png');
 	@media (min-resolution: 2dppx) {
-		background-image: url(images/mdn@2x.png);
+		background-image: url('images/mdn@2x.png');
 	}
 }
 .icon-bugzilla {
-	background-image: url(images/bugzilla.png);
+	background-image: url('images/bugzilla.png');
 	@media (min-resolution: 2dppx) {
-		background-image: url(images/bugzilla@2x.png);
+		background-image: url('images/bugzilla@2x.png');
 	}
 }
 .icon-samples {
-	background-image: url(images/github.png);
+	background-image: url('images/github.png');
 	@media (min-resolution: 2dppx) {
-		background-image: url(images/github@2x.png);
+		background-image: url('images/github@2x.png');
 	}
 }
 
@@ -187,91 +237,151 @@ article {
 	display: flex;
 	flex-direction: row;
 	height: calc($gutterY * 2);
+	overflow: hidden;
 }
+
 .status {
 	list-style: none;
+	position: relative;
 	margin: 0;
 	padding: 0;
+	width: calc($gutterY);
 	display: flex;
 	justify-content: stretch;
 	align-items: stretch;
-	width: calc($gutterY);
-	background-position: 50% calc($gutterY + 1px);
-	background-repeat: no-repeat;
-	background-size: 16px;
+	border: 1px solid transparent;
+
 	color: $textColorSecondary;
 	font-weight: 600;
 	font-size: $smallFontSize;
 	text-transform: uppercase;
-	border: 1px solid rgba(0, 0, 0, 0);
-	border-bottom: none;
-	@media (min-width: $breakTablet) {
+
+	@media (min-width: $breakMobileLandscape) {
 		color: #fff;
 		font-weight: 600;
 		font-size: $fontSize;
 		text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.3), 0 0 1px rgba(0, 0, 0, 0.3);
 		width: calc($gutterY * 3);
-		transition: width 0.2s ease-in-out;
-		background-size: 32px;
-		background-position: 50% calc(($gutterY * 1.6) / 1.618);
-		border-top: none;
-		@media (min-width: $breakDesktop) {
-			font-size: $fontSize;
+		border: none;
+		transition: transform 0.2s ease-out;
+		&:first-child {
+			border-top-left-radius: 0.2rem;
+			border-bottom-left-radius: 0.2rem;
 		}
-	}
-	&.state-firefox {
+		&:last-child {
+			border-top-right-radius: 0.2rem;
+			border-bottom-right-radius: 0.2rem;
+		}
+		&.state-firefox {
+			width: calc($gutterY * 6);
+		}
+		&:not(:first-child) {
+			box-shadow: -2px 0 3px rgba(0, 0, 0, 0.2);
+		}
+		&:nth-child(1) {
+			transform: translateX(calc($gutterY * 6));
+		}
+		&:nth-child(2) {
+			transform: translateX(calc($gutterY * 4));
+		}
+		&:nth-child(3) {
+			transform: translateX(calc($gutterY * 2));
+		}
 		@media (min-width: $breakTablet) {
-			background-size: 48px;
-			width: calc($gutterY * 8);
-			background-position: 50% calc($gutterY - 5px);
-			.status-text {
-				display: flex;
+			width: calc($gutterY * 6);
+			transition: transform 0.2s ease-in-out;
+			&:nth-child(1) {
+				transform: translateX(calc($gutterY * 12));
+			}
+			&:nth-child(2) {
+				transform: translateX(calc($gutterY * 8));
+			}
+			&:nth-child(3) {
+				transform: translateX(calc($gutterY * 4));
+			}
+
+			@media (min-width: $breakDesktop) {
+				font-size: $fontSize;
+				width: calc($gutterY * 8);
+				&.state-firefox {
+					width: calc($gutterY * 8);
+				}
+				&:nth-child(1) {
+					transform: translateX(calc($gutterY * 18));
+				}
+				&:nth-child(2) {
+					transform: translateX(calc($gutterY * 12));
+				}
+				&:nth-child(3) {
+					transform: translateX(calc($gutterY * 6));
+				}
 			}
 		}
 	}
-	&.state-chrome {
-		background-image: url(https://raw.githubusercontent.com/alrra/browser-logos/master/chrome/chrome_64x64.png);
-	}
-	&.state-firefox {
-		background-image: url(https://raw.githubusercontent.com/alrra/browser-logos/master/firefox-nightly/firefox-nightly_128x128.png);
-
-		&.state-release {
-			background-image: url(https://raw.githubusercontent.com/alrra/browser-logos/master/firefox/firefox_128x128.png);
-		}
-		&.state-beta {
-			background-image: url(https://raw.githubusercontent.com/alrra/browser-logos/master/firefox-beta/firefox-beta_128x128.png);
-		}
-		&.state-developer-edition {
-			background-image: url(https://raw.githubusercontent.com/alrra/browser-logos/master/firefox-developer-edition/firefox-developer-edition_128x128.png);
-		}
-		&.state-nightly {
-			background-image: url(https://raw.githubusercontent.com/alrra/browser-logos/master/firefox-nightly/firefox-nightly_128x128.png);
-		}
-	}
-	&.state-edge {
-		background-image: url(https://raw.githubusercontent.com/alrra/browser-logos/master/edge/edge_64x64.png);
-	}
-	&.state-webkit {
-		background-image: url(https://raw.githubusercontent.com/alrra/browser-logos/master/safari/safari_64x64.png);
-	}
 }
-@media (min-width: $breakDesktop) {
-	.feature:hover, .feature:focus {
-		.status:not(.state-firefox) {
-			width: calc($gutterY * 6);
+@media (min-width: $breakTablet) {
+	.status {
+		will-change: transform;
+	}
+	.feature:hover {
+		.status {
+			transform: translateX(0);
 		}
 	}
 }
-.status-inner {
-	flex: 1;
-	display: flex;
-	justify-content: center;
-	align-items: flex-start;
-	color: inherit;
-	&:hover, &:focus, &:active {
-    text-decoration: none;
-		color: inherit;
-  }
+.icon-browser {
+	position: absolute;
+	width: 32px;
+	height: 32px;
+	top: -8px;
+	left: 0;
+	transform: translate(2px, calc($gutterY / 2)) scale(0.5);
+	transform-origin: left center;
+	background-repeat: no-repeat;
+	background-position: center;
+	background-size: 32px;
+	@extend hide-text;
+	@media (min-width: $breakMobileLandscape) {
+		transform: translate(calc($gutterX / 2), calc($gutterY / 1.5)) scale(0.75);
+	}
+}
+.state-firefox {
+	.icon-browser {
+		background-image: url('images/browsers/firefox_64x64.png');
+		@media (min-width: $breakMobileLandscape) {
+			transform: translate(calc($gutterX / 3), calc($gutterY / 1.5)) scale(1);
+		}
+	}
+	&.state-beta {
+		.icon-browser {
+			background-image: url('images/browsers/firefox-beta_64x64.png');
+		}
+	}
+	&.state-developer-edition {
+		.icon-browser {
+			background-image: url('images/browsers/firefox-developer-edition_64x64.png');
+		}
+	}
+	&.state-nightly {
+		.icon-browser {
+			background-image: url('images/browsers/firefox-nightly_64x64.png');
+		}
+	}
+}
+.state-chrome {
+	.icon-browser {
+		background-image: url('images/browsers/chrome_64x64.png');
+	}
+}
+.state-edge {
+	.icon-browser {
+		background-image: url('images/browsers/edge_64x64.png');
+	}
+}
+.state-webkit {
+	.icon-browser {
+		background-image: url('images/browsers/safari_64x64.png');
+	}
 }
 
 $stateUnknown: $lightGray;
@@ -288,101 +398,113 @@ $stateConsideringLight: $marketOrangeTint;
 $stateDevelopingLight: $flameYellowTint;
 $stateShippedLight: $geckoGreenTint;
 
-$stateShade: -2%;
-$stateAlpha: 100%;
+$stateUnknownFocus: color($lightGray lightness(-7%));
+$stateNotPlannedFocus: color($firefoxOrange lightness(-7%));
+$stateDeprecatedFocus: color($firefoxOrange lightness(-7%));
+$stateConsideringFocus: color($marketOrange lightness(-7%));
+$stateDevelopingFocus: color($flameYellow lightness(-7%));
+$stateShippedFocus: color($geckoGreen lightness(-7%));
+
+$stateShade: -10%;
+$stateAlpha: 50%;
 $fadeStart: 70%;
 $fadeMid: 10%;
 $fadeHeight: 25%;
 
-.status.state-unknown {
+.state-unknown {
 	background-color: $stateUnknownLight;
-	border-color: color($stateUnknownLight lightness($stateShade) alpha($stateAlpha));
-	@media (min-width: $breakTablet) {
+	@media (min-width: $breakMobileLandscape) {
 		background-color: $stateUnknown;
-		border-color: color($stateUnknown lightness($stateShade) alpha($stateAlpha));
-		.status-inner {
-			background-image: linear-gradient(to top, color($stateUnknown alpha($fadeStart)), color($stateUnknown alpha(50%)) $fadeMid, color($stateUnknown alpha(0%)) $fadeHeight);
+		&:hover {
+			background-color: $stateUnknownFocus;
 		}
 	}
 }
-.status.state-not-planned {
+.state-not-planned {
 	background-color: $stateNotPlannedLight;
-	border-color: color($stateNotPlannedLight lightness($stateShade) alpha($stateAlpha));
-	@media (min-width: $breakTablet) {
+	@media (min-width: $breakMobileLandscape) {
 		background-color: $stateNotPlanned;
-		border-color: color($stateNotPlanned lightness($stateShade) alpha($stateAlpha));
-		.status-inner {
-			background-image: linear-gradient(to top, color($stateNotPlanned alpha($fadeStart)), color($stateNotPlanned alpha(50%)) $fadeMid, color($stateNotPlanned alpha(0%)) $fadeHeight);
+		&:hover {
+			background-color: $stateNotPlannedFocus;
 		}
 	}
 }
-.status.state-deprecated {
+.state-deprecated {
 	background-color: $stateDeprecatedLight;
-	border-color: color($stateDeprecatedLight lightness($stateShade) alpha($stateAlpha));
-	@media (min-width: $breakTablet) {
+	@media (min-width: $breakMobileLandscape) {
 		background-color: $stateDeprecated;
-		border-color: color($stateDeprecated lightness($stateShade) alpha($stateAlpha));
-		.status-inner {
-			background-image: linear-gradient(to top, color($stateDeprecated alpha($fadeStart)), color($stateDeprecated alpha(50%)) $fadeMid, color($stateDeprecated alpha(0%)) $fadeHeight);
+		&:hover {
+			background-color: $stateDeprecatedFocus;
 		}
 	}
 }
-.status.state-under-consideration {
+.state-under-consideration {
 	background-color: $stateConsideringLight;
-	border-color: color($stateConsideringLight lightness($stateShade) alpha($stateAlpha));
-	@media (min-width: $breakTablet) {
+	@media (min-width: $breakMobileLandscape) {
 		background-color: $stateConsidering;
-		border-color: color($stateConsidering lightness($stateShade) alpha($stateAlpha));
-		.status-inner {
-			background-image: linear-gradient(to top, color($stateConsidering alpha($fadeStart)), color($stateConsidering alpha(50%)) $fadeMid, color($stateConsidering alpha(0%)) $fadeHeight);
+		&:hover {
+			background-color: $stateDevelopingFocus;
 		}
 	}
 }
-.status.state-in-development {
+.state-in-development {
 	background-color: $stateDevelopingLight;
-	border-color: color($stateDevelopingLight lightness($stateShade) alpha($stateAlpha));
-	@media (min-width: $breakTablet) {
+	@media (min-width: $breakMobileLandscape) {
 		background-color: $stateDeveloping;
-		border-color: color($stateDeveloping lightness($stateShade) alpha($stateAlpha));
-		.status-inner {
-			background-image: linear-gradient(to top, color($stateDeveloping alpha($fadeStart)), color($stateDeveloping alpha(50%)) $fadeMid, color($stateDeveloping alpha(0%)) $fadeHeight);
+		&:hover {
+			background-color: $stateDevelopingFocus;
 		}
 	}
 }
-.status.state-shipped {
+.state-shipped {
 	background-color: $stateShippedLight;
-	border-color: color($stateShippedLight lightness($stateShade) alpha($stateAlpha));
-	@media (min-width: $breakTablet) {
+	@media (min-width: $breakMobileLandscape) {
 		background-color: $stateShipped;
-		border-color: color($stateShipped lightness($stateShade) alpha($stateAlpha));
-		.status-inner {
-			background-image: linear-gradient(to top, color($stateShipped alpha($fadeStart)), color($stateShipped alpha(50%)) $fadeMid, color($stateShipped alpha(0%)) $fadeHeight);
+		&:hover {
+			background-color: $stateShippedFocus;
 		}
+	}
+}
+
+.status-inner {
+	color: inherit;
+	flex: 1;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	overflow: hidden;
+	padding-right: calc($gutterX / 2);
+	&:hover, &:focus, &:active {
+    text-decoration: none;
+		color: inherit;
+  }
+	padding-left: calc($gutterY * 2);
+	@media (min-width: $breakMobileLandscape) {
+		padding-left: calc($gutterX * 3);
 	}
 }
 .status-text {
-	@extend is-truncated;
+	@extend truncate-text;
 	font-size: $smallFontSize;
-	display: none;
+	flex: 1;
+	&:not(:last-child) {
+		padding-right: calc($gutterX / 4);
+	}
 	@media (min-width: $breakDesktop) {
 		font-size: $fontSize;
 	}
 }
-@media (min-width: $breakTablet) {
-	.feature:hover, .feature:focus {
-		.status-text {
-			display: block;
-		}
-	}
-}
 .status-version {
 	color: $stateShipped;
-	@media (min-width: $breakTablet) {
+	@media (min-width: $breakMobileLandscape) {
 		color: inherit;
 	}
 }
 
 footer {
+	background: $nightlyBlue;
+}
+footer .row-inner {
 	padding: $gutterY $gutterX;
 	flex: 1;
 	display: flex;
@@ -407,7 +529,10 @@ footer ul {
 footer li {
 	display: inline-block;
 	margin: 0;
-	padding: 0 $gutterX 0 0;
+	padding: 0 calc($gutterX * 2) 0 0;
+}
+footer a {
+	white-space: nowrap;
 }
 footer p {
 	color: $textColorLight;

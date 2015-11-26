@@ -1,14 +1,22 @@
 {{#*inline "browserStatus"}}
   <li class="status state-{{browser}} state-{{status}} {{#if channel}}state-{{channel}}{{/if}}" title="{{alt status 'status' 'long'}} - {{alt browser 'browser' 'long'}}">
-    {{#if url}}<a class="status-inner" target="_blank" href="{{url}}">{{/if}}
-    {{#if url_slug}}<span class="status-inner">{{/if}}
-      {{#if version}}
-        <span class="status-version">{{version}}</span>
-      {{else}}
-        <span class="status-text">{{alt status 'status' 'short'}}</span>
-      {{/if}}
-    {{#if url}}</a>{{/if}}
-    {{#if url_slug}}</span>{{/if}}
+    {{#if url}}
+      <a class="status-inner" target="_blank" href="{{url}}">
+    {{/if}}
+    {{#if url_slug}}
+      <span class="status-inner">
+    {{/if}}
+    <i aria-hidden="true" class="icon-browser">{{alt browser 'browser' 'long'}}</i>
+    <span class="status-text">{{alt status 'status' 'short'}}</span>
+    {{#if version}}
+      <span class="status-version">{{version}}</span>
+    {{/if}}
+    {{#if url}}
+      </a>
+    {{/if}}
+    {{#if url_slug}}
+      </span>
+    {{/if}}
 {{/inline}}
 
 <!DOCTYPE html>
@@ -29,15 +37,20 @@
   <link rel="stylesheet" href="bundle.css" inline>
 </head>
 <body>
-  <div class="row">
-    <header class="row-inner">
+  <header class="row">
+    <div class="row-inner">
       <div id="tabzilla">
         <a href="https://www.mozilla.org/">Mozilla</a>
       </div>
-      <h1>Firefox</h1>
-      <h2>Platform Status</h2>
+      <div id="title">
+        <h1>Firefox</h1>
+        <h2>
+          Firefox Platform Status
+          <small>Implementation &amp; standardization roadmap for web platform feature</small>
+        </h2>
+      </div>
     </header>
-  </div>
+  </header>
   <article class="row">
     <ul class="row-inner" id="features">
       {{#each features}}
@@ -54,7 +67,6 @@
             </div>
           </div>
           <div class="feature-meta">
-            <p class="feature-summary">{{{summary}}}</p>
             <div class="feature-links">
               <ul>
               {{#if mdn_url}}
@@ -72,7 +84,7 @@
                 </li>
               {{/if}}
               {{#if bugzilla}}
-                <li>
+                <li class="link-bug">
                   <a target="_blank" href="https://bugzilla.mozilla.org/show_bug.cgi?id={{bugzilla}}" title="Implementation bug at bugzilla.mozilla.org">
                     <i aria-hidden="true" class="icon icon-bugzilla"></i>{{#if_eq firefox_status "shipped"}}Complete
                     {{else}}{{bugzilla_resolved_count}}/{{bugzilla_dependant_count}} Resolved
@@ -82,13 +94,14 @@
               {{/if}}
               </ul>
             </div>
+            <p class="feature-summary">{{{summary}}}</p>
           </div>
         </li>
       {{/each}}
     </ul>
   </article>
-  <div class="row">
-    <footer class="row-inner">
+  <footer class="row">
+    <div class="row-inner">
       <p class="license">Content available under a <a href="http://mozilla.org/en-US/foundation/licensing/website-content/" target="_blank">Creative Commons license</a>. Portions of the status data are from
         <a href="https://www.chromestatus.com/features" target="_blank">chromestatus.com</a> (<a href="http://creativecommons.org/licenses/by/2.5/" target="_blank">CC BY 2.5</a>),
         <a href="https://dev.windows.com/en-us/microsoft-edge/platform/status/" target="_blank">dev.windows.com</a> (<a href="http://creativecommons.org/licenses/by/2.5/" target="_blank">CC BY 2.5</a>), and
@@ -97,8 +110,8 @@
         <li><a id="link-repo" href="https://github.com/mozilla/platatus/">View source</a></li>
         <li><a id="link-issue" href="https://github.com/mozilla/platatus/issues/new">Submit feedback</a></li>
       </ul>
-    </footer>
-  </div>
+    </div>
+  </footer>
   <script src="bundle.js" async defer></script>
 </body>
 </html>
