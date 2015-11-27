@@ -47,6 +47,7 @@ define(function(require) {
           'dist/public/images/browsers/firefox-developer-edition_64x64.png',
           'dist/public/images/browsers/firefox-nightly_64x64.png',
           'dist/public/images/browsers/safari_64x64.png',
+          'dist/public/images/anchor.svg',
           'dist/public/images/bugzilla.png',
           'dist/public/images/bugzilla@2x.png',
           'dist/public/images/favicon-192.png',
