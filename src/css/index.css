@@ -150,7 +150,22 @@ article {
 	}
 }
 
+.feature-anchor {
+	visibility: hidden;
+	float: left;
+	background-position: center;
+	background-repeat: no-repeat;
+	width: $gutterX;
+	height: calc($gutterY * 2);
+	margin-right: calc($gutterX / 4);
+	background-image: url('images/anchor.svg');
+}
+.feature:hover .feature-anchor {
+	visibility: visible;
+}
+
 .feature-meta {
+	margin-left: calc($gutterX + $gutterX / 4);
 	display: none;
 	padding: calc($gutterY / 2) 0 0;
 	color: $textColorTertiary;
