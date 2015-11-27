@@ -25,3 +25,4 @@ Platatus can send an open and clear message to developers about the state of Moz
 ## Additional Attributions
 
 Portions of the status data are from chromestatus.com (CC BY 2.5), dev.windows.com (CC BY 2.5), and webkit.org (LGPL).
+Link Closed icon by Thomas Helbig from the Noun Project.
