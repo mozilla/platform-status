@@ -81,6 +81,17 @@ class ChromeBrowserFeature extends BrowserFeature {
 
 ChromeBrowserFeature.defaultUrl = 'https://www.chromestatus.com/features';
 
+class OperaBrowserFeature extends ChromeBrowserFeature {
+  constructor(data) {
+    super(data);
+    this.name = 'opera';
+  }
+
+  get _rawStatus() {
+    return this.data.shipped_opera_milestone ? 'shipped' : '';
+  }
+}
+
 class WebKitBrowserFeature extends BrowserFeature {
   constructor(data) {
     super(data);
@@ -121,15 +132,16 @@ class IEBrowserFeature extends BrowserFeature {
 IEBrowserFeature.defaultUrl = 'https://dev.modern.ie/platform/status/';
 
 const allBrowserFeatures = [
-  ['chrome', ChromeBrowserFeature],
-  ['webkit', WebKitBrowserFeature],
-  ['ie', IEBrowserFeature],
+  ['chrome', 'chrome', ChromeBrowserFeature],
+  ['opera', 'chrome', OperaBrowserFeature],
+  ['webkit', 'webkit', WebKitBrowserFeature],
+  ['ie', 'ie', IEBrowserFeature],
 ];
 
 function populateBrowserFeatureData(browserData, features) {
   features.forEach((feature) => {
-    allBrowserFeatures.map(([key, BrowserFeatureConstructor]) => {
-      const browserFeatureData = browserData[key].get(feature[key + '_ref']);
+    allBrowserFeatures.map(([key, relKey, BrowserFeatureConstructor]) => {
+      const browserFeatureData = browserData[relKey].get(feature[relKey + '_ref']);
       if (!feature[key + '_status']) {
         feature[key + '_status'] = 'unknown';
       }
