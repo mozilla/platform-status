@@ -318,7 +318,6 @@ function validateFeatureInput(features) {
       unique: true,
     },
     'spec_repo': {
-      unique: true,
     },
     'spec_status': {
     },
