@@ -1,5 +1,5 @@
 {{#*inline "browserStatus"}}
-  <li class="status state-{{browser}} state-{{status}} {{#if channel}}state-{{channel}}{{/if}}" title="{{alt status 'status' 'long'}}{{#if footnote}}*{{footnote}}{{/if}} - {{alt browser 'browser' 'long'}}">
+  <li class="status state-{{browser}} state-{{status}} {{#if channel}}state-{{channel}}{{/if}}" title="{{alt status 'status' 'long'}} - {{alt browser 'browser' 'long'}} {{#if footnote}}*{{footnote}}{{/if}}">
     {{#if url}}
       <a class="status-inner" target="_blank" href="{{url}}">
     {{/if}}
@@ -7,7 +7,8 @@
       <span class="status-inner">
     {{/if}}
     <i aria-hidden="true" class="icon-browser">{{alt browser 'browser' 'long'}}</i>
-    <span class="status-text">{{alt status 'status' 'short'}}{{#if footnote}}<sup class="status-footnote">*</sup>{{/if}}</span>
+    {{#if footnote}}<sup class="status-footnote-indicator">*</sup>{{/if}}
+    <span class="status-text">{{alt status 'status' 'short'}}</span>
     {{#if version}}
       <span class="status-version">{{version}}</span>
     {{/if}}
