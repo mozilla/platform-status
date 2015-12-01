@@ -277,6 +277,7 @@ function populateCanIUsePercent(canIUseData, features) {
     }
     feature.caniuse_usage_perc_y = data.usage_perc_y;
     feature.caniuse_usage_perc_a = data.usage_perc_a;
+    feature.caniuse_usage_perc_total = data.usage_perc_y + data.usage_perc_a;
   });
 }
 

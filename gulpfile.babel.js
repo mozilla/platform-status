@@ -166,7 +166,7 @@ gulp.task('watch', ['build'], () => {
       notify: false,
     },
   });
-  gulp.watch(['./src/*.*'], ['build:root']);
+  gulp.watch(['./src/*.*'], ['./src/fonts/*.*', './src/images/**/*.*'], ['build:root']);
   gulp.watch(['./src/css/**/*.css'], ['build:css']);
   gulp.watch(['./src/js/*.js'], ['build:js']);
   gulp.watch(['./engine/*.js', './features/*.md', './src/tpl/*.html'], ['build:html']);
