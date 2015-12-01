@@ -268,10 +268,14 @@ function populateCanIUsePercent(canIUseData, features) {
   });
 }
 
-function validate(data) {
+function validateFeatureInput(features) {
   // We could potentially use a real JSON schema, but we'd still have to do
   // uniqueness checks ourselves.
   const schema = {
+    'file': {
+      required: true,
+      unique: true,
+    },
     'title': {
       required: true,
       unique: true,
@@ -279,6 +283,12 @@ function validate(data) {
     'summary': {
       required: true,
       unique: true,
+    },
+    'slug': {
+      required: true,
+      unique: true,
+    },
+    'category': {
     },
     'bugzilla': {
       required: true,
@@ -295,29 +305,50 @@ function validate(data) {
       required: true,
       unique: true,
     },
+    'spec_repo': {
+      unique: true,
+    },
+    'spec_status': {
+    },
     'chrome_ref': {
       required: true,
       unique: true,
+    },
+    'chrome_status': {
     },
     'webkit_ref': {
       required: true,
       unique: true,
     },
+    'webkit_status': {
+    },
     'ie_ref': {
       required: true,
       unique: true,
+    },
+    'caniuse_ref': {
+      unique: true,
+    },
+    'ie_status': {
     },
     'standardization': {
       required: true,
     },
   };
   const uniques = {};
-  data.features.forEach((feature) => {
+  features.forEach((feature) => {
+    const properties = Object.keys(feature);
+    for (const propertyName of properties) {
+      if (!(propertyName in schema)) {
+        validateWarning(feature.file + ': unknown property "' + propertyName + '"');
+      }
+    }
+
     for (const key of Object.keys(schema)) {
       const value = feature[key];
 
       if (schema[key].required && !value) {
-        validateWarning(feature.file + ': missing ' + key);
+        validateWarning(feature.file + ': missing required property "' + key + '"');
       }
 
       if (schema[key].unique && typeof value !== 'undefined') {
@@ -369,6 +400,7 @@ function buildStatus(options) {
     firefoxVersionParser.read(options),
     canIUseParser.read(options),
   ]).then(() => {
+    validateFeatureInput(fixtureParser.results);
     return populateBugzillaData(fixtureParser.results, options);
   }).then(() => {
     populateFirefoxStatus(firefoxVersionParser.results, fixtureParser.results);
@@ -380,7 +412,6 @@ function buildStatus(options) {
       features: fixtureParser.results,
       firefoxVersions: firefoxVersionParser.results,
     };
-    validate(data);
     if (validationWarnings.length) {
       console.warn('Validation warnings: ');
       validationWarnings.forEach((warning) => {
