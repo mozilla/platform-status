@@ -223,6 +223,12 @@ article {
 		background-image: url('images/bugzilla@2x.png');
 	}
 }
+.icon-caniuse {
+	background-image: url('images/caniuse.png');
+	@media (min-resolution: 2dppx) {
+		background-image: url('images/caniuse@2x.png');
+	}
+}
 .icon-samples {
 	background-image: url('images/github.png');
 	@media (min-resolution: 2dppx) {

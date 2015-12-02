@@ -8,6 +8,7 @@ spec_url: https://w3c.github.io/pointerlock/
 spec_repo: https://github.com/w3c/pointerlock
 chrome_ref: 6753200417800192
 ie_ref: Pointer Lock (Mouse Lock)
+caniuse_ref: pointerlock
 ---
 
 Access to raw mouse movement, locks the target of mouse events to a single element, eliminates limits of how far mouse movement can go in a single direction, and removes the cursor from view.
