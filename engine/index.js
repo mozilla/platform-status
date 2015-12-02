@@ -81,6 +81,17 @@ class ChromeBrowserFeature extends BrowserFeature {
 
 ChromeBrowserFeature.defaultUrl = 'https://www.chromestatus.com/features';
 
+class OperaBrowserFeature extends ChromeBrowserFeature {
+  constructor(data) {
+    super(data);
+    this.name = 'opera';
+  }
+
+  get _rawStatus() {
+    return this.data.shipped_opera_milestone ? 'shipped' : '';
+  }
+}
+
 class WebKitBrowserFeature extends BrowserFeature {
   constructor(data) {
     super(data);
@@ -121,15 +132,16 @@ class IEBrowserFeature extends BrowserFeature {
 IEBrowserFeature.defaultUrl = 'https://dev.modern.ie/platform/status/';
 
 const allBrowserFeatures = [
-  ['chrome', ChromeBrowserFeature],
-  ['webkit', WebKitBrowserFeature],
-  ['ie', IEBrowserFeature],
+  ['chrome', 'chrome', ChromeBrowserFeature],
+  ['opera', 'chrome', OperaBrowserFeature],
+  ['webkit', 'webkit', WebKitBrowserFeature],
+  ['ie', 'ie', IEBrowserFeature],
 ];
 
 function populateBrowserFeatureData(browserData, features) {
   features.forEach((feature) => {
-    allBrowserFeatures.map(([key, BrowserFeatureConstructor]) => {
-      const browserFeatureData = browserData[key].get(feature[key + '_ref']);
+    allBrowserFeatures.map(([key, relKey, BrowserFeatureConstructor]) => {
+      const browserFeatureData = browserData[relKey].get(feature[relKey + '_ref']);
       if (!feature[key + '_status']) {
         feature[key + '_status'] = 'unknown';
       }
@@ -265,13 +277,18 @@ function populateCanIUsePercent(canIUseData, features) {
     }
     feature.caniuse_usage_perc_y = data.usage_perc_y;
     feature.caniuse_usage_perc_a = data.usage_perc_a;
+    feature.caniuse_usage_perc_total = Math.round(data.usage_perc_y + data.usage_perc_a);
   });
 }
 
-function validate(data) {
+function validateFeatureInput(features) {
   // We could potentially use a real JSON schema, but we'd still have to do
   // uniqueness checks ourselves.
   const schema = {
+    'file': {
+      required: true,
+      unique: true,
+    },
     'title': {
       required: true,
       unique: true,
@@ -279,6 +296,12 @@ function validate(data) {
     'summary': {
       required: true,
       unique: true,
+    },
+    'slug': {
+      required: true,
+      unique: true,
+    },
+    'category': {
     },
     'bugzilla': {
       required: true,
@@ -295,29 +318,46 @@ function validate(data) {
       required: true,
       unique: true,
     },
+    'spec_repo': {
+    },
+    'spec_status': {
+    },
     'chrome_ref': {
       required: true,
       unique: true,
+    },
+    'chrome_status': {
     },
     'webkit_ref': {
       required: true,
       unique: true,
     },
+    'webkit_status': {
+    },
     'ie_ref': {
       required: true,
       unique: true,
     },
-    'standardization': {
-      required: true,
+    'caniuse_ref': {
+      unique: true,
+    },
+    'ie_status': {
     },
   };
   const uniques = {};
-  data.features.forEach((feature) => {
+  features.forEach((feature) => {
+    const properties = Object.keys(feature);
+    for (const propertyName of properties) {
+      if (!(propertyName in schema)) {
+        validateWarning(feature.file + ': unknown property "' + propertyName + '"');
+      }
+    }
+
     for (const key of Object.keys(schema)) {
       const value = feature[key];
 
       if (schema[key].required && !value) {
-        validateWarning(feature.file + ': missing ' + key);
+        validateWarning(feature.file + ': missing required property "' + key + '"');
       }
 
       if (schema[key].unique && typeof value !== 'undefined') {
@@ -369,6 +409,7 @@ function buildStatus(options) {
     firefoxVersionParser.read(options),
     canIUseParser.read(options),
   ]).then(() => {
+    validateFeatureInput(fixtureParser.results);
     return populateBugzillaData(fixtureParser.results, options);
   }).then(() => {
     populateFirefoxStatus(firefoxVersionParser.results, fixtureParser.results);
@@ -380,7 +421,6 @@ function buildStatus(options) {
       features: fixtureParser.results,
       firefoxVersions: firefoxVersionParser.results,
     };
-    validate(data);
     if (validationWarnings.length) {
       console.warn('Validation warnings: ');
       validationWarnings.forEach((warning) => {

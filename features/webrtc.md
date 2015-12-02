@@ -9,6 +9,7 @@ spec_repo: https://github.com/w3c/webrtc-pc
 chrome_ref: 6612462929444864
 webkit_ref: WebRTC
 ie_ref: WebRTC – WebRTC v1.0 API
+caniuse_ref: rtcpeerconnection
 ---
 
 Capture and stream audio, video, and arbitrary data between browsers without requiring an intermediary.

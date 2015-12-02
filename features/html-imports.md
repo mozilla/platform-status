@@ -9,6 +9,7 @@ spec_repo: https://github.com/w3c/webcomponents
 chrome_ref: 5144752345317376
 ie_ref: HTML Imports
 webkit_ref: HTML imports
+caniuse_ref: imports
 ---
 
 Include reusable HTML documents in other HTML documents

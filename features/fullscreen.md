@@ -9,6 +9,7 @@ spec_repo: https://github.com/whatwg/fullscreen
 chrome_ref: 5259513871466496
 webkit_status: shipped
 ie_ref: Fullscreen API
+caniuse_ref: fullscreen
 ---
 
 Provides an easy way for web content to be presented using the user's entire screen.

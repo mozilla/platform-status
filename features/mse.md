@@ -9,6 +9,7 @@ spec_repo: https://github.com/w3c/media-source
 chrome_ref: 4563797888991232
 webkit_status: shipped
 ie_ref: Media Source Extensions
+caniuse_ref: mediasource
 ---
 
 Allows creating media streams via JavaScript and play them using `<audio>` and `<video>` elements.

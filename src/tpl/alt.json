@@ -36,6 +36,11 @@
       "short": "Chrome",
       "long": "Google Chrome"
     },
+    "opera": {
+      "abbr": "OP",
+      "short": "Opera",
+      "long": "Opera"
+    },
     "webkit": {
       "abbr": "SA",
       "short": "Safari",

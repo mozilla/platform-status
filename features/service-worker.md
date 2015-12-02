@@ -8,6 +8,7 @@ spec_url: http://slightlyoff.github.io/ServiceWorker/spec/service_worker/
 webkit_ref: Service Workers
 chrome_ref: 6561526227927040
 ie_ref: Service Worker
+caniuse_ref: serviceworkers
 ---
 
 Event-driven scripts that can handle network requests and manage cached responses in the background.
