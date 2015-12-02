@@ -141,7 +141,7 @@ define(function(require) {
         bdd.it('should something', function() {
           // The node module loader for some reason has wacky path resolution.
           // I wish we didn't have to have all these '..' but, alas.
-          var FixtureParser = require('intern/dojo/node!../../../../engine/fixtureParser');
+          var FixtureParser = require('intern/dojo/node!../../../../engine/fixtureParser').default;
           var fp = new FixtureParser('asdf');
           assert(fp);
         });
