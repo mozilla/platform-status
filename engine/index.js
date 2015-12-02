@@ -342,9 +342,6 @@ function validateFeatureInput(features) {
     },
     'ie_status': {
     },
-    'standardization': {
-      required: true,
-    },
   };
   const uniques = {};
   features.forEach((feature) => {
