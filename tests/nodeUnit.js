@@ -50,6 +50,8 @@ define(function(require) {
           'dist/public/images/browsers/opera_64x64.png',
           'dist/public/images/bugzilla.png',
           'dist/public/images/bugzilla@2x.png',
+          'dist/public/images/caniuse.png',
+          'dist/public/images/caniuse@2x.png',
           'dist/public/images/favicon-192.png',
           'dist/public/images/favicon-196.png',
           'dist/public/images/favicon.ico',

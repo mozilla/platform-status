@@ -9,6 +9,7 @@ spec_repo: https://github.com/w3c/IndexedDB/
 webkit_ref: IndexedDB
 chrome_ref: 6507459568992256
 ie_ref: IndexedDB
+caniuse_ref: indexeddb
 ---
 
 An asynchronous client-side storage API offering fast access to large amounts of structured data

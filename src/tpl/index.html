@@ -85,6 +85,13 @@
                   </a>
                 </li>
               {{/if}}
+              {{#if caniuse_ref}}
+                <li>
+                  <a target="_blank" href="http://caniuse.com/#feat={{caniuse_ref}}" title="Global browser support: {{caniuse_usage_perc_y}}% full, {{caniuse_usage_perc_a}}% partial">
+                    <i aria-hidden="true" class="icon icon-caniuse"></i>Can I use {{caniuse_usage_perc_total}}%
+                  </a>
+                </li>
+              {{/if}}
               {{#if bugzilla}}
                 <li class="link-bug">
                   <a target="_blank" href="https://bugzilla.mozilla.org/show_bug.cgi?id={{bugzilla}}" title="Implementation bug at bugzilla.mozilla.org">

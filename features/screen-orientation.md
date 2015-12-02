@@ -8,6 +8,7 @@ spec_url: https://w3c.github.io/screen-orientation/
 spec_repo: https://github.com/w3c/screen-orientation
 chrome_ref: 6191285283061760
 ie_ref: Screen Orientation API
+caniuse_ref: screen-orientation
 ---
 
 Allows reading to the current screen orientations, getting events on orientation changes and locking orientation state.
