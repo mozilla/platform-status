@@ -23,6 +23,7 @@ The easiest way to add a new feature is to use github's online file editor and c
 | ie_ref | | Corresponding `name` property from [MicrosoftEdge/Status](https://raw.githubusercontent.com/MicrosoftEdge/Status/production/app/static/ie-status.json) |
 | webkit_footnote | | Footnotes for Webkit |
 | chrome_footnote | | Footnotes for Chrome |
+| opera_footnote | | Footnotes for Opera |
 | ie_footnote | | Footnotes for Edge |
 
 ## Should we add Feature X?
