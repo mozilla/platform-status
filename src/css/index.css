@@ -159,6 +159,7 @@ article {
 	height: calc($gutterY * 2);
 	margin-right: calc($gutterX / 2);
 	background-image: url('images/anchor.svg');
+	opacity: 0.4;
 }
 .feature:hover .feature-anchor {
 	visibility: visible;
