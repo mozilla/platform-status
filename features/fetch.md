@@ -8,6 +8,7 @@ spec_url: https://fetch.spec.whatwg.org/
 spec_repo: https://github.com/whatwg/fetch
 chrome_ref: 6730533392351232
 ie_ref: Fetch API
+caniuse_ref: fetch
 ---
 
 Low level API for fetching network resources that is more powerful and flexible than [XMLHttpRequest](https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest).

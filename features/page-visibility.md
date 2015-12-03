@@ -9,6 +9,7 @@ spec_repo: https://github.com/w3c/page-visibility
 chrome_ref: 5689697795833856
 webkit_status: shipped
 ie_ref: Page Visibility API
+caniuse_ref: pagevisibility
 ---
 
 Programmatically determine the visibility state of a page, and to be notified if the visibility state changes.
