@@ -81,5 +81,8 @@
   "bugs": {
     "url": "https://github.com/mozilla/platatus/issues"
   },
-  "homepage": "https://github.com/mozilla/platatus#readme"
+  "homepage": "https://github.com/mozilla/platatus#readme",
+  "engines": {
+    "node": ">= 4"
+  }
 }
