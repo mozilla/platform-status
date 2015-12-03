@@ -21,8 +21,8 @@ export default class BrowserParser {
         .then((coreResults) => {
           // Combine the web core and javascript core specs and features.
           return cache.readJson(this.urls.webkitJavaScript, cacheDir).then((jsResults) => {
-            coreResults.specification = Array.concat(coreResults.specification, jsResults.specification);
-            coreResults.features = Array.concat(coreResults.features, jsResults.features);
+            coreResults.specification = coreResults.specification.concat(jsResults.specification);
+            coreResults.features = coreResults.features.concat(jsResults.features);
             return coreResults;
           });
         })

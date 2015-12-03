@@ -1,7 +1,7 @@
 import cache from './cache.js';
 
 export default class CanIUseParser {
-  results = {}
+  results = {};
   url = 'https://raw.githubusercontent.com/Fyrd/caniuse/master/data.json';
 
   majorVersion(version) {

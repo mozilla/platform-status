@@ -1,9 +1,8 @@
 {
-  "stage": 0,
   "ignore": [
     "/node_modules/",
     "/dist/",
   ],
-  "sourceMaps": "inline",
-  "loose": "all"
+  "presets": ["es2015-loose", "stage-0"],
+  "sourceMaps": "inline"
 }

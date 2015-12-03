@@ -1,7 +1,7 @@
 import cache from './cache.js';
 
 export default class FirefoxVersionParser {
-  results = {}
+  results = {};
   url = 'https://svn.mozilla.org/libs/product-details/json/firefox_versions.json';
 
   majorVersion(version) {
