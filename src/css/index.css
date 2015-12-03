@@ -157,7 +157,7 @@ article {
 	background-repeat: no-repeat;
 	width: $gutterX;
 	height: calc($gutterY * 2);
-	margin-right: calc($gutterX / 4);
+	margin-right: calc($gutterX / 2);
 	background-image: url('images/anchor.svg');
 }
 .feature:hover .feature-anchor {
@@ -165,7 +165,7 @@ article {
 }
 
 .feature-meta {
-	margin-left: calc($gutterX + $gutterX / 4);
+	margin-left: calc($gutterX + $gutterX / 2);
 	display: none;
 	padding: calc($gutterY / 2) 0 0;
 	color: $textColorTertiary;
