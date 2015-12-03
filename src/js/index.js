@@ -1,4 +1,4 @@
-var search = require('./search');
+import search from './search';
 
 if ('serviceWorker' in navigator) {
   const started = Date.now();
