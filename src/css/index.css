@@ -114,13 +114,13 @@ article {
 .search {
 	text-align: center;
 	font-weight: normal;
-	margin: 1em 0;
+	margin: $gutterY 0;
 	@media (min-width: $breakMobileLandscape) {
 		display: flex;
 		align-items: center;
-		font-size: 1.5em;
+		font-size: $h3FontSize;
 		* + * {
-			margin-left: 1em;
+			margin-left: $gutterX;
 		}
 	}
 }
@@ -129,13 +129,13 @@ article {
 	font-weight: 300;
 	flex: 1;
 	width: 100%;
-	padding: 0 .5em;
+	padding: 0 $gutterX;
 	line-height: 1.7em;
 }
 .results-meta {
 	display: none;
 	background: #eee;
-	padding: .5em 1em;
+	padding: calc($gutterY / 2) $gutterX;
 }
 
 #features {
@@ -156,8 +156,8 @@ article {
 }
 
 .feature {
-	margin: 0 -1em;
-	padding: 0 1em;
+	margin: 0 -$gutterX;
+	padding: 0 $gutterX;
 	@media (min-width: $breakMobileLandscape) {
 		padding: calc($gutterY / 2) $gutterX;
 	}
