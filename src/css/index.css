@@ -150,6 +150,22 @@ article {
 	}
 }
 
+.feature-anchor {
+	display: inline-block;
+	margin-left: calc(-$gutterX - $gutterX / 2);
+	visibility: hidden;
+	float: left;
+	background-position: center;
+	background-repeat: no-repeat;
+	width: $gutterX;
+	height: calc($gutterY * 2);
+	background-image: url('images/anchor.svg');
+	opacity: 0.4;
+}
+.feature:hover .feature-anchor {
+	visibility: visible;
+}
+
 .feature-meta {
 	display: none;
 	padding: calc($gutterY / 2) 0 0;
