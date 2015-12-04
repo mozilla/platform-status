@@ -4,7 +4,7 @@
   "description": "",
   "main": "gulpfile.babel.js",
   "engines": {
-    "node": "4.2.2"
+    "node": ">= 4"
   },
   "dependencies": {
     "babel-core": "^6.2.1",
@@ -81,8 +81,5 @@
   "bugs": {
     "url": "https://github.com/mozilla/platatus/issues"
   },
-  "homepage": "https://github.com/mozilla/platatus#readme",
-  "engines": {
-    "node": ">= 4"
-  }
+  "homepage": "https://github.com/mozilla/platatus#readme"
 }
