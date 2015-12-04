@@ -4,7 +4,7 @@
   "description": "",
   "main": "gulpfile.babel.js",
   "engines": {
-    "node": "4.2.2"
+    "node": ">= 4"
   },
   "dependencies": {
     "babel-core": "^6.2.1",
@@ -19,7 +19,7 @@
     "cssnext": "^1.8.4",
     "del": "^2.0.2",
     "eslint": "^1.10.3",
-    "eslint-config-airbnb": "^1.0.2",
+    "eslint-config-airbnb": "^2.0.0",
     "express": "^4.13.3",
     "file-exists": "^1.0.0",
     "glob": "^6.0.1",
@@ -81,8 +81,5 @@
   "bugs": {
     "url": "https://github.com/mozilla/platatus/issues"
   },
-  "homepage": "https://github.com/mozilla/platatus#readme",
-  "engines": {
-    "node": ">= 4"
-  }
+  "homepage": "https://github.com/mozilla/platatus#readme"
 }
