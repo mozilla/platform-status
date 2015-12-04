@@ -92,7 +92,7 @@ gulp.task('build:root', () => {
   return gulp
     .src(
       ['./src/*.*', './src/fonts/*.*', './src/images/**/*.*'],
-      {base: './src'}
+      { base: './src' }
     )
     .pipe(gulp.dest(publicDir));
 });
