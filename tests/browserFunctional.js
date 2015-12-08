@@ -62,7 +62,7 @@ define(function(require) {
         return page.followFileIssueLink().getPageTitle().then(function(title) {
           // TODO: We probably want to sign in and verify that we're actually
           // on the right page
-          assert.equal(title, 'Sign in · GitHub');
+          assert.equal(title, 'Sign in to GitHub · GitHub');
         });
       });
     });
