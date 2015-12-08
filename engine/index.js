@@ -26,6 +26,7 @@ function normalizeStatus(status, browser) {
     return 'unknown';
   case 'no active development':
   case 'not currently planned':
+  case 'not considering':
     return 'not-planned';
   case 'deprecated':
   case 'no longer pursuing':
