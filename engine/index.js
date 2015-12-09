@@ -22,32 +22,32 @@ function validateWarning(msg) {
 
 function normalizeStatus(status, browser) {
   switch (status.trim().toLowerCase()) {
-  case '':
-    return 'unknown';
-  case 'no active development':
-  case 'not currently planned':
-    return 'not-planned';
-  case 'deprecated':
-  case 'no longer pursuing':
-  case 'removed':
-    return 'deprecated';
-  case 'under consideration':
-  case 'proposed':
-    return 'under-consideration';
-  case 'in development':
-  case 'behind a flag':
-  case 'prototyping':
-  case 'preview release':
-    return 'in-development';
-  case 'shipped':
-  case 'enabled by default':
-  case 'done':
-  case 'partial support':
-  case 'prefixed':
-    return 'shipped';
-  default:
-    validateWarning('Unmapped status: "' + status + '" for "' + browser + '"');
-    return 'invalid';
+    case '':
+      return 'unknown';
+    case 'no active development':
+    case 'not currently planned':
+      return 'not-planned';
+    case 'deprecated':
+    case 'no longer pursuing':
+    case 'removed':
+      return 'deprecated';
+    case 'under consideration':
+    case 'proposed':
+      return 'under-consideration';
+    case 'in development':
+    case 'behind a flag':
+    case 'prototyping':
+    case 'preview release':
+      return 'in-development';
+    case 'shipped':
+    case 'enabled by default':
+    case 'done':
+    case 'partial support':
+    case 'prefixed':
+      return 'shipped';
+    default:
+      validateWarning('Unmapped status: "' + status + '" for "' + browser + '"');
+      return 'invalid';
   }
 }
 
@@ -164,28 +164,28 @@ function populateSpecStatus(browserData, features) {
     let normalized;
     const status = browserFeatureData.standardization.text;
     switch (status) {
-    case 'De-facto standard':
-      normalized = 'de-facto-standard';
-      break;
-    case 'Editor\'s draft':
-      normalized = 'editors-draft';
-      break;
-    case 'Established standard':
-      normalized = 'established-standard';
-      break;
-    case 'No public standards discussion':
-      normalized = 'no-public-discussion';
-      break;
-    case 'Public discussion':
-      normalized = 'public-discussion';
-      break;
-    case 'Working draft or equivalent':
-      normalized = 'working-draft-or-equivalent';
-      break;
-    default:
-      validateWarning('Unmapped standardization status: ' + status);
-      normalized = 'invalid';
-      break;
+      case 'De-facto standard':
+        normalized = 'de-facto-standard';
+        break;
+      case 'Editor\'s draft':
+        normalized = 'editors-draft';
+        break;
+      case 'Established standard':
+        normalized = 'established-standard';
+        break;
+      case 'No public standards discussion':
+        normalized = 'no-public-discussion';
+        break;
+      case 'Public discussion':
+        normalized = 'public-discussion';
+        break;
+      case 'Working draft or equivalent':
+        normalized = 'working-draft-or-equivalent';
+        break;
+      default:
+        validateWarning('Unmapped standardization status: ' + status);
+        normalized = 'invalid';
+        break;
     }
     feature.spec_status = normalized;
   });
