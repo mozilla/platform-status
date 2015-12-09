@@ -1,3 +1,5 @@
+import search from './search';
+
 if ('serviceWorker' in navigator) {
   const started = Date.now();
   let shouldUpdate = true;
@@ -51,3 +53,79 @@ if ('serviceWorker' in navigator) {
       didUpdate();
     });
 }
+
+search.initialize().then((index) => {
+  const queryEl = document.querySelector('.search-input');
+  const featureEls = Array.prototype.slice.call(document.querySelectorAll('.feature'));
+  const featureListEl = document.querySelector('#features');
+  const clearEl = document.querySelector('.search-clear');
+  const resultMetaEl = document.querySelector('.results-meta');
+  const resultCountEl = document.querySelector('.search-results-count');
+
+  // debounce events
+  var searchTimeout;
+  function triggerSearch() {
+    clearTimeout(searchTimeout);
+    searchTimeout = setTimeout(performSearch, 100);
+  }
+
+  queryEl.addEventListener('change', triggerSearch);
+  queryEl.addEventListener('input', triggerSearch);
+  queryEl.addEventListener('keypress', triggerSearch);
+
+  clearEl.addEventListener('click', function (e) {
+    e.preventDefault();
+    queryEl.value = '';
+    performSearch();
+    queryEl.focus();
+  });
+
+  // If the user has entered a query before the index is ready, do a search now
+  if (queryEl.value) {
+    performSearch();
+  }
+
+  function performSearch() {
+    var query = queryEl.value;
+
+    featureEls.forEach(function (el) {
+      el.classList.remove('match');
+      el.style.order = null;
+    });
+
+    if (query) {
+      var results = index.search(query);
+      resultsMeta(results.length);
+      if (results.length) {
+        results.forEach(function (result, i) {
+          var el = document.getElementById(result.ref);
+          el.classList.add('match');
+          el.style.order = i;
+        });
+      }
+      featureListEl.classList.add('searched');
+    } else {
+      resultsMeta();
+      featureListEl.classList.remove('searched');
+    }
+  }
+
+  function resultsMeta(n) {
+    if (n === undefined) {
+      resultMetaEl.style.display = 'none';
+      return;
+    }
+    resultMetaEl.style.display = 'block';
+    if (n === 0) {
+      resultCountEl.innerHTML = 'No results.';
+    }
+    if (n === 1) {
+      resultCountEl.innerHTML = 'Showing one result.';
+    }
+    if (n > 1) {
+      resultCountEl.innerHTML = 'Showing ' + n + ' results.';
+    }
+  }
+}).catch(function (err) {
+  console.error(err);
+});
