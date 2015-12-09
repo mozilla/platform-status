@@ -3,6 +3,8 @@ import fs from 'fs';
 import url from 'url';
 import handlebars from 'handlebars';
 import Bottleneck from 'bottleneck';
+import slug from 'slug';
+slug.defaults.mode = 'rfc3986';
 import FixtureParser from './fixtureParser.js';
 import BrowserParser from './browserParser.js';
 import FirefoxVersionParser from './firefoxVersionParser.js';
@@ -104,7 +106,7 @@ class WebKitBrowserFeature extends BrowserFeature {
     return url.format({
       host: 'www.webkit.org',
       pathname: '/status.html',
-      hash: '#' + this.data.type + '-' + this.data.name,
+      hash: '#' + this.data.type + '-' + slug(this.data.name),
       protocol: 'https:',
     });
   }
