@@ -163,7 +163,7 @@ define(function(require) {
                 setTimeout(waitUntilRunning, 500);
               });
 
-              socket.connect({port: that.port});
+              socket.connect({ port: that.port });
             }
 
             return waitUntilRunning();
