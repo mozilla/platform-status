@@ -7,6 +7,7 @@
 html, body {
 	margin: 0;
 	padding: 0;
+	height: 100%;
 }
 
 @import '../../node_modules/mozilla-tabzilla/css/tabzilla.css';
@@ -17,6 +18,8 @@ body {
 	color: $textColorPrimary;
 	background: #fff;
 	-webkit-text-size-adjust: 100%;
+	display: flex;
+	flex-direction: column;
 }
 
 a {
@@ -109,6 +112,7 @@ h2 {
 
 article {
 	background-color: #fff;
+	flex: 1;
 }
 
 .search {
