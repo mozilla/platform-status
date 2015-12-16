@@ -2,7 +2,7 @@
 title: Permissions API
 category: apps
 bugzilla: 1105827
-firefox_status: 45
+firefox_status: in-development
 mdn_url: https://developer.mozilla.org/en-US/docs/Web/API/Permissions_API
 spec_url: https://w3c.github.io/permissions/
 spec_repo: https://github.com/w3c/permissions
