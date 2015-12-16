@@ -56,7 +56,7 @@
     "yargs": "^3.27.0"
   },
   "devDependencies": {
-    "browser-sync": "^2.9.11",
+    "browser-sync": "^2.10.1",
     "intern": "^3.0.6"
   },
   "scripts": {
