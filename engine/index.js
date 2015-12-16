@@ -228,7 +228,7 @@ function populateBugzillaData(features, options) {
         return null;
       }
       feature.bugzilla_status = bugData.status;
-      feature.bugzilla_resolved_count = 0;
+      feature.bugzilla_resolved_count = (bugData.status === 'RESOLVED') ? 1 : 0;
       // Add one to show status of the tracking bug itself.
       feature.bugzilla_dependant_count = bugData.depends_on.length + 1;
       if (!bugData.depends_on.length) {
