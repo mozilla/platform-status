@@ -14,7 +14,7 @@ define(function() {
       return this.remote.getPageTitle();
     },
 
-    followRepoLink: function() {
+    followRepoLink() {
       const remote = this.remote;
 
       return remote.findByCssSelector('#link-repo').then(function(anchor) {
@@ -24,7 +24,7 @@ define(function() {
       });
     },
 
-    followFileIssueLink: function() {
+    followFileIssueLink() {
       const remote = this.remote;
 
       return remote.findByCssSelector('#link-issue').then(function(anchor) {
