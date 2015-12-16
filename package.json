@@ -16,7 +16,6 @@
     "browserify": "^12.0.0",
     "compression": "^1.6.0",
     "css-mqpacker": "^4.0.0",
-    "cssnext": "^1.8.4",
     "del": "^2.0.2",
     "eslint": "^1.10.3",
     "eslint-config-airbnb": "^2.1.1",
@@ -46,14 +45,12 @@
     "postcss-cssnext": "^2.3.0",
     "postcss-import": "^7.1.0",
     "postcss-nested": "^1.0.0",
-    "postcss-reporter": "^1.3.0",
     "postcss-simple-extend": "^1.0.0",
     "postcss-simple-vars": "^1.0.1",
     "slug": "^0.9.1",
     "source-map-support": "^0.4.0",
     "vinyl-buffer": "^1.0.0",
-    "vinyl-source-stream": "^1.1.0",
-    "yargs": "^3.27.0"
+    "vinyl-source-stream": "^1.1.0"
   },
   "devDependencies": {
     "browser-sync": "^2.10.1",
