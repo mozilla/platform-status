@@ -437,6 +437,6 @@ function buildStatus(options) {
 }
 
 export default {
-  buildStatus: buildStatus,
-  buildIndex: buildIndex,
+  buildStatus,
+  buildIndex,
 };
