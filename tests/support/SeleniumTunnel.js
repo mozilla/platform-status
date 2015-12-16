@@ -105,7 +105,7 @@ define(function(require) {
     get isStopping() {
       return this._isStopping;
     },
-    download: function(forceDownload) {
+    download(forceDownload) {
       var that = this;
 
       var filePath = path.join(that.directory, that.executable);
@@ -129,10 +129,10 @@ define(function(require) {
         });
       });
     },
-    sendJobState: function() {
+    sendJobState() {
       return Promise.resolve();
     },
-    start: function() {
+    start() {
       var that = this;
 
       var filePath = path.join(that.directory, that.executable);
@@ -171,7 +171,7 @@ define(function(require) {
         });
       });
     },
-    stop: function() {
+    stop() {
       var that = this;
 
       that._isRunning = false;

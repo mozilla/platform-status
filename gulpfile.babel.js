@@ -57,7 +57,7 @@ gulp.task('lint', () => {
 gulp.task('build:status', () => {
   mkdirp.sync(cacheDir);
   const options = {
-    cacheDir: cacheDir,
+    cacheDir,
   };
   return engine.buildStatus(options).then((status) => {
     fs.writeFileSync(statusFilepath, JSON.stringify(status, null, 2));
