@@ -11,4 +11,4 @@ ie_ref: Service Worker
 caniuse_ref: serviceworkers
 ---
 
-A specific kind of worker that can be accessed from several browsing contexts, such as several windows, iframes or even workers.
+Event-driven scripts that can handle network requests and manage cached responses in the background.

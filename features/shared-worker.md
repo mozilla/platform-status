@@ -12,4 +12,4 @@ ie_ref: Shared Web Workers
 caniuse_ref: sharedworkers
 ---
 
-Event-driven scripts that can handle network requests and manage cached responses in the background.
+A specific kind of worker that can be accessed from several browsing contexts, such as several windows, iframes or even workers.
