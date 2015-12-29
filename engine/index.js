@@ -331,7 +331,11 @@ function validateFeatureInput(features) {
     },
     'chrome_status': {
     },
+    'chrome_footnote': {
+    },
     'opera_status': {
+    },
+    'opera_footnote': {
     },
     'webkit_ref': {
       required: true,
@@ -339,14 +343,18 @@ function validateFeatureInput(features) {
     },
     'webkit_status': {
     },
+    'webkit_footnote': {
+    },
     'ie_ref': {
       required: true,
       unique: true,
     },
+    'ie_status': {
+    },
+    'ie_footnote': {
+    },
     'caniuse_ref': {
       unique: true,
-    },
-    'ie_status': {
     },
   };
   const uniques = {};
