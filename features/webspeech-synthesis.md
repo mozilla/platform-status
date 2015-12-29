@@ -9,7 +9,7 @@ spec_repo: https://dvcs.w3.org/hg/speech-api/
 caniuse_ref: speech-synthesis
 webkit_ref: shipped
 chrome_ref: 4782875580825600
-ie_ref: webspeechapisynthesis
+ie_ref: Web Speech API (synthesis)
 ---
 
 Javascript API to generate text-to-speech output in web applications.
