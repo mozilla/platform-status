@@ -144,16 +144,23 @@ const allBrowserFeatures = [
 function populateBrowserFeatureData(browserData, features) {
   features.forEach((feature) => {
     allBrowserFeatures.map(([key, relKey, BrowserFeatureConstructor]) => {
-      const browserFeatureData = browserData[relKey].get(feature[relKey + '_ref']);
       if (!feature[key + '_status']) {
         feature[key + '_status'] = 'unknown';
       }
       feature[key + '_url'] = BrowserFeatureConstructor.defaultUrl;
-      if (browserFeatureData) {
-        const browserFeature = new BrowserFeatureConstructor(browserFeatureData);
-        feature[key + '_status'] = browserFeature.status;
-        feature[key + '_url'] = browserFeature.url;
+
+      if (!feature[relKey + '_ref']) {
+        return;
       }
+
+      const browserFeatureData = browserData[relKey].get(feature[relKey + '_ref']);
+      if (!browserFeatureData) {
+        throw new Error('Wrong value for ' + relKey + '_ref in ' + feature.file);
+      }
+
+      const browserFeature = new BrowserFeatureConstructor(browserFeatureData);
+      feature[key + '_status'] = browserFeature.status;
+      feature[key + '_url'] = browserFeature.url;
     });
   });
 }
