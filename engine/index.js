@@ -338,6 +338,8 @@ function validateFeatureInput(features) {
     },
     'chrome_status': {
     },
+    'opera_status': {
+    },
     'webkit_ref': {
       required: true,
       unique: true,
