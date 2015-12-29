@@ -155,7 +155,7 @@ function populateBrowserFeatureData(browserData, features) {
 
       const browserFeatureData = browserData[relKey].get(feature[relKey + '_ref']);
       if (!browserFeatureData) {
-        throw new Error('Wrong value for ' + relKey + '_ref in ' + feature['file']);
+        throw new Error('Wrong value for ' + relKey + '_ref in ' + feature.file);
       }
 
       const browserFeature = new BrowserFeatureConstructor(browserFeatureData);
