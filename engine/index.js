@@ -25,10 +25,12 @@ function validateWarning(msg) {
 function normalizeStatus(status, browser) {
   switch (status.trim().toLowerCase()) {
     case '':
+    case 'unknown':
       return 'unknown';
     case 'no active development':
     case 'not currently planned':
     case 'not considering':
+    case 'not-planned':
       return 'not-planned';
     case 'deprecated':
     case 'no longer pursuing':
@@ -36,11 +38,13 @@ function normalizeStatus(status, browser) {
       return 'deprecated';
     case 'under consideration':
     case 'proposed':
+    case 'under-consideration':
       return 'under-consideration';
     case 'in development':
     case 'behind a flag':
     case 'prototyping':
     case 'preview release':
+    case 'in-development':
       return 'in-development';
     case 'shipped':
     case 'enabled by default':
@@ -146,6 +150,8 @@ function populateBrowserFeatureData(browserData, features) {
     allBrowserFeatures.map(([key, relKey, BrowserFeatureConstructor]) => {
       if (!feature[key + '_status']) {
         feature[key + '_status'] = 'unknown';
+      } else {
+        feature[key + '_status'] = normalizeStatus(feature[key + '_status']);
       }
       feature[key + '_url'] = BrowserFeatureConstructor.defaultUrl;
 
