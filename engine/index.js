@@ -150,7 +150,7 @@ function populateBrowserFeatureData(browserData, features) {
       if (!feature[key + '_status']) {
         feature[key + '_status'] = 'unknown';
       } else {
-        feature[key + '_status'] = normalizeStatus(feature[key + '_status']);
+        feature[key + '_status'] = normalizeStatus(feature[key + '_status'], key);
       }
       feature[key + '_url'] = BrowserFeatureConstructor.defaultUrl;
 
@@ -276,7 +276,7 @@ function populateFirefoxStatus(versions, features) {
         feature.firefox_channel = 'nightly';
       }
     } else {
-      feature.firefox_status = normalizeStatus(feature.firefox_status);
+      feature.firefox_status = normalizeStatus(feature.firefox_status, 'firefox');
     }
   });
 }
