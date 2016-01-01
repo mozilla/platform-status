@@ -53,8 +53,7 @@ function normalizeStatus(status, browser) {
     case 'prefixed':
       return 'shipped';
     default:
-      validateWarning('Unmapped status: "' + status + '" for "' + browser + '"');
-      return 'invalid';
+      throw new Error('Unmapped status: "' + status + '" for "' + browser + '"');
   }
 }
 
