@@ -276,6 +276,8 @@ function populateFirefoxStatus(versions, features) {
       } else if (version === versions.nightly) {
         feature.firefox_channel = 'nightly';
       }
+    } else {
+      feature.firefox_status = normalizeStatus(feature.firefox_status);
     }
   });
 }
