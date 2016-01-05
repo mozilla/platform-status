@@ -448,8 +448,6 @@ function buildStatus(options) {
       });
     }
     return data;
-  }).catch((err) => {
-    console.error(err);
   });
 }
 
