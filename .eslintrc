@@ -2,7 +2,8 @@
   "extends": "airbnb/base",
   "rules": {
     "no-console": 0,
-    "space-before-function-paren": 0
+    "space-before-function-paren": 0,
+    "max-len": [0, 0, 0]
   },
   "parser": "babel-eslint"
 }
