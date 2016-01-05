@@ -302,72 +302,72 @@ function validateFeatureInput(features) {
   // We could potentially use a real JSON schema, but we'd still have to do
   // uniqueness checks ourselves.
   const schema = {
-    'file': {
+    file: {
       required: true,
       unique: true,
     },
-    'title': {
+    title: {
       required: true,
       unique: true,
     },
-    'summary': {
+    summary: {
       required: true,
       unique: true,
     },
-    'slug': {
+    slug: {
       required: true,
       unique: true,
     },
-    'category': {
+    category: {
     },
-    'bugzilla': {
+    bugzilla: {
       required: true,
       unique: true,
     },
-    'firefox_status': {
+    firefox_status: {
       required: true,
     },
-    'mdn_url': {
-      required: true,
-      unique: true,
-    },
-    'spec_url': {
+    mdn_url: {
       required: true,
       unique: true,
     },
-    'spec_repo': {
-    },
-    'spec_status': {
-    },
-    'chrome_ref': {
+    spec_url: {
       required: true,
       unique: true,
     },
-    'chrome_status': {
+    spec_repo: {
     },
-    'chrome_footnote': {
+    spec_status: {
     },
-    'opera_status': {
-    },
-    'opera_footnote': {
-    },
-    'webkit_ref': {
+    chrome_ref: {
       required: true,
       unique: true,
     },
-    'webkit_status': {
+    chrome_status: {
     },
-    'webkit_footnote': {
+    chrome_footnote: {
     },
-    'ie_ref': {
+    opera_status: {
+    },
+    opera_footnote: {
+    },
+    webkit_ref: {
       required: true,
       unique: true,
     },
-    'ie_status': {
+    webkit_status: {
     },
-    'ie_footnote': {
+    webkit_footnote: {
     },
-    'caniuse_ref': {
+    ie_ref: {
+      required: true,
+      unique: true,
+    },
+    ie_status: {
+    },
+    ie_footnote: {
+    },
+    caniuse_ref: {
       unique: true,
     },
   };
