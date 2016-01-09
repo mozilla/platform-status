@@ -149,6 +149,51 @@ define(function(require) {
           assert(fp);
         });
       });
+
+      bdd.describe('normalizeStatus', function() {
+        bdd.it('should convert empty strings', function() {
+          // The node module loader for some reason has wacky path resolution.
+          // I wish we didn't have to have all these '..' but, alas.
+          var indexJS = require('intern/dojo/node!../../../../engine/index').test;
+          assert.equal(indexJS.normalizeStatus(''), 'unknown');
+        });
+
+        bdd.it('should leave known strings untouched', function() {
+          // The node module loader for some reason has wacky path resolution.
+          // I wish we didn't have to have all these '..' but, alas.
+          var indexJS = require('intern/dojo/node!../../../../engine/index').test;
+
+          var strings = [
+            'unknown',
+            'not-planned',
+            'deprecated',
+            'under-consideration',
+            'in-development',
+            'shipped',
+          ];
+
+          strings.forEach(function(val) {
+            assert.equal(indexJS.normalizeStatus(val), val);
+          });
+        });
+
+        bdd.it('should throw Error objects for invalid strings', function() {
+          // The node module loader for some reason has wacky path resolution.
+          // I wish we didn't have to have all these '..' but, alas.
+          var indexJS = require('intern/dojo/node!../../../../engine/index').test;
+          assert.throws(indexJS.normalizeStatus.bind(null, 'asdf'));
+          assert.throws(indexJS.normalizeStatus.bind(null, 'a string'));
+
+          assert.throws(indexJS.normalizeStatus.bind(null, '-8023'));
+          assert.throws(indexJS.normalizeStatus.bind(null, '91257'));
+
+          assert.throws(indexJS.normalizeStatus.bind(null, 1234));
+          assert.throws(indexJS.normalizeStatus.bind(null, -1234));
+
+          assert.throws(indexJS.normalizeStatus.bind(null, null));
+          assert.throws(indexJS.normalizeStatus.bind(null));
+        });
+      });
     });
   });
 });
