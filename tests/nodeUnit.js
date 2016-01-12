@@ -1,33 +1,24 @@
+// This file is written as an AMD module that will be loaded by the Intern
+// test client. The test client can load node modules directly to test
+// that individual pieces are working as expected.
+//
+// The flow for each test is generally:
+//   1. Load the module you wish to perform unit tests on
+//   2. Call the functions of that module directly and use the assert
+//      library to verify expected results
+//
+// We have chosen to use Intern's "BDD" interface (as opposed to the other
+// options that Intern provides - "Object," "TDD," and "QUnit"):
+//    https://theintern.github.io/intern/#interface-tdd/
+//
+// We have chosen to use Chai's "assert" library (as opposed to the other
+// options that Chai provides - "expect" and "should"):
+//    http://chaijs.com/api/assert/
+
 define(function(require) {
   const bdd = require('intern!bdd');
   const assert = require('intern/chai!assert');
-
-  // This is how to load regular Node modules.
   const fs = require('intern/dojo/node!fs');
-
-  // Create a sub-suite with `bdd.describe`. Sub-suites can
-  // have their own sub-suites; just use `bdd.describe`
-  // within a suite.
-  //
-  // Use `bdd.before` to define a function that will
-  // run before the suite starts, `bdd.after` to define a
-  // function that will run after the suite ends, `bdd.beforeEach`
-  // to define a function that will run before each test or sub-suite,
-  // and `bdd.afterEach` to define a function that will run after each
-  // test or sub-suite.
-  //
-  // Use `bdd.it` to define actual test cases.
-  //
-  // Within a test, throwing an `Error` object will cause the test to fail.
-  // Returning a promise will make the test async; if the promise
-  // eventually resolves then the test will pass. If the promise
-  // eventually rejects then the test will fail. Reject with a descriptive
-  // `Error` object please.
-  //
-  // Within a test, `this` refers to a test suite object. You can use it
-  // to skip the test or do other test-specific things.
-  //
-  // `this.remote` is null for unit tests.
 
   const publicDir = 'dist/public';
 
@@ -142,8 +133,6 @@ define(function(require) {
 
       bdd.describe('fixtureParser', function() {
         bdd.it('should something', function() {
-          // The node module loader for some reason has wacky path resolution.
-          // I wish we didn't have to have all these '..' but, alas.
           var FixtureParser = require('intern/dojo/node!../../../../engine/fixtureParser').default;
           var fp = new FixtureParser('asdf');
           assert(fp);
@@ -152,15 +141,11 @@ define(function(require) {
 
       bdd.describe('normalizeStatus', function() {
         bdd.it('should convert empty strings', function() {
-          // The node module loader for some reason has wacky path resolution.
-          // I wish we didn't have to have all these '..' but, alas.
           var indexJS = require('intern/dojo/node!../../../../engine/index').test;
           assert.equal(indexJS.normalizeStatus(''), 'unknown');
         });
 
         bdd.it('should leave known strings untouched', function() {
-          // The node module loader for some reason has wacky path resolution.
-          // I wish we didn't have to have all these '..' but, alas.
           var indexJS = require('intern/dojo/node!../../../../engine/index').test;
 
           var strings = [
@@ -178,8 +163,6 @@ define(function(require) {
         });
 
         bdd.it('should throw Error objects for invalid strings', function() {
-          // The node module loader for some reason has wacky path resolution.
-          // I wish we didn't have to have all these '..' but, alas.
           var indexJS = require('intern/dojo/node!../../../../engine/index').test;
           assert.throws(indexJS.normalizeStatus.bind(null, 'asdf'));
           assert.throws(indexJS.normalizeStatus.bind(null, 'a string'));
