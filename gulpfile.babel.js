@@ -71,7 +71,18 @@ gulp.task('build:index', ['build:status'], () => {
   });
 });
 
-gulp.task('build:html', ['build:index', 'build:css'], () => {
+gulp.task('build:features', ['build:status'], () => {
+  const status = JSON.parse(fs.readFileSync(statusFilepath));
+  let featureHtmlPath;
+  return engine.buildFeatures(status).then((contents) => {
+    contents.forEach((feature) => {
+      featureHtmlPath = path.join(publicDir, feature.slug + '.html');
+      fs.writeFileSync(featureHtmlPath, feature.contents);
+    });
+  });
+});
+
+gulp.task('build:html', ['build:index', 'build:features', 'build:css'], () => {
   gulp
     .src(path.join(publicDir, '*.html'))
     // TODO: Uncomment when compression works

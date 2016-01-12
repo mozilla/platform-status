@@ -421,11 +421,27 @@ handlebars.registerHelper('if_eq', function comparison(left, right, opts) { // N
   return opts.inverse(this);
 });
 
+handlebars.registerHelper('feature', function feature() {
+});
+
 function buildIndex(status) {
   const templateContents = fs.readFileSync('src/tpl/index.html', {
     encoding: 'utf-8',
   });
   return Promise.resolve(handlebars.compile(templateContents)(status));
+}
+
+function buildFeatures(status) {
+  const templateContents = fs.readFileSync('src/tpl/feature.html', {
+    encoding: 'utf-8',
+  });
+  const promises = status.features.map(function(feature) {
+    return {
+      slug: feature.slug,
+      contents: handlebars.compile(templateContents)(feature),
+    };
+  });
+  return Promise.all(promises);
 }
 
 function buildStatus(options) {
@@ -461,4 +477,5 @@ function buildStatus(options) {
 export default {
   buildStatus,
   buildIndex,
+  buildFeatures,
 };
