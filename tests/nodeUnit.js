@@ -7,6 +7,9 @@
 //   2. Call the functions of that module directly and use the assert
 //      library to verify expected results
 //
+// More info on writing Unit tests with Intern:
+//    https://theintern.github.io/intern/#writing-unit-test
+//
 // We have chosen to use Intern's "BDD" interface (as opposed to the other
 // options that Intern provides - "Object," "TDD," and "QUnit"):
 //    https://theintern.github.io/intern/#interface-tdd/

@@ -9,6 +9,9 @@
 //   2. Use the page object to interact with the page and use the assert
 //      library to verify expected results
 //
+// More info on writing functional tests with Intern:
+//   https://theintern.github.io/intern/#writing-functional-test
+//
 // For each page that we want to test, we have written or should write an
 // "Intern Page Object." Adding/extending tests will frequently mean
 // adding/extending page objects as well:
