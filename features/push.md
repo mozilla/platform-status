@@ -2,7 +2,7 @@
 title: Push API
 category: network, apps
 bugzilla: 1038811
-firefox_status: in-development
+firefox_status: 44
 mdn_url: https://developer.mozilla.org/en-US/docs/Web/API/Push_API
 spec_url: https://w3c.github.io/push-api/
 chrome_ref: 5416033485586432
