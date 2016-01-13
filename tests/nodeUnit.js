@@ -26,6 +26,14 @@ define(function(require) {
   const publicDir = 'dist/public';
 
   bdd.describe('Node unit', function() {
+    bdd.before(function() {
+      // This modifies the node module loader to work with es2015 modules.
+      // All subsequent `require` calls that use the node module loader
+      // will use this modified version and will be able to load es2015
+      // modules.
+      require('intern/dojo/node!babel-core/register');
+    });
+
     bdd.describe('Build process', function() {
       bdd.it('should output readable expected files and only expected files', function() {
         // Please keep this list alphabetically sorted. It is case sensitive.
@@ -126,14 +134,6 @@ define(function(require) {
     });
 
     bdd.describe('Engine', function() {
-      bdd.before(function() {
-        // This modifies the node module loader to work with es2015 modules.
-        // All subsequent `require` calls that use the node module loader
-        // will use this modified version and will be able to load es2015
-        // modules.
-        require('intern/dojo/node!babel-core/register');
-      });
-
       bdd.describe('fixtureParser', function() {
         bdd.it('should something', function() {
           var FixtureParser = require('intern/dojo/node!../../../../engine/fixtureParser').default;
@@ -180,6 +180,24 @@ define(function(require) {
           assert.throws(indexJS.normalizeStatus.bind(null));
         });
       });
+    });
+
+    bdd.describe('Cache', function() {
+      var cache = require('intern/dojo/node!../../../../engine/cache').default;
+
+      // Make directory tests/support/var/engineCache
+      //
+      // Cache our package.json file
+      // Break fetch / disconnect internet
+      // Get our package.json (should succeed from cache)
+      //
+      // Cache our package.json file
+      // Fetch our package.json file
+      // Get the cached file, verify against fetched
+      //
+      // Try fetching/caching a non-existent file
+      // (need to know what correct behavior is)
+
     });
   });
 });
