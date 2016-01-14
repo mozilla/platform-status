@@ -1,25 +1,3 @@
-{{#*inline "browserStatus"}}
-  <li class="status state-{{browser}} state-{{status}} {{#if channel}}state-{{channel}}{{/if}}" title="{{alt status 'status' 'long'}} - {{alt browser 'browser' 'long'}} {{#if footnote}}*{{footnote}}{{/if}}">
-    {{#if url}}
-      <a class="status-inner" target="_blank" href="{{url}}">
-    {{/if}}
-    {{#if url_slug}}
-      <span class="status-inner">
-    {{/if}}
-    <i aria-hidden="true" class="icon-browser">{{alt browser 'browser' 'long'}}</i>
-    {{#if footnote}}<sup class="status-footnote-indicator">*</sup>{{/if}}
-    <span class="status-text">{{alt status 'status' 'short'}}</span>
-    {{#if version}}
-      <span class="status-version">{{version}}</span>
-    {{/if}}
-    {{#if url}}
-      </a>
-    {{/if}}
-    {{#if url_slug}}
-      </span>
-    {{/if}}
-{{/inline}}
-
 <!DOCTYPE html>
 <html>
 <head>
@@ -55,59 +33,15 @@
   <article class="row">
     <div class="row-inner">
       <ul id="features">
-<li class="feature" id="{{slug}}" tabindex="0">
-  <a href="#{{slug}}"><i aria-hidden="true" class="feature-anchor"></i></a>
-  <div class="feature-header">
-    <h3 class="feature-title">{{title}}</h3>
-    <div class="feature-status">
-      <ul>
-        {{> browserStatus browser="chrome" url=chrome_url status=chrome_status footnote=chrome_footnote}}
-        {{> browserStatus browser="opera" url=opera_url status=opera_status footnote=opera_footnote}}
-        {{> browserStatus browser="webkit" url=webkit_url status=webkit_status footnote=webkit_footnote}}
-        {{> browserStatus browser="edge" url=ie_url status=ie_status footnote=edge_footnote}}
-        {{> browserStatus browser="firefox" status=firefox_status version=firefox_version url_slug=slug channel=firefox_channel}}
-      </ul>
-    </div>
-  </div>
-  <div class="feature-meta">
-    <div class="feature-links">
-      <ul>
-      {{#if mdn_url}}
-        <li>
-          <a target="_blank" href="{{mdn_url}}" title="Documentation on Mozilla Developer Network (MDN)">
-            <i aria-hidden="true" class="icon icon-mdn"></i>Docs
-          </a>
+        <li class="feature" id="{{slug}}" tabindex="0">
+          <a href="#{{slug}}"><i aria-hidden="true" class="feature-anchor"></i></a>
+          <div class="feature-header">
+            {{> featureStatus }}
+          </div>
+          <div class="feature-meta">
+            {{> featureLinks }}
+          </div>
         </li>
-      {{/if}}
-      {{#if spec_url}}
-        <li>
-          <a target="_blank" href="{{spec_url}}" title="{{alt spec_status 'spec' 'long'}}">
-            <i aria-hidden="true" class="icon icon-spec"></i>{{alt spec_status 'spec' 'short'}}
-          </a>
-        </li>
-      {{/if}}
-      {{#if caniuse_ref}}
-        <li>
-          <a target="_blank" href="http://caniuse.com/#feat={{caniuse_ref}}" title="Global browser support: {{caniuse_usage_perc_y}}% full, {{caniuse_usage_perc_a}}% partial">
-            <i aria-hidden="true" class="icon icon-caniuse"></i>Can I use {{caniuse_usage_perc_total}}%
-          </a>
-        </li>
-      {{/if}}
-      {{#if bugzilla}}
-        <li class="link-bug">
-          <a target="_blank" href="https://bugzilla.mozilla.org/show_bug.cgi?id={{bugzilla}}" title="Implementation bug at bugzilla.mozilla.org">
-            <i aria-hidden="true" class="icon icon-bugzilla"></i>{{#if_eq firefox_status "shipped"}}Complete
-            {{else if_eq bugzilla_status "RESOLVED"}}Complete
-            {{else}}{{bugzilla_resolved_count}}/{{bugzilla_dependant_count}} Resolved
-            {{/if_eq}}
-          </a>
-        </li>
-      {{/if}}
-      </ul>
-    </div>
-    <p class="feature-summary">{{{summary}}}</p>
-  </div>
-</li>
       </ul>
     </div>
   </article>
