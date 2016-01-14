@@ -1,41 +1,41 @@
+// This file is written as an AMD module that will be loaded by the Intern
+// test-runner. The test runner is communicating with a Selenium server
+// that is controlling a browser. These tests can remote-control the browser
+// and probe the displayed pages to verify that pages are functioning and
+// displaying as expected.
+//
+// The flow for each test is generally:
+//   1. Create a page object, passing `this.remote` as an argument
+//   2. Use the page object to interact with the page and use the assert
+//      library to verify expected results
+//
+// More info on writing functional tests with Intern:
+//   https://theintern.github.io/intern/#writing-functional-test
+//
+// For each page that we want to test, we have written or should write an
+// "Intern Page Object." Adding/extending tests will frequently mean
+// adding/extending page objects as well:
+//   https://theintern.github.io/intern/#page-objects
+//
+// `this.remote` is a `Command` object. It is very useful when writing
+// page objects to understand the `Command` object interface. Sometimes
+// it is necessary to interact with a raw `Command` object in a test, so
+// the documentation is linked here:
+//    https://theintern.github.io/leadfoot/Command.html
+//
+// We have chosen to use Intern's "BDD" interface (as opposed to the other
+// options that Intern provides - "Object," "TDD," and "QUnit"):
+//    https://theintern.github.io/intern/#interface-tdd/
+//
+// We have chosen to use Chai's "assert" library (as opposed to the other
+// options that Chai provides - "expect" and "should"):
+//    http://chaijs.com/api/assert/
+
 define(function(require) {
   const bdd = require('intern!bdd');
   const assert = require('intern/chai!assert');
 
-  // This `Page` object gives us access to things on index.html
   const IndexPage = require('tests/support/pages/main');
-
-  // Create a sub-suite with `bdd.describe`. Sub-suites can
-  // have their own sub-suites; just use `bdd.describe`
-  // within a suite.
-  //
-  // Use `bdd.before` to define a function that will
-  // run before the suite starts, `bdd.after` to define a
-  // function that will run after the suite ends, `bdd.beforeEach`
-  // to define a function that will run before each test or sub-suite,
-  // and `bdd.afterEach` to define a function that will run after each
-  // test or sub-suite.
-  //
-  // Use `bdd.it` to define actual test cases.
-  //
-  // Within a test, throwing an `Error` object will cause the test to fail.
-  // Returning a promise will make the test async; if the promise
-  // eventually resolves then the test will pass. If the promise
-  // eventually rejects then the test will fail. Reject with a descriptive
-  // `Error` object please.
-  //
-  // Within a test, `this` refers to a test suite object. You can use it
-  // to skip the test or do other test-specific things.
-  //
-  // `this.remote` is a `Command` object:
-  //    https://theintern.github.io/leadfoot/Command.html
-  //
-  // `this.remote` is how we control the test browser for functional
-  // tests. Instead of using it directly, we pass it to the constructors
-  // for "page objects". We use those page objects to control the page
-  // and query information about its status. If you need to test a new
-  // page, write a new page object. If you need to extend the functionality
-  // of a page object, feel free to do so!
 
   bdd.describe('Browser functional tests', function() {
     bdd.describe('main page', function() {

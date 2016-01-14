@@ -62,7 +62,7 @@
     "server": "node server.js",
     "lint": "gulp lint",
     "start": "gulp watch",
-    "test": "npm run lint && npm run build && intern-client config=tests/intern-node && intern-runner config=tests/intern-browser"
+    "test": "npm run lint && npm run build && intern-client config=tests/config/intern-node && intern-runner config=tests/config/intern-browser"
   },
   "repository": {
     "type": "git",

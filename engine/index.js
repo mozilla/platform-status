@@ -462,3 +462,8 @@ export default {
   buildStatus,
   buildIndex,
 };
+
+const test = {
+  normalizeStatus,
+};
+export { test };
