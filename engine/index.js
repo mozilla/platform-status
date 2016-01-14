@@ -421,14 +421,18 @@ handlebars.registerHelper('if_eq', function comparison(left, right, opts) { // N
   return opts.inverse(this);
 });
 
+// status partial
+const featureStatusContents = fs.readFileSync('src/tpl/featureStatusPartial.html', {
+  encoding: 'utf-8',
+});
+// links partial is needed as the feature page is build in slightly different
+// way (no summary), we might also switch off links when embedded
+const featureLinksContents = fs.readFileSync('src/tpl/featureLinksPartial.html', {
+  encoding: 'utf-8',
+});
+
 function buildIndex(status) {
   const templateContents = fs.readFileSync('src/tpl/index.html', {
-    encoding: 'utf-8',
-  });
-  const featureLinksContents = fs.readFileSync('src/tpl/featureLinksPartial.html', {
-    encoding: 'utf-8',
-  });
-  const featureStatusContents = fs.readFileSync('src/tpl/featureStatusPartial.html', {
     encoding: 'utf-8',
   });
   handlebars.registerHelper('featureStatusName', function featureStatusName() {
@@ -438,6 +442,7 @@ function buildIndex(status) {
     return this.slug + '-links';
   });
   status.features.forEach((featureData) => {
+    // register partials for each feature
     handlebars.registerPartial(
         featureData.slug + '-status',
         handlebars.compile(featureStatusContents)(featureData));
@@ -450,12 +455,6 @@ function buildIndex(status) {
 
 function buildFeatures(status) {
   const templateContents = fs.readFileSync('src/tpl/feature.html', {
-    encoding: 'utf-8',
-  });
-  const featureLinksContents = fs.readFileSync('src/tpl/featureLinksPartial.html', {
-    encoding: 'utf-8',
-  });
-  const featureStatusContents = fs.readFileSync('src/tpl/featureStatusPartial.html', {
     encoding: 'utf-8',
   });
   const promises = status.features.map(function(feature) {
