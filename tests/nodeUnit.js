@@ -22,8 +22,50 @@ define(function(require) {
   const bdd = require('intern!bdd');
   const assert = require('intern/chai!assert');
   const fs = require('intern/dojo/node!fs');
+  const path = require('intern/dojo/node!path');
 
   const publicDir = 'dist/public';
+
+  function rm(filepath) {
+    return new Promise(function(resolve, reject) {
+      fs.stat(filepath, function(statErr, stats) {
+        if (statErr) {
+          return reject(statErr);
+        }
+
+        if (stats.isFile()) {
+          return fs.unlink(filepath, function(unlinkErr) {
+            if (unlinkErr) {
+              return reject(unlinkErr);
+            }
+            return resolve();
+          });
+        }
+
+        if (stats.isDirectory()) {
+          return fs.readdir(filepath, function(readdirErr, files) {
+            if (readdirErr) {
+              return reject(readdirErr);
+            }
+            var promises = [Promise.resolve()];
+            files.forEach(function(file) {
+              promises.push(rm(path.join(filepath, file)));
+            });
+            return Promise.all(promises).then(function() {
+              fs.rmdir(filepath, function(rmdirErr) {
+                if (rmdirErr) {
+                  return reject(rmdirErr);
+                }
+                return resolve();
+              });
+            });
+          });
+        }
+
+        return reject(new Error('rm can only delete files/dirs'));
+      });
+    });
+  }
 
   bdd.describe('Node unit', function() {
     bdd.before(function() {
@@ -77,25 +119,25 @@ define(function(require) {
         var ignoreDirs = [
         ];
 
-        function processPath(path) {
+        function processPath(filepath) {
           return new Promise(function(resolve, reject) {
-            if (ignoreDirs.indexOf(path) > -1) {
+            if (ignoreDirs.indexOf(filepath) > -1) {
               resolve();
             }
-            fs.stat(path, function(statErr, stats) {
+            fs.stat(filepath, function(statErr, stats) {
               if (statErr) {
-                return reject(path + ': ' + statErr);
+                return reject(filepath + ': ' + statErr);
               }
 
               if (stats.isFile()) {
-                return fs.access(path, fs.F_OK | fs.R_OK, function(accessErr) {
+                return fs.access(filepath, fs.F_OK | fs.R_OK, function(accessErr) {
                   if (accessErr) {
-                    return reject(path + ': ' + accessErr);
+                    return reject(filepath + ': ' + accessErr);
                   }
 
-                  var index = expectedFiles.indexOf(path);
+                  var index = expectedFiles.indexOf(filepath);
                   if (index === -1) {
-                    return reject(new Error('Unexpected file: ' + path));
+                    return reject(new Error('Unexpected file: ' + filepath));
                   }
                   expectedFiles.splice(index, 1);
 
@@ -104,14 +146,14 @@ define(function(require) {
               }
 
               if (stats.isDirectory()) {
-                return fs.readdir(path, function(readErr, files) {
+                return fs.readdir(filepath, function(readErr, files) {
                   if (readErr) {
-                    return reject(path + ': ' + readErr);
+                    return reject(filepath + ': ' + readErr);
                   }
 
                   var promises = files.map(function(filename) {
-                    var filepath = path + '/' + filename;
-                    return processPath(filepath);
+                    var dirpath = filepath + '/' + filename;
+                    return processPath(dirpath);
                   });
 
                   return Promise.all(promises)
@@ -120,7 +162,7 @@ define(function(require) {
                 });
               }
 
-              return reject(path + ' is not a file or a directory');
+              return reject(filepath + ' is not a file or a directory');
             });
           });
         }
@@ -192,7 +234,7 @@ define(function(require) {
       });
 
       bdd.after(function() {
-        // TODO: Remove cache dir
+        return rm(cacheDir);
       });
 
       bdd.it('should cache files', function() {
