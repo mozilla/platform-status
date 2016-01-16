@@ -230,8 +230,39 @@ define(function(require) {
       const fetchMock = require('intern/dojo/node!fetch-mock');
 
       bdd.before(function() {
-        // Make dir to cache files to during tests
-        fs.mkdirSync(cacheDir);
+        const dir = path.dirname(cacheDir);
+
+        return new Promise(function(resolve, reject) {
+          fs.stat(dir, function(statErr, stats) {
+            if (!statErr) {
+              if (!stats.isDirectory()) {
+                return reject(new Error('tests var dir exists but is not a directory'));
+              }
+              return Promise.resolve();
+            }
+
+            if (statErr.code !== 'ENOENT') {
+              return reject(statErr);
+            }
+
+            return new Promise(function(subResolve) {
+              fs.mkdir(dir, function(mkdirErr) {
+                if (mkdirErr) {
+                  return reject(mkdirErr);
+                }
+                return subResolve();
+              });
+            }).then(function() {
+              // Make dir to cache files to during tests
+              fs.mkdir(cacheDir, function(mkdirErr) {
+                if (mkdirErr) {
+                  return reject(mkdirErr);
+                }
+                return resolve();
+              });
+            });
+          });
+        });
       });
 
       bdd.after(function() {
