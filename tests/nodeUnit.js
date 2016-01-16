@@ -227,6 +227,7 @@ define(function(require) {
     bdd.describe('Cache', function() {
       const cache = require('intern/dojo/node!../../../../engine/cache').default;
       const cacheDir = 'tests/support/var/engineCache';
+      const fetchMock = require('intern/dojo/node!fetch-mock');
 
       bdd.before(function() {
         // Make dir to cache files to during tests
@@ -234,16 +235,25 @@ define(function(require) {
       });
 
       bdd.after(function() {
+        // Remove the test cache dir
         return rm(cacheDir);
       });
 
+      bdd.beforeEach(function() {
+        // Don't let tests interfere with each other's calls to `fetch`
+        fetchMock.reset();
+      });
+
       bdd.it('should cache files', function() {
+        const testURL = 'https://raw.githubusercontent.com/mozilla/platatus/master/package.json';
+
         // Cache our package.json file
-        return cache.readJson('https://raw.githubusercontent.com/mozilla/platatus/master/package.json', cacheDir).then(function(originalText) {
-          // TODO: Break fetch / disconnect internet
+        return cache.readJson(testURL, cacheDir).then(function(originalText) {
+          // Cause the next fetch to fail
+          fetchMock.mock(testURL, 404);
 
           // Get our package.json (should succeed from cache)
-          return cache.readJson('https://raw.githubusercontent.com/mozilla/platatus/master/package.json', cacheDir).then(function(cachedText) {
+          return cache.readJson(testURL, cacheDir).then(function(cachedText) {
             // Compare the original text with the cached text
             assert.equal(JSON.stringify(cachedText), JSON.stringify(originalText));
           });
@@ -251,7 +261,12 @@ define(function(require) {
       });
 
       bdd.it('should reject on 404s', function() {
-        return cache.readJson('https://mozilla.org/non-existent-resource', cacheDir).then(function() {
+        const testURL = 'https://raw.githubusercontent.com/mozilla/platatus/master/package.json';
+
+        // Cause the fetch to 404
+        fetchMock.mock(testURL, 404);
+
+        return cache.readJson(testURL, cacheDir).then(function() {
           assert.fail('`cache.readJson` should have rejected on a 404');
         }).catch(function(err) {
           assert(err instanceof Error);
