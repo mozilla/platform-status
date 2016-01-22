@@ -22,10 +22,20 @@ define(function(require) {
   const bdd = require('intern!bdd');
   const assert = require('intern/chai!assert');
   const fs = require('intern/dojo/node!fs');
+  const path = require('intern/dojo/node!path');
+  const del = require('intern/dojo/node!del');
 
   const publicDir = 'dist/public';
 
   bdd.describe('Node unit', function() {
+    bdd.before(function() {
+      // This modifies the node module loader to work with es2015 modules.
+      // All subsequent `require` calls that use the node module loader
+      // will use this modified version and will be able to load es2015
+      // modules.
+      require('intern/dojo/node!babel-core/register');
+    });
+
     bdd.describe('Build process', function() {
       bdd.it('should output readable expected files and only expected files', function() {
         // Please keep this list alphabetically sorted. It is case sensitive.
@@ -69,25 +79,25 @@ define(function(require) {
         var ignoreDirs = [
         ];
 
-        function processPath(path) {
+        function processPath(filepath) {
           return new Promise(function(resolve, reject) {
-            if (ignoreDirs.indexOf(path) > -1) {
+            if (ignoreDirs.indexOf(filepath) > -1) {
               resolve();
             }
-            fs.stat(path, function(statErr, stats) {
+            fs.stat(filepath, function(statErr, stats) {
               if (statErr) {
-                return reject(path + ': ' + statErr);
+                return reject(filepath + ': ' + statErr);
               }
 
               if (stats.isFile()) {
-                return fs.access(path, fs.F_OK | fs.R_OK, function(accessErr) {
+                return fs.access(filepath, fs.F_OK | fs.R_OK, function(accessErr) {
                   if (accessErr) {
-                    return reject(path + ': ' + accessErr);
+                    return reject(filepath + ': ' + accessErr);
                   }
 
-                  var index = expectedFiles.indexOf(path);
+                  var index = expectedFiles.indexOf(filepath);
                   if (index === -1) {
-                    return reject(new Error('Unexpected file: ' + path));
+                    return reject(new Error('Unexpected file: ' + filepath));
                   }
                   expectedFiles.splice(index, 1);
 
@@ -96,14 +106,14 @@ define(function(require) {
               }
 
               if (stats.isDirectory()) {
-                return fs.readdir(path, function(readErr, files) {
+                return fs.readdir(filepath, function(readErr, files) {
                   if (readErr) {
-                    return reject(path + ': ' + readErr);
+                    return reject(filepath + ': ' + readErr);
                   }
 
                   var promises = files.map(function(filename) {
-                    var filepath = path + '/' + filename;
-                    return processPath(filepath);
+                    var dirpath = filepath + '/' + filename;
+                    return processPath(dirpath);
                   });
 
                   return Promise.all(promises)
@@ -112,7 +122,7 @@ define(function(require) {
                 });
               }
 
-              return reject(path + ' is not a file or a directory');
+              return reject(filepath + ' is not a file or a directory');
             });
           });
         }
@@ -126,14 +136,6 @@ define(function(require) {
     });
 
     bdd.describe('Engine', function() {
-      bdd.before(function() {
-        // This modifies the node module loader to work with es2015 modules.
-        // All subsequent `require` calls that use the node module loader
-        // will use this modified version and will be able to load es2015
-        // modules.
-        require('intern/dojo/node!babel-core/register');
-      });
-
       bdd.describe('fixtureParser', function() {
         bdd.it('should something', function() {
           var FixtureParser = require('intern/dojo/node!../../../../engine/fixtureParser').default;
@@ -178,6 +180,77 @@ define(function(require) {
 
           assert.throws(indexJS.normalizeStatus.bind(null, null));
           assert.throws(indexJS.normalizeStatus.bind(null));
+        });
+      });
+    });
+
+    bdd.describe('Cache', function() {
+      const cache = require('intern/dojo/node!../../../../engine/cache').default;
+      const cacheDir = 'tests/support/var/engineCache';
+      const fetchMock = require('intern/dojo/node!fetch-mock');
+
+      bdd.before(function() {
+        // Create the tests var dir if it doesn't already exist
+        const dir = path.dirname(cacheDir);
+
+        var stats;
+        try {
+          stats = fs.statSync(dir);
+          if (!stats.isDirectory()) {
+            throw new Error('tests var dir exists but is not a directory');
+          }
+        } catch (statErr) {
+          if (statErr.code !== 'ENOENT') {
+            throw statErr;
+          }
+
+          fs.mkdirSync(dir);
+        }
+
+        // The test cache dir shouldn't exist, but delete it if it does
+        return del([cacheDir]);
+      });
+
+      bdd.afterEach(function() {
+        // Remove the test cache dir
+        return del([cacheDir]);
+      });
+
+      bdd.beforeEach(function() {
+        // Don't let tests interfere with each other's calls to `fetch`
+        fetchMock.reset();
+
+        // Make dir to cache files to during tests
+        fs.mkdirSync(cacheDir);
+      });
+
+      bdd.it('should cache files', function() {
+        const testURL = 'https://raw.githubusercontent.com/mozilla/platatus/master/package.json';
+
+        // Cache our package.json file
+        return cache.readJson(testURL, cacheDir).then(function(originalText) {
+          // Cause the next fetch to fail
+          fetchMock.mock(testURL, 404);
+
+          // Get our package.json (should succeed from cache)
+          return cache.readJson(testURL, cacheDir).then(function(cachedText) {
+            // Compare the original text with the cached text
+            assert.equal(JSON.stringify(cachedText), JSON.stringify(originalText));
+          });
+        });
+      });
+
+      bdd.it('should reject on 404s', function() {
+        const testURL = 'https://raw.githubusercontent.com/mozilla/platatus/master/package.json';
+
+        // Cause the fetch to 404
+        fetchMock.mock(testURL, 404);
+
+        return cache.readJson(testURL, cacheDir).then(function() {
+          assert.fail('`cache.readJson` should have rejected on a 404');
+        }).catch(function(err) {
+          assert(err instanceof Error);
+          return true;
         });
       });
     });
