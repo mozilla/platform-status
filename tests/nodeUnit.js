@@ -23,49 +23,9 @@ define(function(require) {
   const assert = require('intern/chai!assert');
   const fs = require('intern/dojo/node!fs');
   const path = require('intern/dojo/node!path');
+  const del = require('intern/dojo/node!del');
 
   const publicDir = 'dist/public';
-
-  function rm(filepath) {
-    return new Promise(function(resolve, reject) {
-      fs.stat(filepath, function(statErr, stats) {
-        if (statErr) {
-          return reject(statErr);
-        }
-
-        if (stats.isFile()) {
-          return fs.unlink(filepath, function(unlinkErr) {
-            if (unlinkErr) {
-              return reject(unlinkErr);
-            }
-            return resolve();
-          });
-        }
-
-        if (stats.isDirectory()) {
-          return fs.readdir(filepath, function(readdirErr, files) {
-            if (readdirErr) {
-              return reject(readdirErr);
-            }
-            var promises = [Promise.resolve()];
-            files.forEach(function(file) {
-              promises.push(rm(path.join(filepath, file)));
-            });
-            return Promise.all(promises).then(function() {
-              fs.rmdir(filepath, function(rmdirErr) {
-                if (rmdirErr) {
-                  return reject(rmdirErr);
-                }
-                return resolve();
-              });
-            });
-          });
-        }
-
-        return reject(new Error('rm can only delete files/dirs'));
-      });
-    });
-  }
 
   bdd.describe('Node unit', function() {
     bdd.before(function() {
@@ -230,49 +190,38 @@ define(function(require) {
       const fetchMock = require('intern/dojo/node!fetch-mock');
 
       bdd.before(function() {
+        // Create the tests var dir if it doesn't already exist
         const dir = path.dirname(cacheDir);
 
-        return new Promise(function(resolve, reject) {
-          fs.stat(dir, function(statErr, stats) {
-            if (!statErr) {
-              if (!stats.isDirectory()) {
-                return reject(new Error('tests var dir exists but is not a directory'));
-              }
-              return Promise.resolve();
-            }
+        var stats;
+        try {
+          stats = fs.statSync(dir);
+          if (!stats.isDirectory()) {
+            throw new Error('tests var dir exists but is not a directory');
+          }
+        } catch (statErr) {
+          if (statErr.code !== 'ENOENT') {
+            throw statErr;
+          }
 
-            if (statErr.code !== 'ENOENT') {
-              return reject(statErr);
-            }
+          fs.mkdirSync(dir);
+        }
 
-            return new Promise(function(subResolve) {
-              fs.mkdir(dir, function(mkdirErr) {
-                if (mkdirErr) {
-                  return reject(mkdirErr);
-                }
-                return subResolve();
-              });
-            }).then(function() {
-              // Make dir to cache files to during tests
-              fs.mkdir(cacheDir, function(mkdirErr) {
-                if (mkdirErr) {
-                  return reject(mkdirErr);
-                }
-                return resolve();
-              });
-            });
-          });
-        });
+        // The test cache dir shouldn't exist, but delete it if it does
+        return del([cacheDir]);
       });
 
-      bdd.after(function() {
+      bdd.afterEach(function() {
         // Remove the test cache dir
-        return rm(cacheDir);
+        return del([cacheDir]);
       });
 
       bdd.beforeEach(function() {
         // Don't let tests interfere with each other's calls to `fetch`
         fetchMock.reset();
+
+        // Make dir to cache files to during tests
+        fs.mkdirSync(cacheDir);
       });
 
       bdd.it('should cache files', function() {
