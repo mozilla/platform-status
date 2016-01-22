@@ -303,28 +303,25 @@ const storedFields = ['firefox_status', 'spec_status', 'opera_status',
                       'webkit_status', 'ie_status'];
 function checkForNewData(features) {
   const client = redis.createClient(process.env.REDISCLOUD_URL, { no_ready_check: true });
-  const promises = [];
-  features.forEach((feature) => {
+  const promises = features.map((feature) => {
     feature.updated = {};
-    promises.push(
-        new Promise((resolve, reject) => {
-          client.hgetall(feature.slug, (err, response) => {
-            if (err) {
-              console.error('ERROR: ' + err);
-              reject(err);
-            }
-            if (!response) {
-              response = {};
-            }
-            storedFields.forEach((name) => {
-              if (feature[name] !== response[name]) {
-                feature.updated[name] = true;
-              }
-            });
-            resolve();
-          });
-        })
-    );
+    return new Promise((resolve, reject) => {
+				client.hgetall(feature.slug, (err, response) => {
+					if (err) {
+						console.error('ERROR: ' + err);
+						reject(err);
+					}
+					if (!response) {
+						response = {};
+					}
+					storedFields.forEach((name) => {
+						if (feature[name] !== response[name]) {
+							feature.updated[name] = true;
+						}
+					});
+					resolve();
+				});
+			})
   });
   return Promise.all(promises).then(() => {
     client.quit();
