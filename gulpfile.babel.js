@@ -42,17 +42,15 @@ const statusFilepath = path.join(publicDir, 'status.json');
 
 import engine from './engine/index.js';
 
-gulp.task('clean', () => {
-  return del([distDir]);
-});
+gulp.task('clean', () => del([distDir]));
 
-gulp.task('lint', () => {
-  return gulp
-    .src(['./*.js', './engine/*.js', './src/*.js', './tests/**/*.js'])
-    .pipe(plugins.eslint())
-    .pipe(plugins.eslint.format())
-    .pipe(plugins.eslint.failOnError());
-});
+gulp.task('lint', () =>
+  gulp
+  .src(['./*.js', './engine/*.js', './src/*.js', './tests/**/*.js'])
+  .pipe(plugins.eslint())
+  .pipe(plugins.eslint.format())
+  .pipe(plugins.eslint.failOnError())
+);
 
 gulp.task('build:status', () => {
   mkdirp.sync(cacheDir);
@@ -82,23 +80,23 @@ gulp.task('build:html', ['build:index', 'build:css'], () => {
     .pipe(gulp.dest(publicDir));
 });
 
-gulp.task('build:tabzilla', () => {
-  return gulp
-    .src(['./node_modules/mozilla-tabzilla/media/img/*.png'])
-    .pipe(gulp.dest(path.join(publicDir, 'images')));
-});
+gulp.task('build:tabzilla', () =>
+  gulp
+  .src(['./node_modules/mozilla-tabzilla/media/img/*.png'])
+  .pipe(gulp.dest(path.join(publicDir, 'images')))
+);
 
-gulp.task('build:root', () => {
-  return gulp
-    .src(
-      ['./src/*.*', './src/fonts/*.*', './src/images/**/*.*'],
-      { base: './src' }
-    )
-    .pipe(gulp.dest(publicDir));
-});
+gulp.task('build:root', () =>
+  gulp
+  .src(
+    ['./src/*.*', './src/fonts/*.*', './src/images/**/*.*'],
+    { base: './src' }
+  )
+  .pipe(gulp.dest(publicDir))
+);
 
-gulp.task('build:js', () => {
-  return browserify({
+gulp.task('build:js', () =>
+  browserify({
     entries: './src/js/index.js',
     debug: true,
   })
@@ -111,8 +109,8 @@ gulp.task('build:js', () => {
   }))
   .pipe(plugins.if(!develop, plugins.uglify()))
   .pipe(plugins.sourcemaps.write('.'))
-  .pipe(gulp.dest(publicDir));
-});
+  .pipe(gulp.dest(publicDir))
+);
 
 gulp.task('build:css', () => {
   const processors = [
