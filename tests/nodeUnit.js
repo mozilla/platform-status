@@ -84,6 +84,8 @@ define(function(require) {
           'dist/public/canvas-media-capture.html',
           'dist/public/push.html',
           'dist/public/css-variables.html',
+          'dist/public/css-shapes.html',
+          'dist/public/grid-layout.html',
           'dist/public/screen-orientation.html',
           'dist/public/custom-elements.html',
           'dist/public/service-worker.html',
