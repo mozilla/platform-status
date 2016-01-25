@@ -60,9 +60,8 @@ define(function(require) {
         const page = new IndexPage(this.remote);
 
         return page.followFileIssueLink().getPageTitle().then(function(title) {
-          // TODO: We probably want to sign in and verify that we're actually
-          // on the right page
-          assert.equal(title, 'Sign in to GitHub · GitHub');
+          // FIXME: We don't really know if we're on the right page
+          assert(title.includes('GitHub'));
         });
       });
     });
