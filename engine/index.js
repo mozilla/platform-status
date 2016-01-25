@@ -299,46 +299,80 @@ function populateCanIUsePercent(canIUseData, features) {
   });
 }
 
-const storedFields = ['firefox_status', 'spec_status', 'opera_status',
+const statusFields = ['firefox_status', 'spec_status', 'opera_status',
                       'webkit_status', 'ie_status'];
+// checking for changes in 'status' object
 function checkForNewData(features) {
   const client = redis.createClient(process.env.REDISCLOUD_URL, { no_ready_check: true });
-  const promises = features.map((feature) => {
-    feature.updated = {};
-    return new Promise((resolve, reject) => {
-      client.hgetall(feature.slug, (err, response) => {
-        if (err) {
-          console.error('ERROR: ' + err);
-          reject(err);
-        }
-        if (!response) {
-          response = {};
-        }
-        storedFields.forEach((name) => {
-          if (feature[name] !== response[name]) {
-            feature.updated[name] = true;
+  return new Promise((resolve, reject) => {
+    client.get('status', (err, oldStatus) => {
+      try {
+        oldStatus = JSON.parse(oldStatus);
+      } catch (e) {
+        console.log(e);
+      }
+      if (err) {
+        console.error('ERROR: ' + err);
+        reject(err);
+      }
+      if (!oldStatus) {
+        oldStatus = {};
+      }
+      features.map((feature) => {
+        feature.updated = {};
+        statusFields.forEach((name) => {
+          if (oldStatus[feature.slug] && feature[name] !== oldStatus[feature.slug][name]) {
+            feature.updated[name] = oldStatus[feature.slug][name];
           }
         });
-        resolve();
       });
+      resolve();
     });
-  });
-  return Promise.all(promises).then(() => {
+  }).then(() => {
     client.quit();
     return features;
+  }).catch(() => {
+    client.quit();
   });
 }
 
+// `status` key holds an Object representation of `status.json`
+// `changed` is a hashtag with just changed data stored by date
 function saveData(features) {
-  const client = redis.createClient(process.env.REDISCLOUD_URL, { no_ready_check: true });
-  return Promise.all(features.map((feature) => {
-    const data = {};
-    storedFields.forEach((name) => {
-      data[name] = feature[name];
+  // store changes under date
+  const date = new Date().toISOString();
+  const statusData = {};
+  const changedData = {};
+  features.map((feature) => {
+    const featureData = {};
+    statusFields.forEach((name) => {
+      featureData[name] = feature[name];
     });
-    return client.hmset(feature.slug, data);
-  })).then(() => {
-    client.quit();
+    statusData[feature.slug] = feature;
+    if (Object.keys(feature.updated).length > 0) {
+      changedData[feature.slug] = feature.updated;
+    }
+  });
+  const client = redis.createClient(process.env.REDISCLOUD_URL, { no_ready_check: true });
+  client.set('status', JSON.stringify(statusData), (errS) => {
+    if (!errS) {
+      if (Object.keys(changedData).length > 0) {
+        console.log('DEBUG: changes found');
+        console.log(changedData);
+        client.hmset('changes', date, changedData, (errC) => {
+          if (errC) {
+            console.error('ERROR: ' + errC);
+          }
+          client.quit();
+        });
+      } else {
+        console.log('DEBUG: no changes found');
+        client.quit();
+      }
+    } else {
+      console.error('ERROR: ' + errS);
+      client.quit();
+    }
   });
 }
 
