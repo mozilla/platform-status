@@ -435,10 +435,10 @@ function buildIndex(status) {
   const templateContents = fs.readFileSync('src/tpl/index.html', {
     encoding: 'utf-8',
   });
-  handlebars.registerHelper('featureStatusName', function featureStatusName() {
+  handlebars.registerHelper('featureStatusName', function() {
     return this.slug + '-status';
   });
-  handlebars.registerHelper('featureLinksName', function featureLinksName() {
+  handlebars.registerHelper('featureLinksName', function() {
     return this.slug + '-links';
   });
   status.features.forEach((featureData) => {
