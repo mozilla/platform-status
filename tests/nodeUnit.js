@@ -92,6 +92,7 @@ define(function(require) {
           'dist/public/gamepad.html',
           'dist/public/streams.html',
           'dist/public/html-imports.html',
+          'dist/public/offscreencanvas.html',
           'dist/public/vibration.html',
           'dist/public/html-templates.html',
           'dist/public/web-assembly.html',
