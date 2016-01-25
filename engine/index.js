@@ -160,7 +160,11 @@ function populateBrowserFeatureData(browserData, features) {
 
       const browserFeatureData = browserData[relKey].get(feature[relKey + '_ref']);
       if (!browserFeatureData) {
-        throw new Error('Wrong value for ' + relKey + '_ref in ' + feature.file);
+        console.warn('---');
+        console.warn('No feature data found for ' + relKey + '_ref in ' + feature.file);
+        console.warn('Please verify the data at ' + feature[key + '_url']);
+        console.warn('---');
+        return;
       }
 
       const browserFeature = new BrowserFeatureConstructor(browserFeatureData);
