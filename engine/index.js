@@ -306,22 +306,22 @@ function checkForNewData(features) {
   const promises = features.map((feature) => {
     feature.updated = {};
     return new Promise((resolve, reject) => {
-				client.hgetall(feature.slug, (err, response) => {
-					if (err) {
-						console.error('ERROR: ' + err);
-						reject(err);
-					}
-					if (!response) {
-						response = {};
-					}
-					storedFields.forEach((name) => {
-						if (feature[name] !== response[name]) {
-							feature.updated[name] = true;
-						}
-					});
-					resolve();
-				});
-			})
+        client.hgetall(feature.slug, (err, response) => {
+          if (err) {
+            console.error('ERROR: ' + err);
+            reject(err);
+          }
+          if (!response) {
+            response = {};
+          }
+          storedFields.forEach((name) => {
+            if (feature[name] !== response[name]) {
+              feature.updated[name] = true;
+            }
+          });
+          resolve();
+        });
+      })
   });
   return Promise.all(promises).then(() => {
     client.quit();
