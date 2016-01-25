@@ -425,7 +425,7 @@ handlebars.registerHelper('if_eq', function comparison(left, right, opts) { // N
 const featureStatusContents = fs.readFileSync('src/tpl/featureStatusPartial.html', {
   encoding: 'utf-8',
 });
-// links partial is needed as the feature page is build in slightly different
+// links partial is needed as the feature page is built in a slightly different
 // way (no summary), we might also switch off links when embedded
 const featureLinksContents = fs.readFileSync('src/tpl/featureLinksPartial.html', {
   encoding: 'utf-8',
@@ -457,7 +457,7 @@ function buildFeatures(status) {
   const templateContents = fs.readFileSync('src/tpl/feature.html', {
     encoding: 'utf-8',
   });
-  const promises = status.features.map(function(feature) {
+  return Promise.resolve(status.features.map(function(feature) {
     handlebars.registerPartial('featureStatus',
         handlebars.compile(featureStatusContents)(feature));
     handlebars.registerPartial('featureLinks',
@@ -466,8 +466,7 @@ function buildFeatures(status) {
       slug: feature.slug,
       contents: handlebars.compile(templateContents)(feature),
     };
-  });
-  return Promise.all(promises);
+  }));
 }
 
 function buildStatus(options) {
