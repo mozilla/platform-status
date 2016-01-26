@@ -18,14 +18,14 @@ export default class BrowserParser {
     const cacheDir = options.cacheDir;
     return Promise.all([
       cache.readJson(this.urls.webkitCore, cacheDir)
-        .then((coreResults) => {
+        .then((coreResults) =>
           // Combine the web core and javascript core specs and features.
-          return cache.readJson(this.urls.webkitJavaScript, cacheDir).then((jsResults) => {
+          cache.readJson(this.urls.webkitJavaScript, cacheDir).then((jsResults) => {
             coreResults.specification = coreResults.specification.concat(jsResults.specification);
             coreResults.features = coreResults.features.concat(jsResults.features);
             return coreResults;
-          });
-        })
+          })
+        )
         .then((results) => {
           results.specification.forEach((spec) => {
             spec.type = 'specification';
