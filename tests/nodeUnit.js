@@ -114,7 +114,8 @@ define(function(require) {
           'dist/public/page-visibility.html',
           'dist/public/websocket.html',
           'dist/public/permissions.html',
-          'dist/public/webspeech-synthesis.html'
+          'dist/public/webspeech-synthesis.html',
+          'dist/public/subresource-integrity.html'
         ];
 
         var ignoreDirs = [
