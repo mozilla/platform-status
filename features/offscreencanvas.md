@@ -2,7 +2,7 @@
 title: OffscreenCanvas
 category: games, graphics
 bugzilla: 709490
-firefox_status: 44
+firefox_status: in-development
 mdn_url: https://developer.mozilla.org/en-US/docs/Web/API/OffscreenCanvas
 spec_url: https://wiki.whatwg.org/wiki/OffscreenCanvas
 chrome_ref: 5424182347169792
