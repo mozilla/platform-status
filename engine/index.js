@@ -10,7 +10,7 @@ import BrowserParser from './browserParser.js';
 import FirefoxVersionParser from './firefoxVersionParser.js';
 import CanIUseParser from './canIUseParser.js';
 import cache from './cache.js';
-import redis from 'redis';
+import redis from './redis-helper.js';
 
 const fixtureDir = path.resolve('./features');
 const fixtureParser = new FixtureParser(fixtureDir);
@@ -302,9 +302,9 @@ function populateCanIUsePercent(canIUseData, features) {
 const statusFields = ['firefox_status', 'spec_status', 'opera_status',
                       'webkit_status', 'ie_status'];
 // checking for changes in 'status' object
-function checkForNewData(features) {
-  const client = redis.createClient(process.env.REDISCLOUD_URL, { no_ready_check: true });
-  return new Promise((resolve, reject) => {
+function checkForNewData(features, dbTestNumber) {
+  return redis.getClient(dbTestNumber)
+  .then((client) => new Promise((resolve, reject) => {
     client.get('status', (err, oldStatus) => {
       try {
         oldStatus = JSON.parse(oldStatus);
@@ -313,45 +313,38 @@ function checkForNewData(features) {
       }
       if (err) {
         console.error('ERROR: ' + err);
-        reject(err);
+        reject(err, client);
       }
       if (!oldStatus) {
         oldStatus = {};
       }
       features.map((feature) => {
         feature.updated = {};
-        statusFields.forEach((name) => {
-          if (oldStatus[feature.slug] && feature[name] !== oldStatus[feature.slug][name]) {
-            feature.updated[name] = oldStatus[feature.slug][name];
+        if (!oldStatus[feature.slug]) {
+          feature.just_started = true;
+        } else {
+          // XXX: check if that can happen outside of test...
+          if (feature.just_started) {
+            delete feature.just_started;
           }
-        });
+          statusFields.forEach((name) => {
+            if (feature[name] !== oldStatus[feature.slug][name]) {
+              feature.updated[name] = {
+                from: oldStatus[feature.slug][name],
+                to: feature[name],
+              };
+            }
+          });
+        }
       });
-      resolve();
+      resolve(client);
     });
-  }).then(() => {
+  })).then((client) => {
     client.quit();
     return features;
-  }).catch(() => {
+  }).catch((err, client) => {
+    console.error('ERROR:', err);
     client.quit();
-  });
-}
-
-function getRedisClient(dbTestNumber) {
-  const client = redis.createClient(process.env.REDISCLOUD_URL, { no_ready_check: true });
-  return new Promise((resolve, reject) => {
-    if (dbTestNumber) {
-      client.select(dbTestNumber, (errS) => {
-        if (errS) {
-          reject(errS);
-        }
-        resolve(client);
-      });
-    } else {
-      resolve(client);
-    }
-  })
-  .catch((err) => {
-    throw new Error(err);
   });
 }
 
@@ -365,21 +358,31 @@ function saveData(features, dbTestNumber) {
   features.map((feature) => {
     statusData[feature.slug] = feature;
     if (Object.keys(feature.updated).length > 0) {
-      changedData[feature.slug] = feature.updated;
+      if (!changedData.updated) {
+        changedData.updated = {};
+      }
+      changedData.updated[feature.slug] = feature.updated;
+    }
+    if (feature.just_started) {
+      if (!changedData.started) {
+        changedData.started = [];
+      }
+      changedData.started.push(feature);
     }
   });
-  return getRedisClient(dbTestNumber)
+  return redis.getClient(dbTestNumber)
   .then((client) => new Promise((resolve, reject) => {
     client.set('status', JSON.stringify(statusData), (errS) => {
       if (errS) {
         return reject(errS, client);
       }
-      if (Object.keys(changedData).length === 0) {
+
+      if (!(changedData.updated || changedData.started)) {
         console.log('DEBUG: no changes found');
         return resolve(client);
       }
       console.log('DEBUG: found new changes');
-      client.hmset('changes', date, changedData, (errC) => {
+      client.hmset('changelog', date, JSON.stringify(changedData), (errC) => {
         if (errC) {
           reject(errC, client);
         }
@@ -393,6 +396,7 @@ function saveData(features, dbTestNumber) {
   })
   .then((client) => {
     client.quit();
+    return features;
   });
 }
 
@@ -608,7 +612,6 @@ export default {
 
 const test = {
   normalizeStatus,
-  getRedisClient,
   saveData,
   checkForNewData,
   buildFeatures,
