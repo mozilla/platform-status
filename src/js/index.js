@@ -129,3 +129,10 @@ search.initialize().then((index) => {
 }).catch(function (err) {
   console.error(err);
 });
+
+window.ga = window.ga || function() {
+  (ga.q = ga.q || []).push(arguments);
+}
+ga.l = +new Date;
+ga('create', 'UA-49796218-38', 'auto');
+ga('send', 'pageview');
