@@ -1,0 +1,36 @@
+<div class="feature-links">
+  <ul>
+  {{#if mdn_url}}
+    <li>
+      <a target="_blank" href="{{mdn_url}}" title="Documentation on Mozilla Developer Network (MDN)">
+        <i aria-hidden="true" class="icon icon-mdn"></i>Docs
+      </a>
+    </li>
+  {{/if}}
+  {{#if spec_url}}
+    <li>
+      <a target="_blank" href="{{spec_url}}" title="{{alt spec_status 'spec' 'long'}}">
+        <i aria-hidden="true" class="icon icon-spec"></i>{{alt spec_status 'spec' 'short'}}
+      </a>
+    </li>
+  {{/if}}
+  {{#if caniuse_ref}}
+    <li>
+      <a target="_blank" href="http://caniuse.com/#feat={{caniuse_ref}}" title="Global browser support: {{caniuse_usage_perc_y}}% full, {{caniuse_usage_perc_a}}% partial">
+        <i aria-hidden="true" class="icon icon-caniuse"></i>Can I use {{caniuse_usage_perc_total}}%
+      </a>
+    </li>
+  {{/if}}
+  {{#if bugzilla}}
+    <li class="link-bug">
+      <a target="_blank" href="https://bugzilla.mozilla.org/show_bug.cgi?id={{bugzilla}}" title="Implementation bug at bugzilla.mozilla.org">
+        <i aria-hidden="true" class="icon icon-bugzilla"></i>{{#if_eq firefox_status "shipped"}}Complete
+        {{else if_eq bugzilla_status "RESOLVED"}}Complete
+        {{else}}{{bugzilla_resolved_count}}/{{bugzilla_dependant_count}} Resolved
+        {{/if_eq}}
+      </a>
+    </li>
+  {{/if}}
+  </ul>
+</div>
+

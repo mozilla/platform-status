@@ -9,6 +9,7 @@
   "dependencies": {
     "babel-core": "^6.2.1",
     "babel-eslint": "^4.1.6",
+    "babel-preset-es2015": "^6.3.13",
     "babel-preset-es2015-loose": "^7.0.0",
     "babel-preset-stage-0": "^6.1.18",
     "babelify": "^7.2.0",
@@ -18,7 +19,7 @@
     "css-mqpacker": "^4.0.0",
     "del": "^2.0.2",
     "eslint": "^1.10.3",
-    "eslint-config-airbnb": "^3.0.0",
+    "eslint-config-airbnb": "^4.0.0",
     "express": "^4.13.3",
     "file-exists": "^1.0.0",
     "glob": "^6.0.1",
@@ -43,7 +44,7 @@
     "node-fetch": "^1.3.3",
     "oghliner": "^1.0.0",
     "postcss-cssnext": "^2.3.0",
-    "postcss-import": "^7.1.0",
+    "postcss-import": "^8.0.1",
     "postcss-nested": "^1.0.0",
     "postcss-simple-extend": "^1.0.0",
     "postcss-simple-vars": "^1.0.1",
@@ -55,6 +56,7 @@
   },
   "devDependencies": {
     "browser-sync": "^2.10.1",
+    "fetch-mock": "^4.0.1",
     "intern": "^3.0.6"
   },
   "scripts": {
@@ -63,7 +65,7 @@
     "server": "node server.js",
     "lint": "gulp lint",
     "start": "gulp watch",
-    "test": "npm run lint && npm run build && intern-client config=tests/intern-node && intern-runner config=tests/intern-browser"
+    "test": "npm run lint && npm run build && intern-client config=tests/config/intern-node && intern-runner config=tests/config/intern-browser"
   },
   "repository": {
     "type": "git",

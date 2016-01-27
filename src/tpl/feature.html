@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <title>Firefox Platform Status</title>
+
+  <meta name="theme-color" content="#00549e">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+  <link rel="shortcut icon" href="images/favicon.ico">
+  <link rel="icon" type="image/png" sizes="196x196" href="images/favicon-196.png">
+  <link rel="manifest" href="manifest.json">
+  <link rel="apple-touch-icon" type="image/png" sizes="180x180" href="images/ios-icon-180.png">
+  <link rel="stylesheet" href="bundle.css" inline>
+
+  <meta property="og:locale" content="en_US">
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="Firefox Platform Status">
+  <meta property="og:description" content="Firefox Platform Status provides an implementation and standardization roadmap for web platform features.">
+  <meta property="og:url" content="https://platatus.herokuapp.com/">
+  <meta property="og:site_name" content="Firefox Platform Status">
+  <meta property="og:image" content="https://platatus.herokuapp.com/images/favicon-196.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:description" content="Firefox Platform Status provides an implementation and standardization roadmap for web platform features.">
+  <meta name="twitter:title" content="Firefox Platform Status">
+  <meta name="twitter:site" content="@firefox">
+  <meta name="twitter:image" content="https://platatus.herokuapp.com/images/favicon-196.png">
+  <meta name="twitter:creator" content="@firefox">
+</head>
+<body>
+  <article class="row">
+    <div class="row-inner">
+      <ul id="features">
+        <li class="feature" id="{{slug}}" tabindex="0">
+          <div class="feature-header">
+            {{> featureStatus }}
+          </div>
+          <div class="feature-meta">
+            {{> featureLinks }}
+          </div>
+        </li>
+      </ul>
+    </div>
+  </article>
+  <script src="bundle.js" async defer></script>
+</body>
+</html>

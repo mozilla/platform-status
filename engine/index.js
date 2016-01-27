@@ -369,26 +369,24 @@ function saveData(features, dbTestNumber) {
     }
   });
   return getRedisClient(dbTestNumber)
-  .then((client) => {
-    return new Promise((resolve, reject) => {
-      client.set('status', JSON.stringify(statusData), (errS) => {
-        if (errS) {
-          return reject(errS, client);
+  .then((client) => new Promise((resolve, reject) => {
+    client.set('status', JSON.stringify(statusData), (errS) => {
+      if (errS) {
+        return reject(errS, client);
+      }
+      if (Object.keys(changedData).length === 0) {
+        console.log('DEBUG: no changes found');
+        return resolve(client);
+      }
+      console.log('DEBUG: found new changes');
+      client.hmset('changes', date, changedData, (errC) => {
+        if (errC) {
+          reject(errC, client);
         }
-        if (Object.keys(changedData).length === 0) {
-          console.log('DEBUG: no changes found');
-          return resolve(client);
-        }
-        console.log('DEBUG: found new changes');
-        client.hmset('changes', date, changedData, (errC) => {
-          if (errC) {
-            reject(errC, client);
-          }
-          resolve(client);
-        });
+        resolve(client);
       });
     });
-  })
+  }))
   .catch((err, client) => {
     console.error('ERROR:', err);
     client.quit();
@@ -521,11 +519,52 @@ handlebars.registerHelper('if_eq', function comparison(left, right, opts) { // N
   return opts.inverse(this);
 });
 
+// status partial
+const featureStatusContents = fs.readFileSync('src/tpl/featureStatusPartial.html', {
+  encoding: 'utf-8',
+});
+// links partial is needed as the feature page is built in a slightly different
+// way (no summary), we might also switch off links when embedded
+const featureLinksContents = fs.readFileSync('src/tpl/featureLinksPartial.html', {
+  encoding: 'utf-8',
+});
+
 function buildIndex(status) {
   const templateContents = fs.readFileSync('src/tpl/index.html', {
     encoding: 'utf-8',
   });
+  handlebars.registerHelper('featureStatusName', function() {
+    return this.slug + '-status';
+  });
+  handlebars.registerHelper('featureLinksName', function() {
+    return this.slug + '-links';
+  });
+  status.features.forEach((featureData) => {
+    // register partials for each feature
+    handlebars.registerPartial(
+        featureData.slug + '-status',
+        handlebars.compile(featureStatusContents)(featureData));
+    handlebars.registerPartial(
+        featureData.slug + '-links',
+        handlebars.compile(featureLinksContents)(featureData));
+  });
   return Promise.resolve(handlebars.compile(templateContents)(status));
+}
+
+function buildFeatures(status) {
+  const templateContents = fs.readFileSync('src/tpl/feature.html', {
+    encoding: 'utf-8',
+  });
+  return Promise.resolve(status.features.map(function(feature) {
+    handlebars.registerPartial('featureStatus',
+        handlebars.compile(featureStatusContents)(feature));
+    handlebars.registerPartial('featureLinks',
+        handlebars.compile(featureLinksContents)(feature));
+    return {
+      slug: feature.slug,
+      contents: handlebars.compile(templateContents)(feature),
+    };
+  }));
 }
 
 function buildStatus(options) {
@@ -564,8 +603,14 @@ function buildStatus(options) {
 export default {
   buildStatus,
   buildIndex,
-  // for testing
+  buildFeatures,
+};
+
+const test = {
+  normalizeStatus,
   getRedisClient,
   saveData,
   checkForNewData,
+  buildFeatures,
 };
+export { test };
