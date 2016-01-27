@@ -336,43 +336,65 @@ function checkForNewData(features) {
   });
 }
 
+function getRedisClient(dbTestNumber) {
+  const client = redis.createClient(process.env.REDISCLOUD_URL, { no_ready_check: true });
+  return new Promise((resolve, reject) => {
+    if (dbTestNumber) {
+      client.select(dbTestNumber, (errS) => {
+        if (errS) {
+          reject(errS);
+        }
+        resolve(client);
+      });
+    } else {
+      resolve(client);
+    }
+  })
+  .catch((err) => {
+    throw new Error(err);
+  });
+}
+
 // `status` key holds an Object representation of `status.json`
 // `changed` is a hashtag with just changed data stored by date
-function saveData(features) {
+function saveData(features, dbTestNumber) {
   // store changes under date
   const date = new Date().toISOString();
   const statusData = {};
   const changedData = {};
   features.map((feature) => {
-    const featureData = {};
-    statusFields.forEach((name) => {
-      featureData[name] = feature[name];
-    });
     statusData[feature.slug] = feature;
     if (Object.keys(feature.updated).length > 0) {
       changedData[feature.slug] = feature.updated;
     }
   });
-  const client = redis.createClient(process.env.REDISCLOUD_URL, { no_ready_check: true });
-  client.set('status', JSON.stringify(statusData), (errS) => {
-    if (!errS) {
-      if (Object.keys(changedData).length > 0) {
-        console.log('DEBUG: changes found');
-        console.log(changedData);
+  return getRedisClient(dbTestNumber)
+  .then((client) => {
+    return new Promise((resolve, reject) => {
+      client.set('status', JSON.stringify(statusData), (errS) => {
+        if (errS) {
+          return reject(errS, client);
+        }
+        if (Object.keys(changedData).length === 0) {
+          console.log('DEBUG: no changes found');
+          return resolve(client);
+        }
+        console.log('DEBUG: found new changes');
         client.hmset('changes', date, changedData, (errC) => {
           if (errC) {
-            console.error('ERROR: ' + errC);
+            reject(errC, client);
           }
-          client.quit();
+          resolve(client);
         });
-      } else {
-        console.log('DEBUG: no changes found');
-        client.quit();
-      }
-    } else {
-      console.error('ERROR: ' + errS);
-      client.quit();
-    }
+      });
+    });
+  })
+  .catch((err, client) => {
+    console.error('ERROR:', err);
+    client.quit();
+  })
+  .then((client) => {
+    client.quit();
   });
 }
 
@@ -542,4 +564,8 @@ function buildStatus(options) {
 export default {
   buildStatus,
   buildIndex,
+  // for testing
+  getRedisClient,
+  saveData,
+  checkForNewData,
 };
