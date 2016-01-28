@@ -8,7 +8,7 @@ const distPublicDir = './dist/public';
 app.use(function forceHost(req, res, next) {
   const host = req.get('Host');
   if (!host.startsWith('localhost') && host !== 'platform-status.mozilla.org') {
-    res.redirect('https://platform-status.mozilla.org' + req.url);
+    res.redirect(301, 'https://platform-status.mozilla.org' + req.url);
   }
   return next();
 });
@@ -20,7 +20,7 @@ app.use(function forceSSL(req, res, next) {
     res.header('Strict-Transport-Security', 'max-age=15768000');
     // https://github.com/rangle/force-ssl-heroku/blob/master/force-ssl-heroku.js
     if (req.headers['x-forwarded-proto'] !== 'https') {
-      return res.redirect('https://' + host + req.url);
+      return res.redirect(301, 'https://' + host + req.url);
     }
   }
   return next();
