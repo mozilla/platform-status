@@ -1,5 +1,6 @@
 @import "./variables/index.css";
 @import "./fonts.css";
+@import '../../node_modules/mozilla-tabzilla/css/tabzilla.css';
 
 * {
 	box-sizing: border-box;
@@ -10,7 +11,6 @@ html, body {
 	min-height: 100%;
 }
 
-@import '../../node_modules/mozilla-tabzilla/css/tabzilla.css';
 
 body {
 	font-family: $baseFontFamily;
