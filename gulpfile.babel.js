@@ -47,7 +47,7 @@ gulp.task('clean', () => del([distDir]));
 
 gulp.task('lint', () =>
   gulp
-  .src(['./*.js', './engine/*.js', './src/*.js', './tests/**/*.js'])
+  .src(['./*.js', './engine/*.js', './src/js/*.js', './tests/**/*.js'])
   .pipe(plugins.eslint())
   .pipe(plugins.eslint.format())
   .pipe(plugins.eslint.failOnError())
