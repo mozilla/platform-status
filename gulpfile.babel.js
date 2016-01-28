@@ -18,6 +18,7 @@ import cssNested from 'postcss-nested';
 import cssExtend from 'postcss-simple-extend';
 import cssSimpleVars from 'postcss-simple-vars';
 import cssMqpacker from 'css-mqpacker';
+import cssReporter from 'postcss-reporter';
 import mkdirp from 'mkdirp';
 
 import babelRegister from 'babel-core/register';
@@ -131,11 +132,10 @@ gulp.task('build:css', () => {
     cssSimpleVars(),
     cssMqpacker(),
     cssnext({
-      browers: ['last 1 version'],
-      compress: true,
-      messages: {
-        console: true,
-      },
+      browsers: ['last 1 version'],
+    }),
+    cssReporter({
+      throwError: true,
     }),
   ];
   return gulp
@@ -143,6 +143,9 @@ gulp.task('build:css', () => {
     .pipe(plugins.sourcemaps.init())
     .pipe(plugins.postcss(processors))
     .pipe(plugins.concat('bundle.css'))
+    .pipe(plugins.cssnano({
+      autoprefixer: false,
+    }))
     .pipe(plugins.replace('../media/img/', 'images/'))
     .pipe(plugins.sourcemaps.write('.'))
     .pipe(gulp.dest(publicDir));
