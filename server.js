@@ -7,7 +7,7 @@ const distPublicDir = './dist/public';
 
 app.use(function forceHost(req, res, next) {
   const host = req.get('Host');
-  if (!host.startsWith('localhost') && host !== 'platform-status.mozilla.org') {
+  if (!/local|-pr-\d+\./.test(host) && host !== 'platform-status.mozilla.org') {
     res.redirect(301, 'https://platform-status.mozilla.org' + req.url);
   }
   return next();
