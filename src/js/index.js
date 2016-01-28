@@ -9,7 +9,7 @@ search().then((index) => {
   const queryEl = document.querySelector('.search-input');
   const featureListEl = document.querySelector('#features');
 
-  function clearMatches(references) {
+  function clearMatches(references = []) {
     Array.from(document.querySelectorAll('.feature.match')).forEach((el) => {
       if (references.indexOf(el.id) === -1) {
         el.classList.remove('match');
@@ -37,8 +37,8 @@ search().then((index) => {
     }
   }
 
-  const debounceSearch = debounce(performSearch, 150, {
-    maxWait: 750,
+  const debounceSearch = debounce(performSearch, 250, {
+    maxWait: 1000,
   });
   queryEl.addEventListener('change', debounceSearch);
   queryEl.addEventListener('input', debounceSearch);

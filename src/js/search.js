@@ -4,8 +4,8 @@ function loadFeatureData() {
   return new Promise((resolve, reject) => {
     const xhr = new XMLHttpRequest();
     xhr.open('get', 'status.json');
-    xhr.addEventListener('load', () => {
-      resolve(this.responseText);
+    xhr.addEventListener('load', ({ target }) => {
+      resolve(target.responseText);
     });
     xhr.addEventListener('error', () => {
       reject('failed to load feature data');
@@ -20,7 +20,7 @@ function parseFeatureData(body) {
 
 function buildSearchIndex(data) {
   // index schema
-  const searchIndex = lunr(() => {
+  const searchIndex = lunr(function didLoad() {
     this.field('title', { boost: 100 });
     this.field('slug', { boost: 100 });
     this.field('summary', { boost: 10 });
