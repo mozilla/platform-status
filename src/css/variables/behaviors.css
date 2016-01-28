@@ -5,7 +5,7 @@
 }
 
 @define-placeholder hide-text {
-  text-indent: 100%;
+  text-indent: 100px;
   white-space: nowrap;
   overflow: hidden;
 }
