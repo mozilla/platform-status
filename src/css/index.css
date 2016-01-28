@@ -135,11 +135,6 @@ article {
 	padding: 0 $gutterX;
 	line-height: 1.7em;
 }
-.results-meta {
-	display: none;
-	background: #eee;
-	padding: calc($gutterY / 2) $gutterX;
-}
 
 #features {
 	list-style: none;

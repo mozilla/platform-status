@@ -50,9 +50,8 @@
     <div class="row-inner">
       <div class="search">
         <label for="query">Search features</label>
-        <input type="text" id="query" class="search-input" placeholder="Feature or Keyword" tabindex="1"></label>
+        <input type="search" id="query" class="search-input" placeholder="Feature or Keyword" tabindex="1"></label>
       </div>
-      <div class="results-meta"><span class="search-results-count"></span> <a role="button" href="#" class="search-clear">clear search</a></div>
       <ul id="features">
         {{#each features}}
           <li class="feature" id="{{slug}}" tabindex="0">
