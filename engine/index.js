@@ -306,14 +306,14 @@ function checkForNewData(features, dbTestNumber) {
   return redis.getClient(dbTestNumber)
   .then((client) => new Promise((resolve, reject) => {
     client.get('status', (err, oldStatus) => {
+      if (err) {
+        console.error('ERROR: ' + err);
+        reject(err, client);
+      }
       try {
         oldStatus = JSON.parse(oldStatus);
       } catch (e) {
         console.log(e);
-      }
-      if (err) {
-        console.error('ERROR: ' + err);
-        reject(err, client);
       }
       if (!oldStatus) {
         oldStatus = {};
@@ -354,19 +354,19 @@ function saveData(features, dbTestNumber) {
   // store changes under date
   const date = new Date().toISOString();
   const statusData = {};
-  const changedData = {};
+  const changedData = {
+    updated: {},
+    started: [],
+  };
+  let isChanged = false;
   features.map((feature) => {
     statusData[feature.slug] = feature;
     if (Object.keys(feature.updated).length > 0) {
-      if (!changedData.updated) {
-        changedData.updated = {};
-      }
+      isChanged = true;
       changedData.updated[feature.slug] = feature.updated;
     }
     if (feature.just_started) {
-      if (!changedData.started) {
-        changedData.started = [];
-      }
+      isChanged = true;
       changedData.started.push(feature);
     }
   });
@@ -376,8 +376,7 @@ function saveData(features, dbTestNumber) {
       if (errS) {
         return reject(errS, client);
       }
-
-      if (!(changedData.updated || changedData.started)) {
+      if (!isChanged) {
         console.log('DEBUG: no changes found');
         return resolve(client);
       }

@@ -1,16 +1,26 @@
+// This file is written as an AMD module that will be loaded by the Intern
+// test client. The test client can load node modules directly to test
+// that individual pieces are working as expected.
+//
+// The flow for each test is generally:
+//   1. Load the module you wish to perform unit tests on
+//   2. Call the functions of that module directly and use the assert
+//      library to verify expected results
+//
+// More info on writing Unit tests with Intern:
+//    https://theintern.github.io/intern/#writing-unit-test
+//
+// We have chosen to use Intern's "BDD" interface (as opposed to the other
+// options that Intern provides - "Object," "TDD," and "QUnit"):
+//    https://theintern.github.io/intern/#interface-tdd/
+//
+// We have chosen to use Chai's "assert" library (as opposed to the other
+// options that Chai provides - "expect" and "should"):
+//    http://chaijs.com/api/assert/
+
+
 function quitDB(client) {
-  return new Promise((resolve) => {
-    client.flushdb(() => {
-      // never fails
-      resolve();
-    });
-  })
-  .then(() => new Promise((resolve) => {
-    client.quit(() => {
-      // do not check for errors, just resolve
-      resolve();
-    });
-  }));
+  return new Promise((resolve) => client.flushdb(() => client.quit(() => resolve())));
 }
 
 define((require) => {
@@ -24,30 +34,6 @@ define((require) => {
 
   const engine = require('intern/dojo/node!../../../../engine/index').test;
   const redis = require('intern/dojo/node!../../../../engine/redis-helper').default;
-
-  // Create a sub-suite with `bdd.describe`. Sub-suites can
-  // have their own sub-suites; just use `bdd.describe`
-  // within a suite.
-  //
-  // Use `bdd.before` to define a function that will
-  // run before the suite starts, `bdd.after` to define a
-  // function that will run after the suite ends, `bdd.beforeEach`
-  // to define a function that will run before each test or sub-suite,
-  // and `bdd.afterEach` to define a function that will run after each
-  // test or sub-suite.
-  //
-  // Use `bdd.it` to define actual test cases.
-  //
-  // Within a test, throwing an `Error` object will cause the test to fail.
-  // Returning a promise will make the test async; if the promise
-  // eventually resolves then the test will pass. If the promise
-  // eventually rejects then the test will fail. Reject with a descriptive
-  // `Error` object please.
-  //
-  // Within a test, `this` refers to a test suite object. You can use it
-  // to skip the test or do other test-specific things.
-  //
-  // `this.remote` is null for unit tests.
 
   bdd.describe('Saves status in redis', () => {
     // clean and quit database after each test
@@ -126,6 +112,7 @@ define((require) => {
         .then((client) => new Promise((resolve) => {
           client.hgetall('changelog', (err, logs) => {
             assert.notOk(err);
+            assert.isObject(logs);
             var logTime = Object.keys(logs)[0];
             const log = JSON.parse(logs[logTime]);
             assert.lengthOf(log.started, 1);
