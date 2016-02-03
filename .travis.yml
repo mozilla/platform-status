@@ -10,6 +10,7 @@ addons:
 env:
   global:
     - CXX=g++-4.8
+    - REDIS_URL=redis://localhost:6379
 install: npm install
 script:
   - ./node_modules/gulp/bin/gulp.js
@@ -18,6 +19,8 @@ before_install:
   - 'sh -e /etc/init.d/xvfb start'
 before_script:
   - 'export DISPLAY=:99.0'
+services:
+  - 'redis-server'
 notifications:
   irc:
     channels:

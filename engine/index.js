@@ -10,6 +10,7 @@ import BrowserParser from './browserParser.js';
 import FirefoxVersionParser from './firefoxVersionParser.js';
 import CanIUseParser from './canIUseParser.js';
 import cache from './cache.js';
+import redis from './redis-helper.js';
 
 const fixtureDir = path.resolve('./features');
 const fixtureParser = new FixtureParser(fixtureDir);
@@ -298,6 +299,106 @@ function populateCanIUsePercent(canIUseData, features) {
   });
 }
 
+const statusFields = ['firefox_status', 'spec_status', 'opera_status',
+                      'webkit_status', 'ie_status'];
+// checking for changes in 'status' object
+function checkForNewData(features, dbTestNumber) {
+  return redis.getClient(dbTestNumber)
+  .then((client) => new Promise((resolve, reject) => {
+    client.get('status', (err, oldStatus) => {
+      if (err) {
+        console.error('ERROR: ' + err);
+        reject(err, client);
+      }
+      try {
+        oldStatus = JSON.parse(oldStatus);
+      } catch (e) {
+        console.log(e);
+      }
+      if (!oldStatus) {
+        oldStatus = {};
+      }
+      features.map((feature) => {
+        feature.updated = {};
+        if (!oldStatus[feature.slug]) {
+          feature.just_started = true;
+        } else {
+          // XXX: check if that can happen outside of test...
+          if (feature.just_started) {
+            delete feature.just_started;
+          }
+          statusFields.forEach((name) => {
+            if (feature[name] !== oldStatus[feature.slug][name]) {
+              feature.updated[name] = {
+                from: oldStatus[feature.slug][name],
+                to: feature[name],
+              };
+            }
+          });
+        }
+      });
+      resolve(client);
+    });
+  })).then((client) => {
+    client.quit();
+    return features;
+  }).catch((err, client) => {
+    console.error('ERROR:', err);
+    client.quit();
+  });
+}
+
+// `status` key holds an Object representation of `status.json`
+// `changed` is a hashtag with just changed data stored by date
+function saveData(features, dbTestNumber) {
+  // store changes under date
+  const date = new Date().toISOString();
+  const statusData = {};
+  const changedData = {
+    updated: {},
+    started: [],
+  };
+  let isChanged = false;
+  features.map((feature) => {
+    statusData[feature.slug] = feature;
+    if (Object.keys(feature.updated).length > 0) {
+      isChanged = true;
+      changedData.updated[feature.slug] = feature.updated;
+    }
+    if (feature.just_started) {
+      isChanged = true;
+      changedData.started.push(feature);
+    }
+  });
+  return redis.getClient(dbTestNumber)
+  .then((client) => new Promise((resolve, reject) => {
+    client.set('status', JSON.stringify(statusData), (errS) => {
+      if (errS) {
+        return reject(errS, client);
+      }
+      if (!isChanged) {
+        console.log('DEBUG: no changes found');
+        return resolve(client);
+      }
+      console.log('DEBUG: found new changes');
+      client.hmset('changelog', date, JSON.stringify(changedData), (errC) => {
+        if (errC) {
+          reject(errC, client);
+        }
+        resolve(client);
+      });
+    });
+  }))
+  .catch((err, client) => {
+    console.error('ERROR:', err);
+    client.quit();
+  })
+  .then((client) => {
+    client.quit();
+    return features;
+  });
+}
+
 function validateFeatureInput(features) {
   // We could potentially use a real JSON schema, but we'd still have to do
   // uniqueness checks ourselves.
@@ -484,6 +585,9 @@ function buildStatus(options) {
     populateBrowserFeatureData(browserParser.results, fixtureParser.results);
     populateSpecStatus(browserParser.results, fixtureParser.results);
     populateCanIUsePercent(canIUseParser.results, fixtureParser.results);
+    return checkForNewData(fixtureParser.results);
+  }).then(saveData)
+  .then(() => {
     const data = {
       created: (new Date()).toISOString(),
       features: fixtureParser.results,
@@ -507,5 +611,8 @@ export default {
 
 const test = {
   normalizeStatus,
+  saveData,
+  checkForNewData,
+  buildFeatures,
 };
 export { test };
