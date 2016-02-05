@@ -310,13 +310,14 @@ function checkForNewData(features, dbTestNumber) {
   })
   .then(() => redis.get(client, 'status'))
   .then((oldStatus) => {
-    if (!oldStatus) {
-      oldStatus = {};
-    }
-    try {
-      oldStatus = JSON.parse(oldStatus);
-    } catch (e) {
-      console.error(e);
+    if (oldStatus) {
+      try {
+        oldStatus = JSON.parse(oldStatus);
+      } catch (e) {
+        console.error(e, oldStatus);
+        oldStatus = {};
+      }
+    } else {
       oldStatus = {};
     }
     features.map((feature) => {
