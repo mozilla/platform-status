@@ -43,6 +43,7 @@ function normalizeStatus(status, browser) {
       return 'under-consideration';
     case 'in development':
     case 'behind a flag':
+    case 'in experimental framework':
     case 'prototyping':
     case 'preview release':
     case 'in-development':
