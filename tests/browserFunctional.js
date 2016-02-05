@@ -52,7 +52,7 @@ define(function(require) {
         const page = new IndexPage(this.remote);
 
         return page.followRepoLink().getPageTitle().then(function(title) {
-          assert.equal(title, 'mozilla/platatus: Project Platform Status');
+          assert.equal(title, 'GitHub - mozilla/platatus: Project Platform Status');
         });
       });
 
