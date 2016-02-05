@@ -1,6 +1,7 @@
 const express = require('express');
 const fs = require('fs');
 const compression = require('compression');
+const features = require('./routes/features');
 const app = express();
 
 const distPublicDir = './dist/public';
@@ -39,6 +40,8 @@ if (!fs.existsSync(distPublicDir)) {
   throw new Error('Missing `dist` folder, execute `npm run build` first.');
 }
 app.use(express.static(distPublicDir));
+
+app.use(features);
 
 const port = process.env.PORT || 3003;
 app.listen(port, function didListen(err) {
