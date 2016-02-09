@@ -55,12 +55,18 @@
     "slug": "^0.9.1",
     "source-map-support": "^0.4.0",
     "vinyl-buffer": "^1.0.0",
-    "vinyl-source-stream": "^1.1.0"
+    "vinyl-source-stream": "^1.1.0",
+    "web-push": "^1.0.2"
   },
   "devDependencies": {
     "browser-sync": "^2.10.1",
+    "chai-http": "^2.0.1",
+    "crypto": "0.0.3",
     "fetch-mock": "^4.0.1",
-    "intern": "^3.0.6"
+    "intern": "^3.0.6",
+    "nock": "^6.0.1",
+    "portfinder": "^1.0.1",
+    "urlsafe-base64": "^1.0.0"
   },
   "scripts": {
     "postinstall": "if $BUILD_POSTINSTALL; then ./node_modules/.bin/gulp build; fi",
@@ -68,7 +74,8 @@
     "server": "node server.js",
     "lint": "gulp lint",
     "start": "gulp watch",
-    "test": "npm run lint && npm run build && intern-client config=tests/config/intern-node && intern-runner config=tests/config/intern-browser"
+    "test": "npm run lint && npm run build && intern-client config=tests/config/intern-node && intern-runner config=tests/config/intern-browser",
+    "testNotifications": "npm run lint && intern-client config=tests/config/intern-node"
   },
   "repository": {
     "type": "git",

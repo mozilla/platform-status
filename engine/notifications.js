@@ -1,5 +1,12 @@
 import redis from '../engine/redis-helper.js';
+import webPush from 'web-push';
 
+if (!process.env.GCM_API_KEY) {
+  console.warn('Set the GCM_API_KEY environment variable to support GCM');
+}
+webPush.setGCMAPIKey(process.env.GCM_API_KEY);
+
+// there is only one client (useful especially while testing)
 let client;
 function setClient(dbNumber) {
   return new Promise((resolve) => {
@@ -14,41 +21,68 @@ function setClient(dbNumber) {
   });
 }
 
-// registers to receive notifications
-// required info:
-// * deviceId
-// * list of feature slugs to register to
-// optional:
-// * endpoint
-function register(deviceId, features, endpoint) {
-  return setClient()
-  .then(() => Promise.resolve(
-        features.map((slug) => Promise.resolve([
-          redis.sadd(client, slug + '-notifications', deviceId),
-          redis.sadd(client, deviceId + '-notifications', slug)]))))
-  .then(() => {
-    if (endpoint) {
-      return redis.set(client, deviceId + '-endpoint', endpoint);
-    }
-    return redis.get(client, deviceId + '-notifications');
-  })
-  .then(deviceEndpoint => {
-    if (!deviceEndpoint) {
-      throw new Error('No endpoint provided');
+// eported only for test as we will not need to kill database
+function quitClient() {
+  const p = Promise.resolve(client.quit());
+  client = null;
+  return p;
+}
+
+// check if such device exists in database, reject if not
+function checkDeviceId(deviceId, dbNumber) {
+  return setClient(dbNumber)
+  .then(() => redis.hgetall(client, `device-${deviceId}`))
+  .then(device => {
+    if (!device || !device.endpoint) {
+      throw new Error('Not Found');
     }
   });
 }
 
-// get all registrations for a deviceId
-function getRegisteredFeatures(deviceId) {
-  return setClient()
-  .then(() => redis.get(deviceId + '-endpoint'))
-  .then(endpoint => {
-    if (!endpoint) {
-      throw new Error('No such deviceId');
+// registers to receive notifications
+// required info:
+// * deviceId
+// * list of feature slugs to register to
+// optional
+// one can register to a feature without providing an endpoint
+// if it was already saved:
+// * endpoint
+// * key
+// * dbNumber
+function register(deviceId, features, endpoint, key, dbNumber) {
+  if (!features || features.length === 0) {
+    return Promise.reject(new Error('No features provided'));
+  }
+
+  return setClient(dbNumber)
+  .then(() => {
+    if (endpoint) {
+      const device = {
+        id: deviceId,
+        endpoint,
+        key: key || '',
+      };
+      redis.hmset(client, `device-${deviceId}`, device);
+      return device;
+    }
+    return redis.hgetall(client, `device-${deviceId}`);
+  })
+  .then(device => {
+    if (!device || !device.endpoint) {
+      throw new Error('No endpoint provided');
     }
   })
-  .then(() => redis.smembers(client, deviceId));
+  .then(() => Promise.all(
+      features.map(slug => [
+        redis.sadd(client, `${slug}-notifications`, deviceId),
+        redis.sadd(client, `${deviceId}-notifications`, slug)]))
+  );
+}
+
+// get all registrations for a deviceId
+function getRegisteredFeatures(deviceId, dbNumber) {
+  return checkDeviceId(deviceId, dbNumber)
+  .then(() => redis.smembers(client, `${deviceId}-notifications`));
 }
 
 // unregisters from receiving notifications
@@ -56,17 +90,68 @@ function getRegisteredFeatures(deviceId) {
 // * deviceId
 // optional
 // * features
-// if no features provided unregister from all features
-function unregister(deviceId, features) {
-  console.log('NOT IMPLEMENTED', deviceId, features);
+// if no features provided unregister from all features and delete
+// endpoint entry
+function unregister(deviceId, features, dbNumber) {
+  return checkDeviceId(deviceId, dbNumber)
+  .then(() => {
+    if (features) {
+      return Promise.all(features.map(slug => [
+        redis.srem(client, `${slug}-notifications`, deviceId),
+        redis.srem(client, `${deviceId}-notifications`, slug)])
+      );
+    }
+    return redis.del(client, `device-${deviceId}`)
+    .then(() => redis.smembers(client, `${deviceId}-notifications`))
+    .then(deviceFeatures => Promise.all(
+          deviceFeatures.map(slug => redis.srem(client, `${slug}-notifications`, deviceId))
+    ))
+    .then(() => redis.del(client, `${deviceId}-notifications`));
+  });
 }
 
 // update endpoint for the device
 // required:
 // * machineId
 // * endpoint
-function updateEndpoint(deviceId, endpoint) {
-  console.log('NOT IMPLEMENTED', deviceId, endpoint);
+function updateEndpoint(deviceId, endpoint, key, dbNumber) {
+  if (!endpoint) {
+    return Promise.reject(new Error('No endpoint provided'));
+  }
+  return checkDeviceId(deviceId, dbNumber)
+  .then(() => redis.hmset(client, `device-${deviceId}`, 'endpoint', endpoint, 'key', key));
+}
+
+const ttl = 2419200;
+function sendNotifications(feature, payload, dbNumber) {
+  return setClient(dbNumber)
+  .then(() => redis.smembers(client, `${feature}-notifications`))
+  .then(devices => redis.smembers(client, 'all-notifications')
+    .then(all => devices.concat(all)))
+  .then(devices => Promise.all(
+        devices.map(deviceId => redis.hgetall(client, `device-${deviceId}`))))
+  .then(devices => Promise.all(
+      devices.map(device => {
+        if (device.endpoint.indexOf('https://android.googleapis.com/gcm/send') === 0) {
+          // XXX potential problem if many notifications to the same
+          // machine. An idea to fix it: store an array of messages
+          // instead. Delete after showing it. If a notifications comes
+          // and no payload - just leave it there.
+          return redis.set(client, `${device.id}-payload`, JSON.stringify(payload))
+          .then(webPush.sendNotification(device.endpoint, ttl));
+        }
+        return webPush.sendNotification(device.endpoint, ttl, device.key, payload);
+      })
+  ));
+}
+
+function getPayload(deviceId, dbNumber) {
+  let payload;
+  return setClient(dbNumber)
+  .then(() => redis.get(client, `${deviceId}-payload`))
+  .then(rPayload => payload = rPayload)
+  .then(() => redis.del(client, `${deviceId}-payload`))
+  .then(() => payload);
 }
 
 export default {
@@ -74,10 +159,13 @@ export default {
   getRegisteredFeatures,
   unregister,
   updateEndpoint,
+  getPayload,
 };
 
 const test = {
   setClient,
+  quitClient,
+  sendNotifications,
 };
 
 export { test };

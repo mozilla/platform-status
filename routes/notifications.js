@@ -1,25 +1,47 @@
 const express = require('express');
-import notifications from '../engine/notifications';
+import { default as notifications } from '../engine/notifications';
 const router = new express.Router();
 
-router.post('/register', function register(req, res) {
-  notifications.register(req.body.deviceId, req.body.endpoint, req.body.features)
-  .catch(() => res.sendStatus(404))
+function handleErrorResponse(err, res) {
+  if (err.message === 'Not Found') {
+    return res.sendStatus(404);
+  }
+  console.error(err.message);
+  res.sendStatus(500, err.message);
+}
+
+router.post('/register', (req, res) => {
+  notifications.register(req.body.deviceId, req.body.features, req.body.endpoint)
+  .catch(err => handleErrorResponse(err, res))
   .then(() => res.json({ success: 'success' }));
 });
 
-router.get('/registrations:deviceId', function registrations(req, res) {
-  notifications.getRegisteredFeatures(req.body.deviceId)
-  .catch(() => res.sendStatus(404))
+router.get('/registrations/:deviceId', (req, res) => {
+  notifications.getRegisteredFeatures(req.params.deviceId)
+  .catch(err => handleErrorResponse(err, res))
   .then((features) => res.json({ features }));
 });
 
-router.post('/unregister', function unregister(req, res) {
-  res.json(req);
+router.post('/unregister', (req, res) => {
+  notifications.unregister(req.body.deviceId, req.body.features)
+  .catch(err => handleErrorResponse(err, res))
+  .then(() => res.json({ success: 'success' }));
 });
 
-router.put('/update_endpoint', function updateEndpoint(req, res) {
-  res.json(req);
+router.put('/update_endpoint', (req, res) => {
+  notifications.updateEndpoint(req.body.deviceId, req.body.endpoint, req.body.key)
+  .catch(err => handleErrorResponse(err, res))
+  .then(() => res.json({ success: 'success' }));
+});
+
+router.get('/payload/:deviceId', (req, res) => {
+  notifications.getPayload(req.params.deviceId)
+  .then(payload => {
+    if (!payload) {
+      res.sendStatus(404);
+    }
+    return res.json(payload);
+  });
 });
 
 module.exports = router;

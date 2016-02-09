@@ -1,6 +1,6 @@
 language: node_js
 node_js:
-  - '4'
+- '4'
 addons:
   apt:
     sources:
@@ -9,20 +9,21 @@ addons:
     - g++-4.8
 env:
   global:
-    - CXX=g++-4.8
-    - REDIS_URL=redis://localhost:6379
+  - CXX=g++-4.8
+  - REDIS_URL=redis://localhost:6379
+  - secure: msM2ihc4zkbt01X6azFEXlTKtsgcqntn3a8t1M5Y181BJFUDKoaFM9gnjqGYILOk63UQH2U+bPsHfsiS377pltoUdUBg26S9dnOOSksxl4Jk8sJEPR+Y0F2TW6vboGjq379EgDSEt3OLvtdv6TPYeufc/abTwbAN4sFpAKaSsLm5rShadsJ9vmXIZarVaUHnfTizgAoxYunsqmYfq89peTJhuX90rB2/NdKuaz64BujBVM0bhK/VaWiJAzL2CW9wHpsutaSdNcju0L3hFgrR41Vt3ECBUiEyz72LO6Ej1hdnpos1Fu0v/mNCLumTe8uTRCyYwrFPvOXx4WA2BDTwxCIi62ThrVGUjLu61HG2TeCMqhdnq2IUOjdQxgXQbYqQqORMhBBe4qlO9D4sZyn0ufx6D2a+JgN5adeTYwPbMVY1kHI/dP2zIMN45fWv5pEO7cg1hXCWlbFLQUFvSBiz3fDbYJoMcVoklKO3oaGFQQ6l1OvEpJIyQzcOQ1AESy5yDC5ov1/hmrKVhR7aWTEwvUx93cbnYrAjjl2sdimk03dJgbgba3OkQqXI45FdWvyfLvlxwJ3Zev9lD+8m4CK4JT/uK5ek0pk5NBi2PlBqRmETaF7zW56fbzCF/Vz2MtRXcjs3Cv4OMajF6D0/JCmDtEyXYl6XjB711DjkGbmQFwk=
 install: npm install
 script:
-  - ./node_modules/gulp/bin/gulp.js
-  - npm test
+- "./node_modules/gulp/bin/gulp.js"
+- npm test
 before_install:
-  - 'sh -e /etc/init.d/xvfb start'
+- sh -e /etc/init.d/xvfb start
 before_script:
-  - 'export DISPLAY=:99.0'
+- export DISPLAY=:99.0
 services:
-  - 'redis-server'
+- redis-server
 notifications:
   irc:
     channels:
-      - "irc.mozilla.org#wadi"
+    - irc.mozilla.org#wadi
     skip_join: true
