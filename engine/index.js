@@ -170,6 +170,15 @@ function populateBrowserFeatureData(browserData, features) {
       feature[key + '_url'] = browserFeature.url;
     });
   });
+
+  // Temporarily assume that features that are in development for Chrome are also
+  // in development for Opera (at least until
+  // https://github.com/GoogleChrome/chromium-dashboard/issues/263 is fixed).
+  features.forEach(feature => {
+    if (feature['opera_status'] === 'unknown' && feature['chrome_status'] === 'in-development') {
+      feature['opera_status'] = 'in-development';
+    }
+  });
 }
 
 function populateSpecStatus(browserData, features) {
