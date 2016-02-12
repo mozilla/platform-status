@@ -11,4 +11,4 @@ chrome_ref: 5163890719588352
 ie_ref: Shapes
 ---
 
-Wrap document content around non-recangular shapes, or constrain content to a holding shape.
+Wrap document content around non-rectangular shapes, or constrain content to a holding shape.
