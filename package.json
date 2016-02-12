@@ -19,7 +19,7 @@
     "compression": "^1.6.0",
     "css-mqpacker": "^4.0.0",
     "del": "^2.0.2",
-    "eslint": "^1.10.3",
+    "eslint": "^2.0.0",
     "eslint-config-airbnb": "^4.0.0",
     "express": "^4.13.3",
     "file-exists": "^1.0.0",
