@@ -22,7 +22,7 @@ The easiest way to add a new feature is to use github's online file editor and c
 | chrome_ref | | Corresponding `id` property from [chromestatus.com/features.json](https://www.chromestatus.com/features.json) |
 | ie_ref | | Corresponding `name` property from [MicrosoftEdge/Status](https://raw.githubusercontent.com/MicrosoftEdge/Status/production/app/static/ie-status.json) |
 | firefox_footnote | | Footnotes for Firefox |
-| webkit_footnote | | Footnotes for Webkit |
+| webkit_footnote | | Footnotes for WebKit |
 | chrome_footnote | | Footnotes for Chrome |
 | opera_footnote | | Footnotes for Opera |
 | ie_footnote | | Footnotes for Edge |
