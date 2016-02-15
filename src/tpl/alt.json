@@ -42,9 +42,9 @@
       "long": "Opera"
     },
     "webkit": {
-      "abbr": "SA",
-      "short": "Safari",
-      "long": "Apple Safari"
+      "abbr": "WE",
+      "short": "WebKit",
+      "long": "WebKit Nightly"
     },
     "edge": {
       "abbr": "IE",
