@@ -423,6 +423,8 @@ function validateFeatureInput(features) {
     firefox_status: {
       required: true,
     },
+    firefox_footnote: {
+    },
     mdn_url: {
       required: true,
       unique: true,
