@@ -1,6 +1,6 @@
 # Project Platatus
 
-[![Build Status](https://img.shields.io/travis/mozilla/platatus.svg?branch=master)](https://travis-ci.org/mozilla/platatus)
+[![Build Status](https://api.travis-ci.org/mozilla/platatus.svg?branch=master)](https://travis-ci.org/mozilla/platatus)
 [![dependencies](https://img.shields.io/david/mozilla/platatus.svg)](https://david-dm.org/mozilla/platatus)
 [![devdependencies](https://img.shields.io/david/dev/mozilla/platatus.svg)](https://david-dm.org/mozilla/platatus#info=devDependencies)
 
