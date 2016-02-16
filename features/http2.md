@@ -12,4 +12,4 @@ ie_ref: HTTP/2
 caniuse_ref: http2
 ---
 
-The second version of the HTTP protocol.
+Next revision of the HTTP protocol for faster transport of web content.
