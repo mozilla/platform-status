@@ -165,9 +165,9 @@ function offline() {
   });
 }
 
-gulp.task('build', ['build:dist', 'lint'], offline);
+gulp.task('build', ['build:dist'], offline);
 
-gulp.task('watch', ['build'], () => {
+gulp.task('watch', ['build', 'lint'], () => {
   const browserSyncCreator = require('browser-sync');
   const browserSync = browserSyncCreator.create();
   browserSync.init({
