@@ -21,7 +21,8 @@ The easiest way to add a new feature is to use github's online file editor and c
 | webkit_ref | | Corresponding `title` property from `webkit.org`'s [WebCore/features.json](https://svn.webkit.org/repository/webkit/trunk/Source/WebCore/features.json) or [JavaScriptCore/features.json](https://svn.webkit.org/repository/webkit/trunk/Source/JavaScriptCore/features.json) |
 | chrome_ref | | Corresponding `id` property from [chromestatus.com/features.json](https://www.chromestatus.com/features.json) |
 | ie_ref | | Corresponding `name` property from [MicrosoftEdge/Status](https://raw.githubusercontent.com/MicrosoftEdge/Status/production/app/static/ie-status.json) |
-| webkit_footnote | | Footnotes for Webkit |
+| firefox_footnote | | Footnotes for Firefox |
+| webkit_footnote | | Footnotes for WebKit |
 | chrome_footnote | | Footnotes for Chrome |
 | opera_footnote | | Footnotes for Opera |
 | ie_footnote | | Footnotes for Edge |
