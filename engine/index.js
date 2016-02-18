@@ -314,16 +314,12 @@ const statusFields = ['firefox_status', 'spec_status', 'opera_status',
 // checking for changes in 'status' object
 function checkForNewData(features, dbTestNumber) {
   return redis.getClient(dbTestNumber)
-  .then((client) => new Promise((resolve, reject) => {
-    client.get('status', (err, oldStatus) => {
-      if (err) {
-        console.error('ERROR: ' + err);
-        reject(err, client);
-      }
+  .then(client => redis.get(client, 'status')
+    .then((oldStatus) => {
       try {
         oldStatus = JSON.parse(oldStatus);
       } catch (e) {
-        console.log(e);
+        console.error(e, oldStatus);
       }
       if (!oldStatus) {
         oldStatus = {};
@@ -347,15 +343,12 @@ function checkForNewData(features, dbTestNumber) {
           });
         }
       });
-      resolve(client);
-    });
-  })).then((client) => {
-    client.quit();
-    return features;
-  }).catch((err, client) => {
-    console.error('ERROR:', err);
-    client.quit();
-  });
+    }).catch((err) => {
+      console.error('ERROR:', err);
+    })
+    .then(() => redis.quit(client))
+    .then(() => features)
+  );
 }
 
 // `status` key holds an Object representation of `status.json`
@@ -381,32 +374,19 @@ function saveData(features, dbTestNumber) {
     }
   });
   return redis.getClient(dbTestNumber)
-  .then((client) => new Promise((resolve, reject) => {
-    client.set('status', JSON.stringify(statusData), (errS) => {
-      if (errS) {
-        return reject(errS, client);
+  .then(client => redis.set(client, 'status', JSON.stringify(statusData))
+    .then(() => {
+      if (isChanged) {
+        console.log('DEBUG: found new changes');
+        return redis.hmset(client, 'changelog', date, JSON.stringify(changedData));
       }
-      if (!isChanged) {
-        console.log('DEBUG: no changes found');
-        return resolve(client);
-      }
-      console.log('DEBUG: found new changes');
-      client.hmset('changelog', date, JSON.stringify(changedData), (errC) => {
-        if (errC) {
-          reject(errC, client);
-        }
-        resolve(client);
-      });
-    });
-  }))
-  .catch((err, client) => {
-    console.error('ERROR:', err);
-    client.quit();
-  })
-  .then((client) => {
-    client.quit();
-    return features;
-  });
+      console.log('DEBUG: no changes found');
+    }).catch((err) => {
+      console.error('ERROR:', err);
+    })
+    .then(() => redis.quit(client))
+    .then(() => features)
+  );
 }
 
 function validateFeatureInput(features) {
