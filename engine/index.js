@@ -313,57 +313,48 @@ const statusFields = ['firefox_status', 'spec_status', 'opera_status',
                       'webkit_status', 'ie_status'];
 // checking for changes in 'status' object
 function checkForNewData(features, dbTestNumber) {
-  let client;
   return redis.getClient(dbTestNumber)
-  .then((redisClient) => {
-    client = redisClient;
-  })
-  .then(() => redis.get(client, 'status'))
-  .then((oldStatus) => {
-    if (oldStatus) {
+  .then(client => redis.get(client, 'status')
+    .then((oldStatus) => {
       try {
         oldStatus = JSON.parse(oldStatus);
       } catch (e) {
         console.error(e, oldStatus);
+      }
+      if (!oldStatus) {
         oldStatus = {};
       }
-    } else {
-      oldStatus = {};
-    }
-    features.map((feature) => {
-      feature.updated = {};
-      if (!oldStatus[feature.slug]) {
-        feature.just_started = true;
-      } else {
-        // XXX: check if that can happen outside of test...
-        if (feature.just_started) {
-          delete feature.just_started;
-        }
-        statusFields.forEach((name) => {
-          if (feature[name] !== oldStatus[feature.slug][name]) {
-            feature.updated[name] = {
-              from: oldStatus[feature.slug][name],
-              to: feature[name],
-            };
+      features.map((feature) => {
+        feature.updated = {};
+        if (!oldStatus[feature.slug]) {
+          feature.just_started = true;
+        } else {
+          // XXX: check if that can happen outside of test...
+          if (feature.just_started) {
+            delete feature.just_started;
           }
-        });
-      }
-    });
-  })
-  .catch((err) => {
-    console.error('ERROR:', err);
-  })
-  .then(() => {
-    client.quit();
-    return features;
-  });
+          statusFields.forEach((name) => {
+            if (feature[name] !== oldStatus[feature.slug][name]) {
+              feature.updated[name] = {
+                from: oldStatus[feature.slug][name],
+                to: feature[name],
+              };
+            }
+          });
+        }
+      });
+    }).catch((err) => {
+      console.error('ERROR:', err);
+    })
+    .then(() => redis.quit(client))
+    .then(() => features)
+  );
 }
 
 // `status` key holds an Object representation of `status.json`
 // `changed` is a hashtag with just changed data stored by date
 function saveData(features, dbTestNumber) {
   // store changes under date
-  let client;
   const date = new Date().toISOString();
   const statusData = {};
   const changedData = {
@@ -383,24 +374,19 @@ function saveData(features, dbTestNumber) {
     }
   });
   return redis.getClient(dbTestNumber)
-  .then((redisClient) => {
-    client = redisClient;
-  })
-  .then(() => redis.set(client, 'status', JSON.stringify(statusData)))
-  .then(() => {
-    if (isChanged) {
-      console.log('DEBUG: found new changes');
-      return redis.hmset(client, 'changelog', date, JSON.stringify(changedData));
-    }
-    console.log('DEBUG: no changes found');
-  })
-  .catch((err) => {
-    console.error('ERROR:', err);
-  })
-  .then(() => {
-    client.quit();
-    return features;
-  });
+  .then(client => redis.set(client, 'status', JSON.stringify(statusData))
+    .then(() => {
+      if (isChanged) {
+        console.log('DEBUG: found new changes');
+        return redis.hmset(client, 'changelog', date, JSON.stringify(changedData));
+      }
+      console.log('DEBUG: no changes found');
+    }).catch((err) => {
+      console.error('ERROR:', err);
+    })
+    .then(() => redis.quit(client))
+    .then(() => features)
+  );
 }
 
 function validateFeatureInput(features) {
