@@ -13,7 +13,7 @@ function handleErrorResponse(err, res) {
 router.post('/register', (req, res) => {
   notifications.register(req.body.deviceId, req.body.features, req.body.endpoint)
   .catch(err => handleErrorResponse(err, res))
-  .then(() => res.json({ success: 'success' }));
+  .then(features => res.json({ features }));
 });
 
 router.get('/registrations/:deviceId', (req, res) => {

@@ -109,12 +109,29 @@ gulp.task('build:root', () =>
 
 gulp.task('build:js', () =>
   browserify({
-    entries: './src/js/index.js',
+    entries: ['./src/js/index.js', './src/js/notifications.js'],
     debug: true,
   })
   .transform(babelify.configure())
   .bundle()
   .pipe(source('bundle.js'))
+  .pipe(buffer())
+  .pipe(plugins.sourcemaps.init({
+    loadMaps: true,
+  }))
+  .pipe(plugins.if(!develop, plugins.uglify()))
+  .pipe(plugins.sourcemaps.write('.'))
+  .pipe(gulp.dest(publicDir))
+);
+
+gulp.task('build:serviceworkers', () =>
+  browserify({
+    entries: './src/js/notifications-sw.js',
+    debug: true,
+  })
+  .transform(babelify.configure())
+  .bundle()
+  .pipe(source('service-worker.js'))
   .pipe(buffer())
   .pipe(plugins.sourcemaps.init({
     loadMaps: true,
@@ -151,11 +168,12 @@ gulp.task('build:css', () => {
     .pipe(gulp.dest(publicDir));
 });
 
-gulp.task('build:dist', ['build:root', 'build:tabzilla', 'build:status', 'build:html', 'build:js', 'build:css']);
+gulp.task('build:dist', ['build:root', 'build:tabzilla', 'build:status', 'build:html', 'build:js', 'build:serviceworkers', 'build:css']);
 
 function offline() {
   return oghliner.offline({
     rootDir: publicDir,
+    importScripts: ['service-worker.js'],
     fileGlobs: [
       indexHtmlFilename,
       'bundle.js',

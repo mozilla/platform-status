@@ -9,23 +9,24 @@ webPush.setGCMAPIKey(process.env.GCM_API_KEY);
 // there is only one client (useful especially while testing)
 let client;
 function setClient(dbNumber) {
-  return new Promise((resolve) => {
-    if (client) {
-      return resolve(client);
-    }
-    redis.getClient(dbNumber)
-    .then((redisClient) => {
-      client = redisClient;
-      resolve(client);
-    });
+  if (client) {
+    return Promise.resolve(client);
+  }
+  return redis.getClient(dbNumber)
+  .then((redisClient) => {
+    client = redisClient;
+    return client;
   });
 }
 
 // eported only for test as we will not need to kill database
-function quitClient() {
-  const p = Promise.resolve(client.quit());
-  client = null;
-  return p;
+function quitClient(dbNumber) {
+  return setClient(dbNumber)
+  .then(() => {
+    const p = redis.quit(client);
+    client = null;
+    return p;
+  });
 }
 
 // check if such device exists in database, reject if not
@@ -37,6 +38,12 @@ function checkDeviceId(deviceId, dbNumber) {
       throw new Error('Not Found');
     }
   });
+}
+
+// get all registrations for a deviceId
+function getRegisteredFeatures(deviceId, dbNumber) {
+  return checkDeviceId(deviceId, dbNumber)
+  .then(() => redis.smembers(client, `${deviceId}-notifications`));
 }
 
 // registers to receive notifications
@@ -75,14 +82,8 @@ function register(deviceId, features, endpoint, key, dbNumber) {
   .then(() => Promise.all(
       features.map(slug => [
         redis.sadd(client, `${slug}-notifications`, deviceId),
-        redis.sadd(client, `${deviceId}-notifications`, slug)]))
-  );
-}
-
-// get all registrations for a deviceId
-function getRegisteredFeatures(deviceId, dbNumber) {
-  return checkDeviceId(deviceId, dbNumber)
-  .then(() => redis.smembers(client, `${deviceId}-notifications`));
+        redis.sadd(client, `${deviceId}-notifications`, slug)])))
+  .then(() => getRegisteredFeatures(deviceId, dbNumber));
 }
 
 // unregisters from receiving notifications
@@ -124,6 +125,10 @@ function updateEndpoint(deviceId, endpoint, key, dbNumber) {
 
 const ttl = 2419200;
 function sendNotifications(feature, payload, dbNumber) {
+  // make payload a string
+  if (payload && Object.keys(payload).length > 0) {
+    payload = JSON.stringify(payload);
+  }
   return setClient(dbNumber)
   .then(() => redis.smembers(client, `${feature}-notifications`))
   .then(devices => redis.smembers(client, 'all-notifications')
@@ -137,7 +142,7 @@ function sendNotifications(feature, payload, dbNumber) {
           // machine. An idea to fix it: store an array of messages
           // instead. Delete after showing it. If a notifications comes
           // and no payload - just leave it there.
-          return redis.set(client, `${device.id}-payload`, JSON.stringify(payload))
+          return redis.set(client, `${device.id}-payload`, payload)
           .then(webPush.sendNotification(device.endpoint, ttl));
         }
         return webPush.sendNotification(device.endpoint, ttl, device.key, payload);
@@ -160,12 +165,12 @@ export default {
   unregister,
   updateEndpoint,
   getPayload,
+  sendNotifications,
+  quitClient,
+  setClient,
 };
 
 const test = {
-  setClient,
-  quitClient,
-  sendNotifications,
 };
 
 export { test };
