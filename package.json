@@ -19,7 +19,7 @@
     "css-mqpacker": "^4.0.0",
     "del": "^2.0.2",
     "eslint": "^2.0.0",
-    "eslint-config-airbnb": "^4.0.0",
+    "eslint-config-airbnb": "^6.0.1",
     "express": "^4.13.3",
     "file-exists": "^1.0.0",
     "glob": "^7.0.0",
