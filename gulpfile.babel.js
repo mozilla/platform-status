@@ -86,7 +86,7 @@ gulp.task('build:html', ['build:index', 'build:features', 'build:css'], () => {
     // .pipe(plugins.if(!develop, plugins.inlineSource({
     //   compress: false,
     // })))
-    .pipe(plugins.if(!develop, plugins.minifyHtml()))
+    .pipe(plugins.if(!develop, plugins.htmlmin()))
     .pipe(gulp.dest(publicDir));
 });
 
