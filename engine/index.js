@@ -148,7 +148,7 @@ const allBrowserFeatures = [
 
 function populateBrowserFeatureData(browserData, features) {
   features.forEach((feature) => {
-    allBrowserFeatures.map(([key, relKey, BrowserFeatureConstructor]) => {
+    allBrowserFeatures.forEach(([key, relKey, BrowserFeatureConstructor]) => {
       if (!feature[key + '_status']) {
         feature[key + '_status'] = 'unknown';
       } else {
@@ -324,7 +324,7 @@ function checkForNewData(features, dbTestNumber) {
       if (!oldStatus) {
         oldStatus = {};
       }
-      features.map((feature) => {
+      features.forEach((feature) => {
         feature.updated = {};
         if (!oldStatus[feature.slug]) {
           feature.just_started = true;
@@ -362,7 +362,7 @@ function saveData(features, dbTestNumber) {
     started: [],
   };
   let isChanged = false;
-  features.map((feature) => {
+  features.forEach((feature) => {
     statusData[feature.slug] = feature;
     if (Object.keys(feature.updated).length > 0) {
       isChanged = true;
