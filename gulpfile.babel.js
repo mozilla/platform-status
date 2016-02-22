@@ -72,11 +72,9 @@ gulp.task('build:index', ['build:status'], () => {
 
 gulp.task('build:features', ['build:status'], () => {
   const status = JSON.parse(fs.readFileSync(statusFilepath));
-  let featureHtmlPath;
   return engine.buildFeatures(status).then((contents) => {
     contents.forEach((feature) => {
-      featureHtmlPath = path.join(publicDir, feature.slug + '.html');
-      fs.writeFileSync(featureHtmlPath, feature.contents);
+      fs.writeFileSync(path.join(publicDir, feature.slug + '.html'), feature.contents);
     });
   });
 });

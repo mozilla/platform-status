@@ -6,7 +6,10 @@
     "max-len": [0],
     "no-param-reassign": [0],
     "prefer-template": 1,
-    "prefer-arrow-callback": 1
+    "prefer-arrow-callback": 1,
+    "consistent-return": 1,
+    "no-confusing-arrow": 1,
+    "prefer-rest-params": 1,
   },
   "parser": "babel-eslint"
 }

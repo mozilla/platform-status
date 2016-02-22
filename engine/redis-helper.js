@@ -18,7 +18,7 @@ const commands = {
 // promisify following commads (add client as the first argument)
 ['set', 'get', 'del', 'exists', 'sismember', 'hmset', 'hget', 'smembers',
  'sadd', 'hgetall', 'srem', 'select', 'flushdb', 'quit']
-.map(name => {
+.forEach(name => {
   commands[name] = function redisFunction() {
     const args = Array.prototype.slice.call(arguments);
     const client = args.shift();
