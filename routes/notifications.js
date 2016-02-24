@@ -7,7 +7,7 @@ function handleErrorResponse(err, res) {
     return res.sendStatus(404);
   }
   console.error(err.message);
-  res.sendStatus(500, err.message);
+  return res.sendStatus(500, err.message);
 }
 
 router.post('/register', (req, res) => {
@@ -25,7 +25,7 @@ router.get('/registrations/:deviceId', (req, res) => {
 router.post('/unregister', (req, res) => {
   notifications.unregister(req.body.deviceId, req.body.features)
   .catch(err => handleErrorResponse(err, res))
-  .then(() => res.json({ success: 'success' }));
+  .then(features => res.json({ features }));
 });
 
 router.put('/update_endpoint', (req, res) => {
@@ -42,6 +42,14 @@ router.get('/payload/:deviceId', (req, res) => {
     }
     return res.json(payload);
   });
+});
+
+router.get('/test_notification', (req, res) => {
+  if (!req) {
+    console.log('I don\t like the stupid lint rule');
+  }
+  notifications.sendNotifications('asmjs', { title: 'Test', body: 'Notification' });
+  return res.json({ success: 'Success' });
 });
 
 module.exports = router;

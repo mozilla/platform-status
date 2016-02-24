@@ -108,6 +108,13 @@ function unregister(deviceId, features, dbNumber) {
           deviceFeatures.map(slug => redis.srem(client, `${slug}-notifications`, deviceId))
     ))
     .then(() => redis.del(client, `${deviceId}-notifications`));
+  })
+  .then(() => getRegisteredFeatures(deviceId, dbNumber))
+  .catch(err => {
+    if (err.message !== 'Not Found') {
+      throw err;
+    }
+    return [];
   });
 }
 

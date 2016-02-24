@@ -6,8 +6,12 @@ function getClient(dbTestNumber) {
     if (!dbTestNumber) {
       return resolve(client);
     }
-
-    client.select(dbTestNumber, (err) => err ? reject(err) : resolve(client));
+    return client.select(dbTestNumber, err => {
+      if (err) {
+        return reject(err);
+      }
+      return resolve(client);
+    });
   });
 }
 
@@ -19,8 +23,7 @@ const commands = {
 ['set', 'get', 'del', 'exists', 'sismember', 'hmset', 'hget', 'smembers',
  'sadd', 'hgetall', 'srem', 'select', 'flushdb', 'quit']
 .forEach(name => {
-  commands[name] = function redisFunction() {
-    const args = Array.prototype.slice.call(arguments);
+  commands[name] = function redisFunction(...args) {
     const client = args.shift();
     return new Promise((resolve, reject) => {
       args.push((err, response) => {

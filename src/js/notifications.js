@@ -1,11 +1,46 @@
-// notifications.js
 import { default as localforage } from 'localforage';
 
 let deviceId;
 const subscribeButton = document.getElementById('subscribeAll');
+const unsubscribeButton = document.getElementById('unsubscribeAll');
 
 function reloadUI(features) {
   console.log('YYY', features);
+}
+
+// unregisters from entire platatus - no notification should be received
+function markUnregistered() {
+  console.log('DEBUG: unregistering');
+  return navigator.serviceWorker.ready
+  .then(registration => registration.pushManager.getSubscription()
+    .then(subscription => {
+      if (subscription) {
+        return subscription.unsubscribe();
+      }
+    })
+  );
+}
+
+function handleRegistrationsResponse(response) {
+  function shouldUnregister() {
+    if (response.status === 404) {
+      return markUnregistered()
+      .then(() => {
+        console.log('XXX stupid eslint rule');
+        return { features: [] };
+      });
+    }
+    return response.json()
+    .then(body => {
+      if (body.features.length === 0) {
+        return markUnregistered()
+        .then(() => body);
+      }
+      return body;
+    });
+  }
+  return shouldUnregister()
+  .then(reloadUI);
 }
 
 function register(feature) {
@@ -31,12 +66,30 @@ function register(feature) {
         key,
         features: [feature],
       }),
-    })
-    .then(response => response.json())
-    .then(reloadUI);
-  });
+    });
+  })
+  .then(handleRegistrationsResponse);
 }
 
+function unregister(feature) {
+  return fetch('/unregister', {
+    method: 'post',
+    headers: { 'Content-type': 'application/json' },
+    body: JSON.stringify({
+      deviceId,
+      features: (feature) ? [feature] : null,
+    }),
+  })
+  .then(handleRegistrationsResponse);
+}
+
+function loadRegistrations() {
+  return fetch(`/registrations/${deviceId}`, {
+    method: 'get',
+    headers: { 'Content-type': 'application/json' },
+  })
+  .then(handleRegistrationsResponse);
+}
 
 // generate a random string (default: 40)
 function makeId(length) {
@@ -49,6 +102,10 @@ subscribeButton.onclick = function registerAll() {
   register('all');
 };
 
+unsubscribeButton.onclick = function unRegisterAll() {
+  unregister();
+};
+
 window.onload = () => {
   if (!navigator.serviceWorker) {
     console.log('No service workers allowed');
@@ -57,12 +114,13 @@ window.onload = () => {
 
   localforage.getItem('deviceId')
   .then(id => {
-    console.log('DEBUG Received id:', id);
     if (id) {
+      console.log('DEBUG Received id:', id);
       deviceId = id;
+      loadRegistrations();
     } else {
       deviceId = makeId(20);
-    console.log('DEBUG Created id:', id);
+      console.log('DEBUG Created id:', deviceId);
       localforage.setItem('deviceId', deviceId);
     }
   });
