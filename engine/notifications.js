@@ -151,12 +151,10 @@ function sendNotifications(feature, payload, dbNumber) {
 }
 
 function getPayload(deviceId, dbNumber) {
-  let payload;
   return setClient(dbNumber)
   .then(() => redis.get(client, `${deviceId}-payload`))
-  .then(rPayload => payload = rPayload)
-  .then(() => redis.del(client, `${deviceId}-payload`))
-  .then(() => payload);
+  .then(payload => redis.del(client, `${deviceId}-payload`)
+    .then(() => payload));
 }
 
 export default {

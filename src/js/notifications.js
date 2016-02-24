@@ -47,7 +47,7 @@ function makeId(length) {
 
 subscribeButton.onclick = function registerAll() {
   register('all');
-}
+};
 
 window.onload = () => {
   if (!navigator.serviceWorker) {
@@ -57,10 +57,12 @@ window.onload = () => {
 
   localforage.getItem('deviceId')
   .then(id => {
+    console.log('DEBUG Received id:', id);
     if (id) {
       deviceId = id;
     } else {
       deviceId = makeId(20);
+    console.log('DEBUG Created id:', id);
       localforage.setItem('deviceId', deviceId);
     }
   });
