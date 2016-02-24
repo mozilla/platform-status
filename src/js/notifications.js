@@ -5,12 +5,11 @@ const subscribeButton = document.getElementById('subscribeAll');
 const unsubscribeButton = document.getElementById('unsubscribeAll');
 
 function reloadUI(features) {
-  console.log('YYY', features);
+  console.log('DEBUG - no UI changes implemented yet', features);
 }
 
 // unregisters from entire platatus - no notification should be received
 function markUnregistered() {
-  console.log('DEBUG: unregistering');
   return navigator.serviceWorker.ready
   .then(registration => registration.pushManager.getSubscription()
     .then(subscription => {
@@ -26,7 +25,10 @@ function handleRegistrationsResponse(response) {
     if (response.status === 404) {
       return markUnregistered()
       .then(() => {
-        console.log('XXX stupid eslint rule');
+        // this lines are necessary to satisfy eslint
+        if (!response) {
+          return null;
+        }
         return { features: [] };
       });
     }
@@ -63,7 +65,7 @@ function register(feature) {
       body: JSON.stringify({
         deviceId,
         endpoint: subscription.endpoint,
-        key,
+        key: key ? btoa(String.fromCharCode.apply(null, new Uint8Array(key))) : '',
         features: [feature],
       }),
     });
@@ -115,12 +117,10 @@ window.onload = () => {
   localforage.getItem('deviceId')
   .then(id => {
     if (id) {
-      console.log('DEBUG Received id:', id);
       deviceId = id;
       loadRegistrations();
     } else {
       deviceId = makeId(20);
-      console.log('DEBUG Created id:', deviceId);
       localforage.setItem('deviceId', deviceId);
     }
   });

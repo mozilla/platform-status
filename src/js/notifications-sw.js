@@ -18,7 +18,6 @@ self.addEventListener('push', event => {
   event.waitUntil(
     getPayload()
     .then(data => {
-      console.log('push', data);
       // TODO add a way to unregister from the back-end
       // data.command (?)
       const title = data ? data.title : 'Platform Status';

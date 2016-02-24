@@ -440,7 +440,6 @@ define((require) => {
             features: ['feature', 'another-feature'],
           })
           .then(response => {
-            console.log(response.body);
             assert.property(response.body, 'features');
             assert.isArray(response.body.features);
             assert.sameMembers(response.body.features, ['feature', 'another-feature']);

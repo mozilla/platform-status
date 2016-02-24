@@ -13,7 +13,7 @@ function setClient(dbNumber) {
     return Promise.resolve(client);
   }
   return redis.getClient(dbNumber)
-  .then((redisClient) => {
+  .then(redisClient => {
     client = redisClient;
     return client;
   });
@@ -139,6 +139,7 @@ function sendNotifications(feature, payload, dbNumber) {
   return setClient(dbNumber)
   .then(() => redis.smembers(client, `${feature}-notifications`))
   .then(devices => redis.smembers(client, 'all-notifications')
+    // TODO remove duplicates
     .then(all => devices.concat(all)))
   .then(devices => Promise.all(
         devices.map(deviceId => redis.hgetall(client, `device-${deviceId}`))))

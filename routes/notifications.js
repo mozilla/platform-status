@@ -11,7 +11,7 @@ function handleErrorResponse(err, res) {
 }
 
 router.post('/register', (req, res) => {
-  notifications.register(req.body.deviceId, req.body.features, req.body.endpoint)
+  notifications.register(req.body.deviceId, req.body.features, req.body.endpoint, req.body.key)
   .catch(err => handleErrorResponse(err, res))
   .then(features => res.json({ features }));
 });
@@ -46,10 +46,11 @@ router.get('/payload/:deviceId', (req, res) => {
 
 router.get('/test_notification', (req, res) => {
   if (!req) {
-    console.log('I don\t like the stupid lint rule');
+    // this lines are only to satisfy eslint
+    return null;
   }
-  notifications.sendNotifications('asmjs', { title: 'Test', body: 'Notification' });
-  return res.json({ success: 'Success' });
+  notifications.sendNotifications('asmjs', { title: 'Test', body: 'Notification' })
+  .then(() => res.json({ success: 'Success' }));
 });
 
 module.exports = router;

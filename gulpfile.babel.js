@@ -175,6 +175,7 @@ function offline() {
     fileGlobs: [
       indexHtmlFilename,
       'bundle.js',
+      'service-worker.js',
       'bundle.css',
       'images/**/*.*',
     ],
