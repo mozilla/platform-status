@@ -363,8 +363,9 @@ function sendNotifications(features, dbNumber) {
     }
     if (Object.keys(feature.updated).length > 0) {
       let message = '';
-      feature.updated.forEach(updated => {
-        message += `${updated.from} -> ${updated.to}; `;
+      const browsers = Object.keys(feature.updated);
+      browsers.forEach(browser => {
+        message += `${browser}: ${feature.updated[browser].from} -> ${feature.updated[browser].to}; `;
       });
       return notifications.sendNotifications(feature.slug, {
         feature: feature.slug,
