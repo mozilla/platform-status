@@ -39,7 +39,8 @@ const workerPath = path.join(publicDir, workerFilename);
 const indexHtmlFilename = 'index.html';
 const indexHtmlPath = path.join(publicDir, indexHtmlFilename);
 
-const statusFilepath = path.join(publicDir, 'status.json');
+const statusFilePath = path.join(cacheDir, 'status.json');
+const searchFilePath = path.join(publicDir, 'search.json');
 
 import engine from './engine/index.js';
 
@@ -59,24 +60,37 @@ gulp.task('build:status', () => {
     cacheDir,
   };
   return engine.buildStatus(options).then((status) => {
-    fs.writeFileSync(statusFilepath, JSON.stringify(status, null, 2));
+    fs.writeFileSync(statusFilePath, JSON.stringify(status));
   });
 });
 
 gulp.task('build:index', ['build:status'], () => {
-  const status = JSON.parse(fs.readFileSync(statusFilepath));
+  const status = JSON.parse(fs.readFileSync(statusFilePath));
   return engine.buildIndex(status).then((contents) => {
     fs.writeFileSync(indexHtmlPath, contents);
   });
 });
 
 gulp.task('build:features', ['build:status'], () => {
-  const status = JSON.parse(fs.readFileSync(statusFilepath));
+  const status = JSON.parse(fs.readFileSync(statusFilePath));
   return engine.buildFeatures(status).then((contents) => {
     contents.forEach((feature) => {
       fs.writeFileSync(path.join(publicDir, feature.slug + '.html'), feature.contents);
     });
   });
+});
+
+gulp.task('build:search', ['build:status'], () => {
+  const status = JSON.parse(fs.readFileSync(statusFilePath));
+
+  const searchFeatures = status.features.map(feature => ({
+    title: feature.title,
+    slug: feature.slug,
+    summary: feature.summary,
+    category: feature.category,
+  }));
+
+  fs.writeFileSync(searchFilePath, JSON.stringify(searchFeatures));
 });
 
 gulp.task('build:html', ['build:index', 'build:features', 'build:css'], () => {
@@ -149,7 +163,7 @@ gulp.task('build:css', () => {
     .pipe(gulp.dest(publicDir));
 });
 
-gulp.task('build:dist', ['build:root', 'build:tabzilla', 'build:status', 'build:html', 'build:js', 'build:css']);
+gulp.task('build:dist', ['build:root', 'build:tabzilla', 'build:status', 'build:search', 'build:html', 'build:js', 'build:css']);
 
 function offline() {
   return oghliner.offline({
@@ -159,6 +173,7 @@ function offline() {
       'bundle.js',
       'bundle.css',
       'images/**/*.*',
+      'search.json',
     ],
   });
 }

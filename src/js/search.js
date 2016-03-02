@@ -3,7 +3,7 @@ import lunr from 'lunr';
 function loadFeatureData() {
   return new Promise((resolve, reject) => {
     const xhr = new XMLHttpRequest();
-    xhr.open('get', 'status.json');
+    xhr.open('get', 'search.json');
     xhr.addEventListener('load', ({ target }) => {
       resolve(target.responseText);
     });
@@ -18,7 +18,7 @@ function parseFeatureData(body) {
   return JSON.parse(body);
 }
 
-function buildSearchIndex(data) {
+function buildSearchIndex(features) {
   // index schema
   const searchIndex = lunr(function didLoad() {
     this.field('title', { boost: 100 });
@@ -31,7 +31,7 @@ function buildSearchIndex(data) {
   searchIndex.pipeline.remove(lunr.stopWordFilter);
 
   // ingest documents
-  data.features.forEach((doc) => {
+  features.forEach((doc) => {
     // quick n dirty html strip. not for security.
     doc.summary = doc.summary.replace(/<[^>]+>/g, '');
     searchIndex.add(doc);
@@ -42,6 +42,6 @@ function buildSearchIndex(data) {
 
 export default function initialize() {
   return loadFeatureData()
-    .then(parseFeatureData)
-    .then(buildSearchIndex);
+  .then(parseFeatureData)
+  .then(buildSearchIndex);
 }
