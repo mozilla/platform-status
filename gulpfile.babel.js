@@ -173,6 +173,7 @@ function offline() {
       'bundle.js',
       'bundle.css',
       'images/**/*.*',
+      'search.json',
     ],
   });
 }
