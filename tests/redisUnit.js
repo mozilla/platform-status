@@ -53,8 +53,8 @@ define((require) => {
         .then(() => redis.getClient(5))
         .then((client) => new Promise((resolve) => {
           client.get('status', (err, statusData) => {
-            assert.notOk(err, 'ERROR: ' + err);
-            assert(statusData, 'expected truthy, got ' + statusData);
+            assert.notOk(err, 'ERROR: ${err}');
+            assert(statusData, 'expected truthy, got ${statusData}');
             statusData = JSON.parse(statusData);
             assert.equal(testData[0].a, statusData.feature.a);
             resolve(client);
@@ -156,7 +156,7 @@ define((require) => {
         .then(() => redis.getClient(5))
         .then((client) => new Promise((resolve) => {
           client.hgetall('changelog', (err, logs) => {
-            assert.notOk(err, 'ERROR: ' + err);
+            assert.notOk(err, 'ERROR: ${err}');
             assert.ok(logs);
             // there shoulf be only one change logged
             assert.equal(Object.keys(logs).length, 2);

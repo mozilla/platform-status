@@ -11,6 +11,7 @@ import FirefoxVersionParser from './firefoxVersionParser.js';
 import CanIUseParser from './canIUseParser.js';
 import cache from './cache.js';
 import redis from './redis-helper.js';
+import { default as notifications } from './notifications.js';
 
 const fixtureDir = path.resolve('./features');
 const fixtureParser = new FixtureParser(fixtureDir);
@@ -351,6 +352,31 @@ function checkForNewData(features, dbTestNumber) {
   );
 }
 
+function sendNotifications(features, dbNumber) {
+  return notifications.setClient(dbNumber)
+  .then(() => Promise.all(features.map(feature => {
+    if (feature.just_started) {
+      return notifications.sendNotifications(feature.slug, {
+        feature: feature.slug,
+        message: 'started watching',
+      }, dbNumber);
+    }
+    if (Object.keys(feature.updated).length > 0) {
+      let message = '';
+      const browsers = Object.keys(feature.updated);
+      browsers.forEach(browser => {
+        message += `${browser}: ${feature.updated[browser].from} -> ${feature.updated[browser].to}; `;
+      });
+      return notifications.sendNotifications(feature.slug, {
+        feature: feature.slug,
+        message,
+      }, dbNumber);
+    }
+    return Promise.resolve();
+  })))
+  .then(() => notifications.quitClient(dbNumber));
+}
+
 // `status` key holds an Object representation of `status.json`
 // `changed` is a hashtag with just changed data stored by date
 function saveData(features, dbTestNumber) {
@@ -579,6 +605,7 @@ function buildStatus(options) {
     populateCanIUsePercent(canIUseParser.results, fixtureParser.results);
     return checkForNewData(fixtureParser.results);
   }).then(saveData)
+  .then(sendNotifications)
   .then(() => {
     const data = {
       created: (new Date()).toISOString(),
@@ -606,5 +633,6 @@ const test = {
   saveData,
   checkForNewData,
   buildFeatures,
+  sendNotifications,
 };
 export { test };
