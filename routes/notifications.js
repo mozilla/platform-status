@@ -1,4 +1,4 @@
-const express = require('express');
+import { default as express } from 'express';
 import { default as notifications } from '../engine/notifications';
 const router = new express.Router();
 
