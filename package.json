@@ -13,7 +13,6 @@
     "babel-preset-es2015-loose": "^7.0.0",
     "babel-preset-stage-0": "^6.1.18",
     "babelify": "^7.2.0",
-    "body-parser": "^1.15.0",
     "bottleneck": "^1.9.1",
     "browserify": "^13.0.0",
     "compression": "^1.6.0",
@@ -60,10 +59,8 @@
   },
   "devDependencies": {
     "browser-sync": "^2.10.1",
-    "chai-http": "^2.0.1",
     "fetch-mock": "^4.0.1",
-    "intern": "^3.0.6",
-    "portfinder": "^1.0.2"
+    "intern": "^3.0.6"
   },
   "scripts": {
     "postinstall": "if $BUILD_POSTINSTALL; then ./node_modules/.bin/gulp build; fi",
