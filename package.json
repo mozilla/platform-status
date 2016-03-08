@@ -39,7 +39,7 @@
     "gulp-uglify": "^1.4.2",
     "handlebars": "^4.0.3",
     "lodash.debounce": "^4.0.0",
-    "lunr": "^0.6.0",
+    "lunr": "^0.7.0",
     "markdown-it": "^6.0.0",
     "mkdirp": "^0.5.1",
     "mozilla-tabzilla": "^0.5.1",
