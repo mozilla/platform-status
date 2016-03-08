@@ -2,7 +2,7 @@
 title: Permissions.revoke()
 category: apps
 bugzilla: 1197461
-firefox_status: in-development
+firefox_status: 47
 mdn_url: https://developer.mozilla.org/en-US/docs/Web/API/Permissions
 spec_url: https://w3c.github.io/permissions/#dom-permissions-revoke
 spec_repo: https://github.com/w3c/permissions
