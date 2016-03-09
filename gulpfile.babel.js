@@ -1,4 +1,5 @@
 import browserify from 'browserify';
+import babel from 'gulp-babel';
 import babelify from 'babelify';
 import fs from 'fs';
 import path from 'path';
@@ -48,11 +49,29 @@ gulp.task('clean', () => del([distDir]));
 
 gulp.task('lint', () =>
   gulp
-  .src(['./*.js', './engine/*.js', './routes/*.js', './src/js/*.js', './tests/**/*.js'])
+  .src(['./*.js', './engine/*.js', './src/js/*.js', './tests/**/*.js'])
   .pipe(plugins.eslint())
   .pipe(plugins.eslint.format())
   .pipe(plugins.eslint.failOnError())
 );
+
+gulp.task('build:engines', function () {
+  return gulp.src(['engine/digger.js', 'engine/notifications.js', 'engine/redis-helper.js'])
+    .pipe(babel())
+    .pipe(gulp.dest('dist/engine/'));
+});
+
+gulp.task('build:routes', function () {
+  return gulp.src('routes/*.js')
+    .pipe(babel())
+    .pipe(gulp.dest('dist/routes/'));
+});
+
+gulp.task('build:app', ['build:routes', 'build:engines'], function () {
+  return gulp.src('app.js')
+    .pipe(babel())
+    .pipe(gulp.dest('dist'));
+});
 
 gulp.task('build:status', () => {
   mkdirp.sync(cacheDir);
@@ -180,7 +199,7 @@ gulp.task('build:css', () => {
     .pipe(gulp.dest(publicDir));
 });
 
-gulp.task('build:dist', ['build:root', 'build:tabzilla', 'build:status', 'build:search', 'build:html', 'build:js', 'build:serviceworkers', 'build:css']);
+gulp.task('build:dist', ['build:app', 'build:root', 'build:tabzilla', 'build:status', 'build:search', 'build:html', 'build:js', 'build:serviceworkers', 'build:css']);
 
 function offline() {
   return oghliner.offline({

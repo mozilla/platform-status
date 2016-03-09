@@ -1,4 +1,4 @@
-const app = require('./app');
+const app = require('./dist/app');
 
 const port = process.env.PORT || 3003;
 app.listen(port, function didListen(err) {

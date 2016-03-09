@@ -27,6 +27,7 @@
     "glob": "^7.0.0",
     "gray-matter": "^2.0.1",
     "gulp": "^3.9.0",
+    "gulp-babel": "^6.1.2",
     "gulp-concat": "^2.6.0",
     "gulp-cssnano": "^2.1.0",
     "gulp-eslint": "^2.0.0",
@@ -41,7 +42,7 @@
     "handlebars": "^4.0.3",
     "localforage": "^1.4.0",
     "lodash.debounce": "^4.0.0",
-    "lunr": "^0.6.0",
+    "lunr": "^0.7.0",
     "markdown-it": "^6.0.0",
     "mkdirp": "^0.5.1",
     "mozilla-tabzilla": "^0.5.1",
@@ -72,7 +73,7 @@
     "urlsafe-base64": "^1.0.0"
   },
   "scripts": {
-    "postinstall": "if $BUILD_POSTINSTALL; then ./node_modules/.bin/gulp build; fi",
+    "postinstall": "if [ \"$BUILD_POSTINSTALL\" ]; then ./node_modules/.bin/gulp build; fi",
     "build": "./node_modules/.bin/gulp build",
     "server": "node server.js",
     "lint": "gulp lint",
