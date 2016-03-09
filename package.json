@@ -66,7 +66,7 @@
     "portfinder": "^1.0.2"
   },
   "scripts": {
-    "postinstall": "if $BUILD_POSTINSTALL; then ./node_modules/.bin/gulp build; fi",
+    "postinstall": "if [ $BUILD_POSTINSTALL ]; then ./node_modules/.bin/gulp build; fi",
     "build": "./node_modules/.bin/gulp build",
     "server": "node server.js",
     "lint": "gulp lint",
