@@ -4,7 +4,7 @@ define({
     },
   },
 
-  suites: ['tests/nodeUnit', 'tests/redisUnit'],
+  suites: ['tests/nodeUnit', 'tests/redisUnit', 'tests/apiUnit'],
 
   // A regexp to exclude from code coverage calculations
   excludeInstrumentation: /^(?:tests|node_modules)\//,
