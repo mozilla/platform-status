@@ -13,10 +13,7 @@ export default class FixtureParser {
     this.results = glob.sync(path.join(this.root, '*.md'))
       .map(this.readFile, this)
       // alphabetically
-      .sort((a, b) => {
-        const ab = a.title.toLowerCase() < b.title.toLowerCase();
-        return (ab) ? -1 : 1;
-      });
+      .sort((a, b) => (a.title.toLowerCase() < b.title.toLowerCase()) ? -1 : 1);
     return Promise.resolve(this.results);
   }
 

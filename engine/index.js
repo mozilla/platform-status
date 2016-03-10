@@ -389,7 +389,6 @@ function saveData(features, dbTestNumber) {
         return redis.hmset(client, 'changelog', date, JSON.stringify(changedData));
       }
       console.log('DEBUG: no changes found');
-      return Promise.resolve();
     }).catch((err) => {
       console.error('ERROR:', err);
     })

@@ -53,9 +53,7 @@ search().then((index) => {
 });
 
 window.ga = window.ga || function ga(...args) {
-  (ga.q = ga.q || []).push(args);
-  // TODO consult if that's equal to:
-  // (ga.q = ga.q || []).push(arguments);
+  (ga.q = ga.q || []).push(...args);
 };
 ga.l = Date.now();
 

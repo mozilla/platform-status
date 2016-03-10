@@ -7,8 +7,8 @@
     "no-param-reassign": [0],
     "prefer-template": 1,
     "prefer-arrow-callback": 1,
-    "consistent-return": 1,
-    "no-confusing-arrow": 1,
+    "consistent-return": 0,
+    "no-confusing-arrow": 0,
     "prefer-rest-params": 1,
   },
   "parser": "babel-eslint"
