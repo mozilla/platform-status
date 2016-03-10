@@ -11,7 +11,7 @@ export default class BrowserParser {
     chrome: 'https://www.chromestatus.com/features.json',
     webkitCore: 'https://svn.webkit.org/repository/webkit/trunk/Source/WebCore/features.json',
     webkitJavaScript: 'https://svn.webkit.org/repository/webkit/trunk/Source/JavaScriptCore/features.json',
-    ie: 'https://raw.githubusercontent.com/MicrosoftEdge/Status/production/app/static/ie-status.json',
+    ie: 'https://raw.githubusercontent.com/MicrosoftEdge/Status/production/status.json',
   };
 
   read(options) {
