@@ -53,10 +53,10 @@ define((require) => {
         .then(() => redis.getClient(5))
         .then((client) => new Promise((resolve) => {
           client.get('status', (err, statusData) => {
-            assert.notOk(err, 'ERROR: ' + err);
-            assert(statusData, 'expected truthy, got ' + statusData);
+            assert.notOk(err, `ERROR: ${err}`);
+            assert.ok(statusData);
             statusData = JSON.parse(statusData);
-            assert.equal(testData[0].a, statusData.feature.a);
+            assert.deepEqual(testData[0], statusData.feature);
             resolve(client);
           });
         }))
@@ -139,24 +139,24 @@ define((require) => {
         }];
         var firstLogKey;
         return engine.checkForNewData(testData, 5)
-        .then((features) => engine.saveData(features, 5))
-        .then((features) => new Promise((resolve) => {
+        .then(features => engine.saveData(features, 5))
+        .then(features => {
           features[0].firefox_status = 'last';
-          redis.getClient(5)
-          .then((client) => {
-            client.hgetall('changelog', (err, logs) => {
-              assert.notOk(err);
+          return redis.getClient(5)
+          .then(client => {
+            redis.hgetall(client, 'changelog')
+            .then(logs => {
               firstLogKey = Object.keys(logs)[0];
-              client.quit(() => resolve(features));
+              return redis.quit(client);
             });
-          });
-        }))
-        .then((features) => engine.checkForNewData(features, 5))
-        .then((features) => engine.saveData(features, 5))
+          })
+          .then(() => engine.checkForNewData(features, 5));
+        })
+        .then(features => engine.saveData(features, 5))
         .then(() => redis.getClient(5))
-        .then((client) => new Promise((resolve) => {
-          client.hgetall('changelog', (err, logs) => {
-            assert.notOk(err, 'ERROR: ' + err);
+        .then(client =>
+          redis.hgetall(client, 'changelog')
+          .then(logs => {
             assert.ok(logs);
             // there shoulf be only one change logged
             assert.equal(Object.keys(logs).length, 2);
@@ -174,12 +174,9 @@ define((require) => {
             const after = new Date();
             assert((now <= logTime), 'too early');
             assert((after >= logTime), 'too late');
-            resolve(client);
-            // TODO: find out while node hangs here usually waits for
-            // the end of connection with redis
-          });
-        }))
-        .then(quitDB);
+          })
+          .then(() => quitDB(client))
+        );
       });
     });
   });

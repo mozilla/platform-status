@@ -8,14 +8,15 @@ export default {
   readJson: (src, cacheDir) => {
     const shasum = crypto.createHash('sha1');
     shasum.update(src);
-    const cacheFilename = path.join(cacheDir, shasum.digest('hex') + '.json');
+    const basename = shasum.digest('hex');
+    const cacheFilename = path.join(cacheDir, `${basename}.json`);
     if (fileExists(cacheFilename)) {
       return Promise.resolve(JSON.parse(fs.readFileSync(cacheFilename)));
     }
     return fetch(src)
       .then((response) => response.text())
       .then((text) => {
-        console.log('Caching data for: "' + src + '" in "' + cacheFilename + '"');
+        console.log(`Caching data for: "${src}" in "${cacheFilename}"`);
         fs.writeFileSync(cacheFilename, text);
         return JSON.parse(text);
       });

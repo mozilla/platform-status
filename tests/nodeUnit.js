@@ -18,15 +18,15 @@
 // options that Chai provides - "expect" and "should"):
 //    http://chaijs.com/api/assert/
 
-define(function(require) {
+define(require => {
   const bdd = require('intern!bdd');
   const assert = require('intern/chai!assert');
   const fs = require('intern/dojo/node!fs');
   const path = require('intern/dojo/node!path');
   const del = require('intern/dojo/node!del');
 
-  bdd.describe('Node unit', function() {
-    bdd.before(function() {
+  bdd.describe('Node unit', () => {
+    bdd.before(() => {
       // This modifies the node module loader to work with es2015 modules.
       // All subsequent `require` calls that use the node module loader
       // will use this modified version and will be able to load es2015
@@ -34,26 +34,26 @@ define(function(require) {
       require('intern/dojo/node!babel-core/register');
     });
 
-    bdd.describe('Build process', function() {
+    bdd.describe('Build process', () => {
       // No current tests
     });
 
-    bdd.describe('Engine', function() {
-      bdd.describe('fixtureParser', function() {
-        bdd.it('should something', function() {
+    bdd.describe('Engine', () => {
+      bdd.describe('fixtureParser', () => {
+        bdd.it('should something', () => {
           var FixtureParser = require('intern/dojo/node!../../../../engine/fixtureParser').default;
           var fp = new FixtureParser('asdf');
           assert(fp);
         });
       });
 
-      bdd.describe('normalizeStatus', function() {
-        bdd.it('should convert empty strings', function() {
+      bdd.describe('normalizeStatus', () => {
+        bdd.it('should convert empty strings', () => {
           var indexJS = require('intern/dojo/node!../../../../engine/index').test;
           assert.equal(indexJS.normalizeStatus(''), 'unknown');
         });
 
-        bdd.it('should leave known strings untouched', function() {
+        bdd.it('should leave known strings untouched', () => {
           var indexJS = require('intern/dojo/node!../../../../engine/index').test;
 
           var strings = [
@@ -65,12 +65,12 @@ define(function(require) {
             'shipped',
           ];
 
-          strings.forEach(function(val) {
+          strings.forEach(val => {
             assert.equal(indexJS.normalizeStatus(val), val);
           });
         });
 
-        bdd.it('should throw Error objects for invalid strings', function() {
+        bdd.it('should throw Error objects for invalid strings', () => {
           var indexJS = require('intern/dojo/node!../../../../engine/index').test;
           assert.throws(indexJS.normalizeStatus.bind(null, 'asdf'));
           assert.throws(indexJS.normalizeStatus.bind(null, 'a string'));
@@ -87,12 +87,12 @@ define(function(require) {
       });
     });
 
-    bdd.describe('Cache', function() {
+    bdd.describe('Cache', () => {
       const cache = require('intern/dojo/node!../../../../engine/cache').default;
       const cacheDir = 'tests/support/var/engineCache';
       const fetchMock = require('intern/dojo/node!fetch-mock');
 
-      bdd.before(function() {
+      bdd.before(() => {
         // Create the tests var dir if it doesn't already exist
         const dir = path.dirname(cacheDir);
 
@@ -114,12 +114,10 @@ define(function(require) {
         return del([cacheDir]);
       });
 
-      bdd.afterEach(function() {
-        // Remove the test cache dir
-        return del([cacheDir]);
-      });
+      // Remove the test cache dir
+      bdd.afterEach(() => del([cacheDir]));
 
-      bdd.beforeEach(function() {
+      bdd.beforeEach(() => {
         // Don't let tests interfere with each other's calls to `fetch`
         fetchMock.reset();
 
@@ -127,31 +125,31 @@ define(function(require) {
         fs.mkdirSync(cacheDir);
       });
 
-      bdd.it('should cache files', function() {
+      bdd.it('should cache files', () => {
         const testURL = 'https://raw.githubusercontent.com/mozilla/platatus/master/package.json';
 
         // Cache our package.json file
-        return cache.readJson(testURL, cacheDir).then(function(originalText) {
+        return cache.readJson(testURL, cacheDir).then(originalText => {
           // Cause the next fetch to fail
           fetchMock.mock(testURL, 404);
 
           // Get our package.json (should succeed from cache)
-          return cache.readJson(testURL, cacheDir).then(function(cachedText) {
+          return cache.readJson(testURL, cacheDir).then(cachedText => {
             // Compare the original text with the cached text
             assert.equal(JSON.stringify(cachedText), JSON.stringify(originalText));
           });
         });
       });
 
-      bdd.it('should reject on 404s', function() {
+      bdd.it('should reject on 404s', () => {
         const testURL = 'https://raw.githubusercontent.com/mozilla/platatus/master/package.json';
 
         // Cause the fetch to 404
         fetchMock.mock(testURL, 404);
 
-        return cache.readJson(testURL, cacheDir).then(function() {
+        return cache.readJson(testURL, cacheDir).then(() => {
           assert.fail('`cache.readJson` should have rejected on a 404');
-        }).catch(function(err) {
+        }).catch(err => {
           assert(err instanceof Error);
           return true;
         });
