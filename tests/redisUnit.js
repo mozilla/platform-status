@@ -19,10 +19,6 @@
 //    http://chaijs.com/api/assert/
 
 
-function quitDB(client) {
-  return new Promise((resolve) => client.flushdb(() => client.quit(() => resolve())));
-}
-
 define((require) => {
   const bdd = require('intern!bdd');
   const assert = require('intern/chai!assert');
@@ -35,10 +31,16 @@ define((require) => {
   const engine = require('intern/dojo/node!../../../../engine/index').test;
   const redis = require('intern/dojo/node!../../../../engine/redis-helper').default;
 
+  function quitDB(client) {
+    return redis.flushdb(client)
+    .then(() => redis.quit(client));
+  }
+
+
   bdd.describe('Saves status in redis', () => {
-    // clean and quit database after each test
+    // clean database after each test
     bdd.afterEach(() => redis.getClient(5)
-      .then((client) => quitDB(client))
+      .then(client => quitDB(client))
     );
 
     bdd.describe('`status` key', () => {
@@ -51,16 +53,14 @@ define((require) => {
           updated: {} }];
         return engine.saveData(testData, 5)
         .then(() => redis.getClient(5))
-        .then((client) => new Promise((resolve) => {
-          client.get('status', (err, statusData) => {
-            assert.notOk(err, `ERROR: ${err}`);
+        .then(client => redis.get(client, 'status')
+          .then(statusData => {
             assert.ok(statusData);
             statusData = JSON.parse(statusData);
             assert.deepEqual(testData[0], statusData.feature);
-            resolve(client);
-          });
-        }))
-        .then(quitDB);
+            return quitDB(client);
+          })
+        );
       });
     });
 
@@ -71,7 +71,7 @@ define((require) => {
           firefox_status: 'value A',
           b: 'value B' }];
         return engine.checkForNewData(testData, 5)
-        .then((features) => {
+        .then(features => {
           assert.deepEqual(features[0].updated, {});
           assert.isTrue(features[0].just_started);
         });
@@ -84,13 +84,12 @@ define((require) => {
           b: 'value B',
         }];
         return engine.checkForNewData(testData, 5)
-        .then((features) => engine.saveData(features, 5))
-        .then((features) => {
+        .then(features => engine.saveData(features, 5))
+        .then(features => {
           features[0].firefox_status = 'last';
-          return features;
+          return engine.checkForNewData(features, 5);
         })
-        .then((features) => engine.checkForNewData(features, 5))
-        .then((features) => {
+        .then(features => {
           assert.notOk(features[0].just_started);
           assert.equal(features[0].updated.firefox_status.from, 'first');
           assert.equal(features[0].updated.firefox_status.to, 'last');
@@ -107,11 +106,10 @@ define((require) => {
           b: 'value B',
         }];
         return engine.checkForNewData(testData, 5)
-        .then((features) => engine.saveData(features, 5))
+        .then(features => engine.saveData(features, 5))
         .then(() => redis.getClient(5))
-        .then((client) => new Promise((resolve) => {
-          client.hgetall('changelog', (err, logs) => {
-            assert.notOk(err);
+        .then(client => redis.hgetall(client, 'changelog')
+          .then(logs => {
             assert.isObject(logs);
             var logTime = Object.keys(logs)[0];
             const log = JSON.parse(logs[logTime]);
@@ -123,10 +121,9 @@ define((require) => {
             const after = new Date();
             assert.isTrue((now <= logTime), 'too early');
             assert.isTrue((after >= logTime), 'too late');
-            resolve(client);
-          });
-        }))
-        .then(quitDB);
+            return quitDB(client);
+          })
+        );
       });
 
       bdd.it('should contain latest changes', () => {
@@ -141,7 +138,9 @@ define((require) => {
         return engine.checkForNewData(testData, 5)
         .then(features => engine.saveData(features, 5))
         .then(features => {
+          // change status
           features[0].firefox_status = 'last';
+          // read first log key
           return redis.getClient(5)
           .then(client => {
             redis.hgetall(client, 'changelog')
@@ -150,6 +149,7 @@ define((require) => {
               return redis.quit(client);
             });
           })
+          // go on with the test
           .then(() => engine.checkForNewData(features, 5));
         })
         .then(features => engine.saveData(features, 5))
@@ -174,8 +174,8 @@ define((require) => {
             const after = new Date();
             assert((now <= logTime), 'too early');
             assert((after >= logTime), 'too late');
+            return quitDB(client);
           })
-          .then(() => quitDB(client))
         );
       });
     });
