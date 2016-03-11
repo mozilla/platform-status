@@ -4,7 +4,8 @@ function getClient(dbTestNumber) {
   const client = redis.createClient(process.env.REDIS_URL, { no_ready_check: true });
   return new Promise((resolve, reject) => {
     if (!dbTestNumber) {
-      return resolve(client);
+      resolve(client);
+      return;
     }
 
     client.select(dbTestNumber, (err) => err ? reject(err) : resolve(client));
@@ -16,21 +17,15 @@ const commands = {
 };
 
 // promisify following commads (add client as the first argument)
+// redis function:
+// `client.methodName(arguments, callback(err, response))`
 ['set', 'get', 'del', 'exists', 'sismember', 'hmset', 'hget', 'smembers',
  'sadd', 'hgetall', 'srem', 'select', 'flushdb', 'quit']
 .forEach(name => {
-  commands[name] = function redisFunction() {
-    const args = Array.prototype.slice.call(arguments);
-    const client = args.shift();
+  commands[name] = function redisFunction(client, ...args) {
     return new Promise((resolve, reject) => {
-      args.push((err, response) => {
-        if (err) {
-          reject(err);
-        } else {
-          resolve(response);
-        }
-      });
-      client[name].apply(client, args);
+      args.push((err, response) => err ? reject(err) : resolve(response));
+      client[name](...args);
     });
   };
 });
