@@ -56,7 +56,7 @@ function normalizeStatus(status, browser) {
     case 'prefixed':
       return 'shipped';
     default:
-      throw new Error('Unmapped status: "' + status + '" for "' + browser + '"');
+      throw new Error(`Unmapped status: "${status}" for "${browser}"`);
   }
 }
 
@@ -82,7 +82,7 @@ class ChromeBrowserFeature extends BrowserFeature {
   get url() {
     return url.format({
       host: 'www.chromestatus.com',
-      pathname: '/feature/' + this.data.id,
+      pathname: `/feature/${this.data.id}`,
       protocol: 'https:',
     });
   }
@@ -110,10 +110,11 @@ class WebKitBrowserFeature extends BrowserFeature {
     return this.data.status ? this.data.status.status : '';
   }
   get url() {
+    const slugName = slug(this.data.name);
     return url.format({
       host: 'www.webkit.org',
       pathname: '/status.html',
-      hash: '#' + this.data.type + '-' + slug(this.data.name),
+      hash: `#${this.data.type}-${slugName}`,
       protocol: 'https:',
     });
   }
@@ -130,9 +131,10 @@ class IEBrowserFeature extends BrowserFeature {
     return this.data.ieStatus.text;
   }
   get url() {
+    const name = this.data.name.replace(/[^a-zA-Z0-9]/g, '').toLowerCase();
     return url.format({
       host: 'dev.modern.ie',
-      pathname: '/platform/status/' + this.data.name.replace(/[^a-zA-Z0-9]/g, '').toLowerCase(),
+      pathname: `/platform/status/${name}`,
       protocol: 'https:',
     });
   }
@@ -150,25 +152,29 @@ const allBrowserFeatures = [
 function populateBrowserFeatureData(browserData, features) {
   features.forEach((feature) => {
     allBrowserFeatures.forEach(([key, relKey, BrowserFeatureConstructor]) => {
-      if (!feature[key + '_status']) {
-        feature[key + '_status'] = 'unknown';
-      } else {
-        feature[key + '_status'] = normalizeStatus(feature[key + '_status'], key);
-      }
-      feature[key + '_url'] = BrowserFeatureConstructor.defaultUrl;
+      const statusKey = `${key}_status`;
+      const urlKey = `${key}_url`;
+      const relKeyRef = `${relKey}_ref`;
 
-      if (!feature[relKey + '_ref']) {
+      if (!feature[statusKey]) {
+        feature[statusKey] = 'unknown';
+      } else {
+        feature[statusKey] = normalizeStatus(feature[statusKey], key);
+      }
+      feature[urlKey] = BrowserFeatureConstructor.defaultUrl;
+
+      if (!feature[relKeyRef]) {
         return;
       }
 
-      const browserFeatureData = browserData[relKey].get(feature[relKey + '_ref']);
+      const browserFeatureData = browserData[relKey].get(feature[relKeyRef]);
       if (!browserFeatureData) {
-        throw new Error('Wrong value for ' + relKey + '_ref in ' + feature.file);
+        throw new Error(`Wrong value for ${relKey} in ${feature.file}`);
       }
 
       const browserFeature = new BrowserFeatureConstructor(browserFeatureData);
-      feature[key + '_status'] = browserFeature.status;
-      feature[key + '_url'] = browserFeature.url;
+      feature[statusKey] = browserFeature.status;
+      feature[urlKey] = browserFeature.url;
     });
   });
 
@@ -210,7 +216,7 @@ function populateSpecStatus(browserData, features) {
         normalized = 'working-draft-or-equivalent';
         break;
       default:
-        validateWarning('Unmapped standardization status: ' + status);
+        validateWarning(`Unmapped standardization status: ${status}`);
         normalized = 'invalid';
         break;
     }
@@ -227,7 +233,8 @@ function bugzillaFetch(bugzillaUrl, options) {
 }
 
 function getBugzillaBugData(bugId, options) {
-  return bugzillaFetch('https://bugzilla.mozilla.org/rest/bug?id=' + bugId + '&include_fields=' + options.include_fields.join(','), options)
+  const includeFields = options.include_fields.join(',');
+  return bugzillaFetch(`https://bugzilla.mozilla.org/rest/bug?id=${bugId}&include_fields=${includeFields}`, options)
   .then((json) => {
     if (!json.bugs.length) {
       throw new Error('Bug not found(secure bug?)');
@@ -235,7 +242,7 @@ function getBugzillaBugData(bugId, options) {
     return json.bugs[0];
   })
   .catch((reason) => {
-    validateWarning('Failed to get bug data for: ' + bugId + ': ' + reason);
+    validateWarning(`Failed to get bug data for: ${bugId}: ${reason}`);
     return null;
   });
 }
@@ -259,7 +266,8 @@ function populateBugzillaData(features, options) {
         return null;
       }
       // Check all the dependent bugs to count how many are resolved.
-      return bugzillaFetch('https://bugzilla.mozilla.org/rest/bug?id=' + bugData.depends_on.join(',') + '&status=RESOLVED&include_fields=id', options)
+      const dependsOn = bugData.depends_on.join(',');
+      return bugzillaFetch(`https://bugzilla.mozilla.org/rest/bug?id=${dependsOn}&status=RESOLVED&include_fields=id`, options)
       .then((dependentResult) => {
         feature.bugzilla_resolved_count += dependentResult.bugs.length;
       });
@@ -296,12 +304,12 @@ function populateFirefoxStatus(versions, features) {
 function populateCanIUsePercent(canIUseData, features) {
   features.forEach((feature) => {
     if (!feature.caniuse_ref) {
-      validateWarning(feature.file + ': missing caniuse_ref');
+      validateWarning(`${feature.file}: missing caniuse_ref`);
       return;
     }
     const data = canIUseData.data[feature.caniuse_ref];
     if (!data) {
-      validateWarning(feature.file + ': invalid caniuse_ref ' + feature.caniuse_ref);
+      validateWarning(`${feature.file}: invalid caniuse_ref ${feature.caniuse_ref}`);
       return;
     }
     feature.caniuse_usage_perc_y = data.usage_perc_y;
@@ -495,7 +503,7 @@ function validateFeatureInput(features) {
     const properties = Object.keys(feature);
     for (const propertyName of properties) {
       if (!(propertyName in schema)) {
-        validateWarning(feature.file + ': unknown property "' + propertyName + '"');
+        validateWarning(`${feature.file}: unknown property "${propertyName}"`);
       }
     }
 
@@ -503,7 +511,7 @@ function validateFeatureInput(features) {
       const value = feature[key];
 
       if (schema[key].required && !value) {
-        validateWarning(feature.file + ': missing required property "' + key + '"');
+        validateWarning(`${feature.file}: missing required property "${key}"`);
       }
 
       if (schema[key].unique && typeof value !== 'undefined') {
@@ -512,7 +520,7 @@ function validateFeatureInput(features) {
         }
         const duplicate = uniques[key][value];
         if (duplicate) {
-          validateWarning(feature.file + ': duplicate value "' + value + '" for key "' + key + '", previously defined in ' + duplicate);
+          validateWarning(`${feature.file}: duplicate value "${value}" for key "${key}", previously defined in ${duplicate}`);
         } else {
           uniques[key][value] = feature.file;
         }
@@ -554,19 +562,19 @@ function buildIndex(status) {
   const templateContents = fs.readFileSync('src/tpl/index.html', {
     encoding: 'utf-8',
   });
-  handlebars.registerHelper('featureStatusName', function() {
-    return this.slug + '-status';
+  handlebars.registerHelper('featureStatusName', function featureStatusName() {
+    return `${this.slug}-status`;
   });
-  handlebars.registerHelper('featureLinksName', function() {
-    return this.slug + '-links';
+  handlebars.registerHelper('featureLinksName', function featureLinksName() {
+    return `${this.slug}-links`;
   });
   status.features.forEach((featureData) => {
     // register partials for each feature
     handlebars.registerPartial(
-        featureData.slug + '-status',
+        `${featureData.slug}-status`,
         handlebars.compile(featureStatusContents)(featureData));
     handlebars.registerPartial(
-        featureData.slug + '-links',
+        `${featureData.slug}-links`,
         handlebars.compile(featureLinksContents)(featureData));
   });
   return Promise.resolve(handlebars.compile(templateContents)(status));
@@ -576,7 +584,7 @@ function buildFeatures(status) {
   const templateContents = fs.readFileSync('src/tpl/feature.html', {
     encoding: 'utf-8',
   });
-  return Promise.resolve(status.features.map(function(feature) {
+  return Promise.resolve(status.features.map(feature => {
     handlebars.registerPartial('featureStatus',
         handlebars.compile(featureStatusContents)(feature));
     handlebars.registerPartial('featureLinks',
@@ -615,7 +623,7 @@ function buildStatus(options) {
     if (validationWarnings.length) {
       console.warn('Validation warnings: ');
       validationWarnings.forEach((warning) => {
-        console.warn('\t' + warning);
+        console.warn(`\t${warning}`);
       });
     }
     return data;

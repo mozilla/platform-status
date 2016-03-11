@@ -55,23 +55,23 @@ gulp.task('lint', () =>
   .pipe(plugins.eslint.failOnError())
 );
 
-gulp.task('build:engines', function () {
-  return gulp.src(['engine/digger.js', 'engine/notifications.js', 'engine/redis-helper.js'])
+gulp.task('build:engines', () =>
+  gulp.src(['engine/digger.js', 'engine/notifications.js', 'engine/redis-helper.js'])
     .pipe(babel())
-    .pipe(gulp.dest('dist/engine/'));
-});
+    .pipe(gulp.dest('dist/engine/'))
+);
 
-gulp.task('build:routes', function () {
-  return gulp.src('routes/*.js')
+gulp.task('build:routes', () =>
+  gulp.src('routes/*.js')
     .pipe(babel())
-    .pipe(gulp.dest('dist/routes/'));
-});
+    .pipe(gulp.dest('dist/routes/'))
+);
 
-gulp.task('build:app', ['build:routes', 'build:engines'], function () {
-  return gulp.src('app.js')
+gulp.task('build:app', ['build:routes', 'build:engines'], () =>
+  gulp.src('app.js')
     .pipe(babel())
-    .pipe(gulp.dest('dist'));
-});
+    .pipe(gulp.dest('dist'))
+);
 
 gulp.task('build:status', () => {
   mkdirp.sync(cacheDir);
@@ -94,7 +94,7 @@ gulp.task('build:features', ['build:status'], () => {
   const status = JSON.parse(fs.readFileSync(statusFilePath));
   return engine.buildFeatures(status).then((contents) => {
     contents.forEach((feature) => {
-      fs.writeFileSync(path.join(publicDir, feature.slug + '.html'), feature.contents);
+      fs.writeFileSync(path.join(publicDir, `${feature.slug}.html`), feature.contents);
     });
   });
 });
@@ -112,7 +112,7 @@ gulp.task('build:search', ['build:status'], () => {
   fs.writeFileSync(searchFilePath, JSON.stringify(searchFeatures));
 });
 
-gulp.task('build:html', ['build:index', 'build:features', 'build:css'], () => {
+gulp.task('build:html', ['build:index', 'build:features', 'build:css'], () =>
   gulp
     .src(path.join(publicDir, '*.html'))
     // TODO: Uncomment when compression works
@@ -120,8 +120,8 @@ gulp.task('build:html', ['build:index', 'build:features', 'build:css'], () => {
     //   compress: false,
     // })))
     .pipe(plugins.if(!develop, plugins.htmlmin()))
-    .pipe(gulp.dest(publicDir));
-});
+    .pipe(gulp.dest(publicDir))
+);
 
 gulp.task('build:tabzilla', () =>
   gulp
@@ -221,6 +221,7 @@ gulp.task('build', ['build:dist'], offline);
 gulp.task('watch', ['build', 'lint'], () => {
   const browserSyncCreator = require('browser-sync');
   const browserSync = browserSyncCreator.create();
+  const cachePath = path.join(cacheDir, '*.json');
   browserSync.init({
     open: false,
     server: {
@@ -235,8 +236,8 @@ gulp.task('watch', ['build', 'lint'], () => {
   gulp.watch(['./engine/*.js', './features/*.md', './src/tpl/*.html'], ['build:html']);
   gulp.watch([
     path.join(publicDir, '**/*.*'),
-    '!' + workerPath,
-    '!' + path.join(cacheDir, '*.json'),
+    `!${workerPath}`,
+    `!${cachePath}`,
   ], debounce(offline, 200));
   gulp.watch([workerPath], browserSync.reload);
 });

@@ -1,7 +1,7 @@
 const app = require('./dist/app');
 
 const port = process.env.PORT || 3003;
-app.listen(port, function didListen(err) {
+app.listen(port, err => {
   if (err) {
     return;
   }

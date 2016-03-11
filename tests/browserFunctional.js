@@ -31,18 +31,19 @@
 // options that Chai provides - "expect" and "should"):
 //    http://chaijs.com/api/assert/
 
-define(function(require) {
+define(require => {
   const bdd = require('intern!bdd');
   const assert = require('intern/chai!assert');
 
   const IndexPage = require('tests/support/pages/main');
 
-  bdd.describe('Browser functional tests', function() {
-    bdd.describe('main page', function() {
+  bdd.describe('Browser functional tests', () => {
+    bdd.describe('main page', () => {
       bdd.it('should have correct title', function() {
         const page = new IndexPage(this.remote);
 
-        return page.title.then(function(title) {
+        return page.title
+        .then(title => {
           assert(title, 'title exists');
           assert.equal(title, 'Firefox Platform Status');
         });
@@ -51,7 +52,8 @@ define(function(require) {
       bdd.it('should have link to GitHub repo', function() {
         const page = new IndexPage(this.remote);
 
-        return page.followRepoLink().getPageTitle().then(function(title) {
+        return page.followRepoLink().getPageTitle()
+        .then(title => {
           assert.equal(title, 'GitHub - mozilla/platatus: Project Platform Status');
         });
       });
@@ -59,7 +61,8 @@ define(function(require) {
       bdd.it('should have link to file issues', function() {
         const page = new IndexPage(this.remote);
 
-        return page.followFileIssueLink().getPageTitle().then(function(title) {
+        return page.followFileIssueLink().getPageTitle()
+        .then(title => {
           // FIXME: We don't really know if we're on the right page
           assert(title.includes('GitHub'));
         });

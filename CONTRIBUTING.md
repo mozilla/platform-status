@@ -20,7 +20,7 @@ The easiest way to add a new feature is to use github's online file editor and c
 | caniuse_ref | | Corresponding name used by caniuse from the url after `feat=` e.g. `http://caniuse.com/#feat=promises` |
 | webkit_ref | | Corresponding `title` property from `webkit.org`'s [WebCore/features.json](https://svn.webkit.org/repository/webkit/trunk/Source/WebCore/features.json) or [JavaScriptCore/features.json](https://svn.webkit.org/repository/webkit/trunk/Source/JavaScriptCore/features.json) |
 | chrome_ref | | Corresponding `id` property from [chromestatus.com/features.json](https://www.chromestatus.com/features.json) |
-| ie_ref | | Corresponding `name` property from [MicrosoftEdge/Status](https://raw.githubusercontent.com/MicrosoftEdge/Status/production/app/static/ie-status.json) |
+| ie_ref | | Corresponding `name` property from [MicrosoftEdge/Status](https://raw.githubusercontent.com/MicrosoftEdge/Status/production/status.json) |
 | firefox_footnote | | Footnotes for Firefox |
 | webkit_footnote | | Footnotes for WebKit |
 | chrome_footnote | | Footnotes for Chrome |
