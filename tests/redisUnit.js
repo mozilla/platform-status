@@ -52,7 +52,7 @@ define((require) => {
           updated: {} }];
         return engine.saveData(testData, 5)
         .then(() => redis.getClient(5))
-        .then((client) => redis.get(client, 'status')
+        .then(client => redis.get(client, 'status')
           .then(statusData => {
             assert(statusData, 'expected truthy, got ' + statusData);
             statusData = JSON.parse(statusData);
