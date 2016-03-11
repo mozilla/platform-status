@@ -9,7 +9,7 @@ export default class CanIUseParser {
   }
 
   read(options) {
-    cache.readJson(this.url, options.cacheDir)
+    return cache.readJson(this.url, options.cacheDir)
       .then((results) => {
         this.results = results;
       });

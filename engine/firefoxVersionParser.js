@@ -9,7 +9,7 @@ export default class FirefoxVersionParser {
   }
 
   read(options) {
-    cache.readJson(this.url, options.cacheDir)
+    return cache.readJson(this.url, options.cacheDir)
       .then((results) => {
         this.results = {
           stable: this.majorVersion(results.LATEST_FIREFOX_VERSION),
