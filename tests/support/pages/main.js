@@ -1,4 +1,4 @@
-define(function() {
+define(() => {
   // the page object is created as a constructor
   // so we can provide the remote Command object
   // at runtime
@@ -17,21 +17,17 @@ define(function() {
     followRepoLink() {
       const remote = this.remote;
 
-      return remote.findByCssSelector('#link-repo').then(function(anchor) {
-        return anchor.getProperty('href').then(function(url) {
-          return remote.get(url);
-        });
-      });
+      return remote.findByCssSelector('#link-repo')
+      .then(anchor => anchor.getProperty('href'))
+      .then(url => remote.get(url));
     },
 
     followFileIssueLink() {
       const remote = this.remote;
 
-      return remote.findByCssSelector('#link-issue').then(function(anchor) {
-        return anchor.getProperty('href').then(function(url) {
-          return remote.get(url);
-        });
-      });
+      return remote.findByCssSelector('#link-issue')
+      .then(anchor => anchor.getProperty('href'))
+      .then(url => remote.get(url));
     },
   };
 

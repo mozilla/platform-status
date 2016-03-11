@@ -31,6 +31,7 @@
 // options that Chai provides - "expect" and "should"):
 //    http://chaijs.com/api/assert/
 
+// FIXME Make it work with ES6
 define(function(require) {
   const bdd = require('intern!bdd');
   const assert = require('intern/chai!assert');

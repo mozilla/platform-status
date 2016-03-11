@@ -14,7 +14,7 @@
  *    stdout
  */
 
-define(function(require) {
+define(require => {
   var childProcess = require('intern/dojo/node!child_process');
   var fs = require('intern/dojo/node!fs');
   var https = require('intern/dojo/node!https');
@@ -26,25 +26,25 @@ define(function(require) {
 
   const testsVarDir = path.normalize('./tests/support/var/');
   const seleniumVersion = '2.48.2';
-  const seleniumFilename = 'selenium-server-standalone-' + seleniumVersion + '.jar';
+  const seleniumFilename = `selenium-server-standalone-${seleniumVersion}.jar`;
   const seleniumDownloadUrl = 'https://selenium-release.storage.googleapis.com/2.48/selenium-server-standalone-2.48.2.jar';
   const seleniumLogPath = path.join(testsVarDir, 'selenium.log');
 
   function maybeMkdir(dir) {
-    return new Promise(function(resolve, reject) {
+    return new Promise((resolve, reject) => {
       // We ignore creation errors since we don't care
       // whether the directory was already there or if
       // we created it, and we're about to check its
       // existence.
-      fs.mkdir(dir, function() {
-        fs.stat(dir, function(err, stats) {
+      fs.mkdir(dir, () => {
+        fs.stat(dir, (err, stats) => {
           if (err) {
             reject(err);
             return;
           }
 
           if (!stats.isDirectory()) {
-            reject(new Error(dir + ' already exists and is not a directory'));
+            reject(new Error(`${dir} already exists and is not a directory`));
             return;
           }
 
@@ -83,7 +83,7 @@ define(function(require) {
   const _super = Evented.prototype;
   SeleniumTunnel.prototype = util.mixin(Object.create(_super), {
     get clientUrl() {
-      return this.protocol + '://' + this.hostname + ':' + this.port + this.pathname;
+      return `${this.protocol}://${this.hostname}:${this.port}${this.pathname}`;
     },
     get extraCapabilities() {
       return {};
@@ -114,15 +114,15 @@ define(function(require) {
         return Promise.resolve();
       }
 
-      return new Promise(function(resolve, reject) {
-        maybeMkdir(testsVarDir).then(function() {
+      return new Promise((resolve, reject) => {
+        maybeMkdir(testsVarDir).then(() => {
           const file = fs.createWriteStream(filePath);
-          const request = https.get(that.url, function(response) {
+          const request = https.get(that.url, response => {
             response.pipe(file);
             file.on('finish', resolve);
           });
 
-          request.on('error', function(reqErr) { // Handle errors
+          request.on('error', reqErr => { // Handle errors
             fs.unlink(filePath); // Delete the file async. (But we don't check the result)
             reject(reqErr);
           });
@@ -137,10 +137,10 @@ define(function(require) {
 
       var filePath = path.join(that.directory, that.executable);
 
-      return new Promise(function(resolve, reject) {
-        that.download(false).then(function() {
+      return new Promise((resolve, reject) => {
+        that.download(false).then(() => {
           that._isStarting = true;
-          fs.open(seleniumLogPath, 'w', function(err, fd) {
+          fs.open(seleniumLogPath, 'w', (err, fd) => {
             if (err) {
               that._isStarting = false;
               return reject(err);
@@ -151,7 +151,7 @@ define(function(require) {
             function waitUntilRunning() {
               var socket = new net.Socket();
 
-              socket.on('connect', function() {
+              socket.on('connect', () => {
                 socket.end();
                 that._isStarting = false;
                 that._isRunning = true;
@@ -159,7 +159,7 @@ define(function(require) {
               });
 
               // TODO: Only try to connect for some specified amount of time
-              socket.on('error', function() {
+              socket.on('error', () => {
                 setTimeout(waitUntilRunning, 500);
               });
 
@@ -177,8 +177,8 @@ define(function(require) {
       that._isRunning = false;
       that._isStopping = true;
 
-      return new Promise(function(resolve) {
-        that._process.on('exit', function() {
+      return new Promise(resolve => {
+        that._process.on('exit', () => {
           that._process = null;
           that._isStopping = false;
           return resolve(0);
