@@ -227,8 +227,8 @@ function populateSpecStatus(browserData, features) {
 // limit is, but 20 seems to work.
 const bugzillaBottleneck = new Bottleneck(20);
 
-function bugzillaFetch(bugzillaUrl, options) {
-  return bugzillaBottleneck.schedule(cache.readJson, bugzillaUrl, options.cacheDir);
+function bugzillaFetch(bugzillaUrl) {
+  return bugzillaBottleneck.schedule(cache.readJson, bugzillaUrl);
 }
 
 function getBugzillaBugData(bugId, options) {
@@ -574,9 +574,9 @@ function buildStatus(options) {
   validationWarnings = [];
   return Promise.all([
     fixtureParser.read(),
-    browserParser.read(options),
-    firefoxVersionParser.read(options),
-    canIUseParser.read(options),
+    browserParser.read(),
+    firefoxVersionParser.read(),
+    canIUseParser.read(),
   ]).then(() => {
     validateFeatureInput(fixtureParser.results);
     return populateBugzillaData(fixtureParser.results, options);
