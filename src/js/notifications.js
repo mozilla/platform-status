@@ -1,11 +1,53 @@
 import { default as localforage } from 'localforage';
 
 let deviceId;
-const subscribeButton = document.getElementById('subscribeAll');
-const unsubscribeButton = document.getElementById('unsubscribeAll');
+// const subscribeButton = document.getElementById('subscribeAll');
+// const unsubscribeButton = document.getElementById('unsubscribeAll');
 
-function reloadUI(features) {
-  console.log('DEBUG - no UI changes implemented yet', features);
+if (!document.getElementsByClassName) {
+  document.getElementsByClassName = classname => {
+    const elArray = [];
+    const tmp = document.getElementsByTagName('*');
+
+    const regex = new RegExp(`(^|\\s)${classname}(\\s|$)`);
+    for (let i = 0; i < tmp.length; i++) {
+      if (regex.test(tmp[i].className)) {
+        elArray.push(tmp[i]);
+      }
+    }
+    return elArray;
+  };
+}
+
+function resetNotifications(onclickCallback) {
+  const notifications = document.getElementsByClassName('notification');
+  for (let i = 0; i < notifications.length; i++) {
+    const notification = notifications[i];
+    if (onclickCallback) {
+      notification.onclick = onclickCallback;
+    }
+    notification.dataset.notification = false;
+    const icon = notification.firstElementChild;
+    icon.classList.remove('icon-notify-on');
+    icon.classList.add('icon-notify-off');
+  }
+}
+
+function reloadUI(response) {
+  console.log('DEBUG - setting notification for', response.features);
+  resetNotifications();
+  for (let i = 0; i < response.features.length; i++) {
+    const feature = response.features[i];
+    const featureElement = document.getElementById(`notification-${feature}`);
+    if (featureElement) {
+      const icon = featureElement.firstElementChild;
+      featureElement.dataset.notification = true;
+      icon.classList.remove('icon-notify-off');
+      icon.classList.add('icon-notify-on');
+    } else {
+      console.log('DEBUG: No such element', feature);
+    }
+  }
 }
 
 // unregisters from entire platatus - no notification should be received
@@ -85,6 +127,17 @@ function unregister(feature) {
   .then(handleRegistrationsResponse);
 }
 
+function toggleNotification(event) {
+  const notificationElement = event.target;
+  const feature = notificationElement.dataset.slug;
+  if (notificationElement.dataset.notification === 'true') {
+    console.log('DEBUG: Unregistering from', feature);
+    return unregister(feature);
+  }
+  console.log('DEBUG: Registering to', feature);
+  return register(feature);
+}
+
 function loadRegistrations() {
   return fetch(`/registrations/${deviceId}`, {
     method: 'get',
@@ -99,20 +152,22 @@ function makeId(length) {
   window.crypto.getRandomValues(arr);
   return [].map.call(arr, n => n.toString(16)).join('');
 }
-
-subscribeButton.onclick = function registerAll() {
-  register('all');
-};
-
-unsubscribeButton.onclick = function unRegisterAll() {
-  unregister();
-};
+//
+// subscribeButton.onclick = function registerAll() {
+//   register('all');
+// };
+//
+// unsubscribeButton.onclick = function unRegisterAll() {
+//   unregister();
+// };
 
 window.onload = () => {
   if (!navigator.serviceWorker) {
     console.log('No service workers allowed');
     return;
   }
+
+  resetNotifications(toggleNotification);
 
   localforage.getItem('deviceId')
   .then(id => {

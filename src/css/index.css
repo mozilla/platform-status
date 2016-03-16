@@ -261,6 +261,17 @@ article {
 		background-image: url('images/html5@2x.png');
 	}
 }
+.icon-notify-off {
+	background-image: url('images/bell-off.svg');
+	opacity: 0.4;
+}
+.icon-notify-on {
+	background-image: url('images/bell-on.svg');
+	opacity: 0.8;
+}
+.notification:hover i {
+	opacity: 1;
+}
 .icon-mdn {
 	background-image: url('images/mdn.png');
 	@media (min-resolution: 2dppx) {
