@@ -367,7 +367,7 @@ function sendNotifications(features, dbNumber) {
       return notifications.sendNotifications(feature.slug, {
         feature: feature.slug,
         message: 'started watching',
-      }, dbNumber);
+      }, true, dbNumber);
     }
     if (Object.keys(feature.updated).length > 0) {
       let message = '';
@@ -378,7 +378,7 @@ function sendNotifications(features, dbNumber) {
       return notifications.sendNotifications(feature.slug, {
         feature: feature.slug,
         message,
-      }, dbNumber);
+      }, false, dbNumber);
     }
     return Promise.resolve();
   })))

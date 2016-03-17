@@ -261,6 +261,9 @@ article {
 		background-image: url('images/html5@2x.png');
 	}
 }
+.notification {
+	cursor: pointer;
+}
 .icon-notify-off {
 	background-image: url('images/bell-off.svg');
 	opacity: 0.4;
@@ -271,6 +274,13 @@ article {
 }
 .notification:hover i {
 	opacity: 1;
+}
+h2 .notification i {
+	opacity: 0.8;
+	height: calc($gutterX * 1.5);
+	width: calc($gutterX * 1.5);
+	background-size: calc($gutterX * 1.5);
+	vertical-align: text-bottom;
 }
 .icon-mdn {
 	background-image: url('images/mdn.png');

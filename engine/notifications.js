@@ -46,46 +46,6 @@ function getRegisteredFeatures(deviceId, dbNumber) {
   .then(() => redis.smembers(client, `${deviceId}-notifications`));
 }
 
-// registers to receive notifications
-// required info:
-// * deviceId
-// * list of feature slugs to register to
-// optional
-// one can register to a feature without providing an endpoint
-// if it was already saved:
-// * endpoint
-// * key
-// * dbNumber
-function register(deviceId, features, endpoint, key, dbNumber) {
-  if (!features || features.length === 0) {
-    return Promise.reject(new Error('No features provided'));
-  }
-
-  return setClient(dbNumber)
-  .then(() => {
-    if (endpoint) {
-      const device = {
-        id: deviceId,
-        endpoint,
-        key: key || '',
-      };
-      redis.hmset(client, `device-${deviceId}`, device);
-      return device;
-    }
-    return redis.hgetall(client, `device-${deviceId}`);
-  })
-  .then(device => {
-    if (!device || !device.endpoint) {
-      throw new Error('No endpoint provided');
-    }
-  })
-  .then(() => Promise.all(
-      features.map(slug => [
-        redis.sadd(client, `${slug}-notifications`, deviceId),
-        redis.sadd(client, `${deviceId}-notifications`, slug)])))
-  .then(() => getRegisteredFeatures(deviceId, dbNumber));
-}
-
 // unregisters from receiving notifications
 // required:
 // * deviceId
@@ -118,6 +78,64 @@ function unregister(deviceId, features, dbNumber) {
   });
 }
 
+// Registers to all notifications including new ones
+// Removes registrations to individual features
+function registerToAll(deviceId, dbNumber) {
+  return getRegisteredFeatures(deviceId, dbNumber)
+  .then(features => unregister(deviceId, features, dbNumber))
+  .then(() => Promise.all([
+    redis.sadd(client, 'all-notifications', deviceId),
+    redis.sadd(client, `${deviceId}-notifications`, 'all')]));
+}
+
+// registers to receive notifications
+// required info:
+// * deviceId
+// * list of feature slugs to register to
+//   special features are `new` and `all`
+//   * new - do notify about new features
+//   * all - all features including new, registering to all will remove
+//     all individual registrations
+// * endpoint [optional]
+// one can register to a feature without providing an endpoint
+// if it was already saved:
+// * key
+// * dbNumber
+function register(deviceId, features, endpoint, key, dbNumber) {
+  if (!features || features.length === 0) {
+    return Promise.reject(new Error('No features provided'));
+  }
+
+  return setClient(dbNumber)
+  .then(() => {
+    if (endpoint) {
+      const device = {
+        id: deviceId,
+        endpoint,
+        key: key || '',
+      };
+      redis.hmset(client, `device-${deviceId}`, device);
+      return device;
+    }
+    return redis.hgetall(client, `device-${deviceId}`);
+  })
+  .then(device => {
+    if (!device || !device.endpoint) {
+      throw new Error('No endpoint provided');
+    }
+  })
+  .then(() => {
+    if (features.indexOf('all') >= 0) {
+      return registerToAll(deviceId, dbNumber);
+    }
+    return Promise.all(
+      features.map(slug => [
+        redis.sadd(client, `${slug}-notifications`, deviceId),
+        redis.sadd(client, `${deviceId}-notifications`, slug)]));
+  })
+  .then(() => getRegisteredFeatures(deviceId, dbNumber));
+}
+
 // update endpoint for the device
 // required:
 // * machineId
@@ -131,7 +149,7 @@ function updateEndpoint(deviceId, endpoint, key, dbNumber) {
 }
 
 const ttl = 2419200;
-function sendNotifications(feature, payload, dbNumber) {
+function sendNotifications(feature, payload, isNew, dbNumber) {
   // make payload a string
   if (payload && Object.keys(payload).length > 0) {
     payload = JSON.stringify(payload);
@@ -139,8 +157,14 @@ function sendNotifications(feature, payload, dbNumber) {
   return setClient(dbNumber)
   .then(() => redis.smembers(client, `${feature}-notifications`))
   .then(devices => redis.smembers(client, 'all-notifications')
-    // TODO remove duplicates
     .then(all => devices.concat(all)))
+  .then(devices => {
+    if (isNew) {
+      return redis.smembers(client, 'new-notifications')
+      .then(fresh => devices.concat(fresh));
+    }
+    return devices;
+  })
   .then(devices => Promise.all(
         devices.map(deviceId => redis.hgetall(client, `device-${deviceId}`))))
   .then(devices => Promise.all(

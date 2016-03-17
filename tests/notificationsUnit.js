@@ -141,6 +141,31 @@ define((require) => {
         );
       });
 
+      bdd.describe('all features', () => {
+        bdd.it('should add only all except of asking to add many', () =>
+          register('someId', ['feature', 'all', 'another-feature'], 'http://endpoint')
+          .then(() => notifications.default.setClient(5))
+          .then(client => redis.smembers(client, 'someId-notifications'))
+          .then(deviceNotifications => {
+            assert.lengthOf(deviceNotifications, 1);
+            assert.notInclude(deviceNotifications, 'feature');
+            assert.notInclude(deviceNotifications, 'another-feature');
+            assert.include(deviceNotifications, 'all');
+          })
+        );
+
+        bdd.it('should remove all registrations before adding all', () =>
+          register('someId', ['feature', 'new', 'another-feature'], 'http://endpoint')
+          .then(() => register('someId', 'all'))
+          .then(() => notifications.default.setClient(5))
+          .then(client => redis.smembers(client, 'someId-notifications'))
+          .then(deviceNotifications => {
+            assert.lengthOf(deviceNotifications, 1);
+            assert.include(deviceNotifications, 'all');
+          })
+        );
+      });
+
       bdd.describe('registered features', () => {
         bdd.it('should fail if no deviceId', () =>
           notifications.default.getRegisteredFeatures('someId', 5)
@@ -243,7 +268,7 @@ define((require) => {
           .reply(201);
 
           return register('someId', 'feature', 'https://localhost:5005/')
-          .then(() => notifications.default.sendNotifications('feature', undefined, 5))
+          .then(() => notifications.default.sendNotifications('feature', undefined, false, 5))
           .then(() => {
             assert.ok(service.isDone(), 'is service called');
           });
@@ -255,7 +280,7 @@ define((require) => {
           .reply(201);
 
           return register('someId', 'feature', 'https://localhost:5005/', urlBase64.encode(userPublicKey))
-          .then(() => notifications.default.sendNotifications('feature', 'hello', 5))
+          .then(() => notifications.default.sendNotifications('feature', 'hello', false, 5))
           .then(() => {
             assert.ok(service.isDone());
           });
@@ -267,7 +292,7 @@ define((require) => {
           .reply(201);
 
           return register('someId', 'feature', 'https://localhost:5005/', urlBase64.encode(userPublicKey))
-          .then(() => notifications.default.sendNotifications('feature', 'hello', 5))
+          .then(() => notifications.default.sendNotifications('feature', 'hello', false, 5))
           .then(() => notifications.default.setClient(5))
           .then(client => redis.get(client, 'someId-payload'))
           .then(payload => {
@@ -281,7 +306,7 @@ define((require) => {
           .reply(201);
 
           return register('someId', 'feature', 'https://android.googleapis.com/gcm/send')
-          .then(() => notifications.default.sendNotifications('feature', 'hello', 5))
+          .then(() => notifications.default.sendNotifications('feature', 'hello', false, 5))
           .then(() => notifications.default.setClient(5))
           .then(client => redis.get(client, 'someId-payload'))
           .then(payload => {
@@ -312,10 +337,22 @@ define((require) => {
 
           return register('someId', 'feature', 'https://localhost:5005/')
           .then(() => register('anotherId', 'all', 'https://localhost:5006/'))
-          .then(() => notifications.default.sendNotifications('feature', undefined, 5))
+          .then(() => notifications.default.sendNotifications('feature', undefined, false, 5))
           .then(() => {
             assert.ok(serviceA.isDone(), 'is serviceA called');
             assert.ok(serviceB.isDone(), 'is serviceB called');
+          });
+        });
+
+        bdd.it('should post if someone registered to new', () => {
+          const service = nock('https://localhost:5005')
+          .post('/')
+          .reply(201);
+
+          return register('someId', 'new', 'https://localhost:5005/')
+          .then(() => notifications.default.sendNotifications('feature', undefined, true, 5))
+          .then(() => {
+            assert.ok(service.isDone(), 'is service called');
           });
         });
 
@@ -330,7 +367,7 @@ define((require) => {
 
           return register('someId', 'feature', 'https://localhost:5005/')
           .then(() => register('anotherId', 'feature', 'https://localhost:5006/'))
-          .then(() => notifications.default.sendNotifications('feature', undefined, 5))
+          .then(() => notifications.default.sendNotifications('feature', undefined, false, 5))
           .then(() => {
             assert.ok(serviceA.isDone(), 'is serviceA called');
             assert.ok(serviceB.isDone(), 'is serviceB called');
