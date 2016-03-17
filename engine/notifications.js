@@ -76,6 +76,10 @@ function unregister(deviceId, features, dbNumber) {
           redis.srem(client, `${deviceId}-notifications`, slug)])
         );
       }
+      if (features.indexOf('all') >= 0) {
+        return redis.srem(client, 'all-notifications', deviceId)
+        .then(() => redis.srem(client, `${deviceId}-notifications`, 'all'));
+      }
       // unregister from 'all'
       return redis.srem(client, 'all-notifications', deviceId)
       .then(() => redis.srem(client, `${deviceId}-notifications`, 'all'))

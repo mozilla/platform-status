@@ -154,6 +154,18 @@ define((require) => {
           })
         );
 
+        bdd.it('should remove registration to all', () =>
+          notifications.default.setClient(5)
+          .then(client => redis.set(client, 'status', '{"feature": {"slug": "feature"}, "another-feature": {"slug": "another-feature"}}')
+            .then(() => register('someId', 'all', 'http://endpoint'))
+            .then(() => notifications.default.unregister('someId', ['all']))
+            .then(() => redis.smembers(client, 'someId-notifications'))
+            .then(deviceNotifications => {
+              assert.lengthOf(deviceNotifications, 0);
+            })
+          )
+        );
+
         bdd.it('should remove all registrations before adding all', () =>
           register('someId', ['feature', 'new', 'another-feature'], 'http://endpoint')
           .then(() => register('someId', 'all'))
