@@ -33,9 +33,23 @@ function resetNotifications(onclickCallback) {
   }
 }
 
+function receiveAllNotificationsUI() {
+  const notifications = document.getElementsByClassName('notification');
+  for (let i = 0; i < notifications.length; i++) {
+    const notification = notifications[i];
+    notification.dataset.notification = true;
+    const icon = notification.firstElementChild;
+    icon.classList.remove('icon-notify-off');
+    icon.classList.add('icon-notify-on');
+  }
+}
+
 function reloadUI(response) {
   console.log('DEBUG - setting notification for', response.features);
   resetNotifications();
+  if (response.features.indexOf('all') >= 0) {
+    return receiveAllNotificationsUI();
+  }
   for (let i = 0; i < response.features.length; i++) {
     const feature = response.features[i];
     const featureElement = document.getElementById(`notification-${feature}`);

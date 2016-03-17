@@ -46,6 +46,15 @@ function getRegisteredFeatures(deviceId, dbNumber) {
   .then(() => redis.smembers(client, `${deviceId}-notifications`));
 }
 
+function unregisterDevice(deviceId) {
+  return redis.del(client, `device-${deviceId}`)
+  .then(() => redis.smembers(client, `${deviceId}-notifications`))
+  .then(deviceFeatures => Promise.all(
+        deviceFeatures.map(slug => redis.srem(client, `${slug}-notifications`, deviceId))
+  ))
+  .then(() => redis.del(client, `${deviceId}-notifications`));
+}
+
 // unregisters from receiving notifications
 // required:
 // * deviceId
@@ -56,18 +65,34 @@ function getRegisteredFeatures(deviceId, dbNumber) {
 function unregister(deviceId, features, dbNumber) {
   return checkDeviceId(deviceId, dbNumber)
   .then(() => {
-    if (features) {
-      return Promise.all(features.map(slug => [
-        redis.srem(client, `${slug}-notifications`, deviceId),
-        redis.srem(client, `${deviceId}-notifications`, slug)])
-      );
+    if (!features) {
+      return unregisterDevice(deviceId);
     }
-    return redis.del(client, `device-${deviceId}`)
-    .then(() => redis.smembers(client, `${deviceId}-notifications`))
-    .then(deviceFeatures => Promise.all(
-          deviceFeatures.map(slug => redis.srem(client, `${slug}-notifications`, deviceId))
-    ))
-    .then(() => redis.del(client, `${deviceId}-notifications`));
+    return redis.sismember(client, `${deviceId}-notifications`, 'all')
+    .then(registeredToAll => {
+      if (!registeredToAll) {
+        return Promise.all(features.map(slug => [
+          redis.srem(client, `${slug}-notifications`, deviceId),
+          redis.srem(client, `${deviceId}-notifications`, slug)])
+        );
+      }
+      // unregister from 'all'
+      return redis.srem(client, 'all-notifications', deviceId)
+      .then(() => redis.srem(client, `${deviceId}-notifications`, 'all'))
+      // register to everything except of features
+      .then(() => redis.get(client, 'status'))
+      .then(status => {
+        let allFeatures = ['new'];
+        allFeatures = allFeatures.concat(Object.keys(JSON.parse(status)));
+        return Promise.all(allFeatures.map(slug => {
+          if (features.indexOf(slug) >= 0) {
+            return Promise.resolve();
+          }
+          return redis.sadd(client, `${deviceId}-notifications`, slug)
+          .then(() => redis.sadd(client, `${slug}-notifications`, deviceId));
+        }));
+      });
+    });
   })
   .then(() => getRegisteredFeatures(deviceId, dbNumber))
   .catch(err => {

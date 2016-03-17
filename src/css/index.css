@@ -275,6 +275,9 @@ article {
 .notification:hover i {
 	opacity: 1;
 }
+h2 .notification-new {
+	text-align: right;
+}
 h2 .notification i {
 	opacity: 0.8;
 	height: calc($gutterX * 1.5);

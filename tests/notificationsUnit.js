@@ -164,6 +164,21 @@ define((require) => {
             assert.include(deviceNotifications, 'all');
           })
         );
+
+        bdd.it('should remove registration to all and register to other features', () =>
+          notifications.default.setClient(5)
+          .then(client => redis.set(client, 'status', '{"feature": {"slug": "feature"}, "another-feature": {"slug": "another-feature"}}')
+            .then(() => register('someId', 'all', 'http://endpoint'))
+            .then(() => notifications.default.unregister('someId', ['another-feature']))
+            .then(() => redis.smembers(client, 'someId-notifications'))
+            .then(deviceNotifications => {
+              assert.lengthOf(deviceNotifications, 2);
+              assert.notInclude(deviceNotifications, 'all');
+              assert.include(deviceNotifications, 'feature');
+              assert.include(deviceNotifications, 'new');
+            })
+          )
+        );
       });
 
       bdd.describe('registered features', () => {
