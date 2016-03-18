@@ -144,12 +144,15 @@ function unregister(feature) {
 function toggleNotification(event) {
   const notificationElement = event.target;
   const feature = notificationElement.dataset.slug;
-  if (notificationElement.dataset.notification === 'true') {
-    console.log('DEBUG: Unregistering from', feature);
-    return unregister(feature);
+  // sometimes a click to `undefined` happened
+  if (feature) {
+    if (notificationElement.dataset.notification === 'true') {
+      console.log('DEBUG: Unregistering from', feature);
+      return unregister(feature);
+    }
+    console.log('DEBUG: Registering to', feature);
+    register(feature);
   }
-  console.log('DEBUG: Registering to', feature);
-  return register(feature);
 }
 
 function loadRegistrations() {

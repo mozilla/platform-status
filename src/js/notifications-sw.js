@@ -22,8 +22,27 @@ self.addEventListener('push', event => {
       // data.command (?)
       const title = data ? data.title : 'Platform Status';
       const body = data ? data.body : 'Notification Error';
-      // TODO add icon
-      return self.registration.showNotification(title, { body });
+      console.log('DEBUG: ', body);
+      return self.registration.showNotification(title, {
+        body,
+        icon: '/images/browsers/firefox_64x64.png',
+        actions: [{ title: 'Show Platform Status', action: 'click' }],
+      });
+    })
+  );
+});
+
+self.addEventListener('notificationclick', event => {
+  event.notification.close();
+  // This looks to see if the current is already open and
+  // focuses if it is
+  event.waitUntil(
+    self.clients.matchAll()
+    .then(clientList => {
+      if (clientList.length > 0) {
+        return clientList[0].focus();
+      }
+      return self.clients.openWindow('/');
     })
   );
 });
