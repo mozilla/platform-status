@@ -1,0 +1,9 @@
+{
+  "env": {
+    "amd": true
+  },
+  "globals": {
+    "clients": true
+  } 
+}
+
