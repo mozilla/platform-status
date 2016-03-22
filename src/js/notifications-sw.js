@@ -10,7 +10,7 @@ self.addEventListener('push', event => {
       if (!deviceId) {
         return null;
       }
-      return fetch(`./get_payload/${deviceId}`)
+      return fetch(`./payload/${deviceId}`)
       .then(response => response.json());
     });
   }
@@ -20,9 +20,9 @@ self.addEventListener('push', event => {
     .then(data => {
       // TODO add a way to unregister from the back-end
       // data.command (?)
+      data = JSON.parse(data);
       const title = data ? data.title : 'Platform Status';
       const body = data ? data.body : 'Notification Error';
-      console.log('DEBUG: ', body);
       return self.registration.showNotification(title, {
         body,
         icon: '/images/browsers/firefox_64x64.png',
