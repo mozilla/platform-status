@@ -45,7 +45,7 @@
     "markdown-it": "^6.0.0",
     "mkdirp": "^0.5.1",
     "mozilla-tabzilla": "^0.5.1",
-    "node-fetch": "^1.3.3",
+    "node-fetch": "^1.4.1",
     "oghliner": "^1.0.0",
     "postcss-cssnext": "^2.3.0",
     "postcss-import": "^8.0.1",
