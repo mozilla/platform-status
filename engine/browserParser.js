@@ -14,13 +14,12 @@ export default class BrowserParser {
     ie: 'https://raw.githubusercontent.com/MicrosoftEdge/Status/production/status.json',
   };
 
-  read(options) {
-    const cacheDir = options.cacheDir;
+  read() {
     return Promise.all([
-      cache.readJson(this.urls.webkitCore, cacheDir)
+      cache.readJson(this.urls.webkitCore)
         .then((coreResults) =>
           // Combine the web core and javascript core specs and features.
-          cache.readJson(this.urls.webkitJavaScript, cacheDir).then((jsResults) => {
+          cache.readJson(this.urls.webkitJavaScript).then((jsResults) => {
             coreResults.specification = coreResults.specification.concat(jsResults.specification);
             coreResults.features = coreResults.features.concat(jsResults.features);
             return coreResults;
@@ -38,13 +37,13 @@ export default class BrowserParser {
             merged.map(entry => [entry.name, entry])
           );
         }),
-      cache.readJson(this.urls.chrome, cacheDir)
+      cache.readJson(this.urls.chrome)
         .then((results) => {
           this.results.chrome = new Map(
             results.map(entry => [entry.id, entry])
           );
         }),
-      cache.readJson(this.urls.ie, cacheDir)
+      cache.readJson(this.urls.ie)
         .then((results) => {
           this.results.ie = new Map(
             results.map(entry => [entry.name, entry])
