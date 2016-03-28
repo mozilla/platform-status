@@ -38,7 +38,7 @@ define((require) => {
   }
   function flushQuitDB(client) {
     return flushDB(client)
-    .then(() => redis.quit(client, 5));
+    .then(() => redis.quit(client));
   }
 
 
@@ -81,4 +81,3 @@ define((require) => {
     });
   });
 });
-
