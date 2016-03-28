@@ -3,7 +3,10 @@ import redis from 'redis';
 
 function readJson(url, dbNumber) {
   return new Promise((resolve, reject) => {
-    const client = redis.createClient(process.env.REDIS_URL, { no_ready_check: true });
+    const client = redis.createClient({
+      url: process.env.REDIS_URL,
+      no_ready_check: true,
+    });
     if (!dbNumber) {
       resolve(client);
       return;
