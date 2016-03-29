@@ -6,6 +6,7 @@ function readJson(url, dbNumber) {
     const client = redis.createClient({
       url: process.env.REDIS_URL,
       no_ready_check: true,
+      socket_keepalive: true,
     });
     if (!dbNumber) {
       resolve(client);
