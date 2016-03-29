@@ -129,12 +129,12 @@ define(require => {
         const testURL = 'https://raw.githubusercontent.com/mozilla/platatus/master/package.json';
 
         // Cache our package.json file
-        return cache.readJson(testURL, cacheDir).then(originalText => {
+        return cache.readJson(testURL, 5).then(originalText => {
           // Cause the next fetch to fail
           fetchMock.mock(testURL, 404);
 
           // Get our package.json (should succeed from cache)
-          return cache.readJson(testURL, cacheDir).then(cachedText => {
+          return cache.readJson(testURL, 5).then(cachedText => {
             // Compare the original text with the cached text
             assert.equal(JSON.stringify(cachedText), JSON.stringify(originalText));
           });
@@ -147,7 +147,7 @@ define(require => {
         // Cause the fetch to 404
         fetchMock.mock(testURL, 404);
 
-        return cache.readJson(testURL, cacheDir).then(() => {
+        return cache.readJson(testURL, 5).then(() => {
           assert.fail('`cache.readJson` should have rejected on a 404');
         }).catch(err => {
           assert(err instanceof Error);

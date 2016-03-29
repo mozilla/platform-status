@@ -8,8 +8,8 @@ export default class FirefoxVersionParser {
     return parseInt(version.substr(0, version.indexOf('.')), 10);
   }
 
-  read(options) {
-    return cache.readJson(this.url, options.cacheDir)
+  read() {
+    return cache.readJson(this.url)
       .then((results) => {
         this.results = {
           stable: this.majorVersion(results.LATEST_FIREFOX_VERSION),

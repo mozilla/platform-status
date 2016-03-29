@@ -8,8 +8,8 @@ export default class CanIUseParser {
     return parseInt(version.substr(0, version.indexOf('.')), 10);
   }
 
-  read(options) {
-    return cache.readJson(this.url, options.cacheDir)
+  read() {
+    return cache.readJson(this.url)
       .then((results) => {
         this.results = results;
       });
