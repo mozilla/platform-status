@@ -34,16 +34,14 @@ function readJson(url, dbNumber) {
         if (res.statusCode === 404) {
           reject(new Error('Not Found'));
         }
-        resolve(body);
+        client.quit(() => {
+          resolve(body);
+        });
       });
     })
     .catch(err => {
       client.quit();
       throw err;
-    })
-    .then(jsonResponse => {
-      client.quit();
-      return jsonResponse;
     });
   });
 }
