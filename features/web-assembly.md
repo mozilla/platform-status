@@ -5,7 +5,7 @@ firefox_status: in-development
 bugzilla: 1188259
 spec_url: https://github.com/WebAssembly/spec
 spec_status: working-draft-or-equivalent
-chrome_status: in-development
+chrome_ref: 5453022515691520
 ie_status: in-development
 ---
 
