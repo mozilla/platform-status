@@ -7,6 +7,7 @@ spec_url: https://github.com/WebAssembly/spec
 spec_status: working-draft-or-equivalent
 chrome_ref: 5453022515691520
 ie_status: in-development
+webkit_ref: WebAssembly
 ---
 
 *WebAssembly* is a low-level, portable, size- and load-time-efficient binary code format; designed to serve as a compilation target for the web.
