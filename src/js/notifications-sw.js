@@ -20,7 +20,6 @@ self.addEventListener('push', event => {
     .then(data => {
       // TODO add a way to unregister from the back-end
       // data.command (?)
-      data = JSON.parse(data);
       const title = data ? data.title : 'Platform Status';
       const body = data ? data.body : 'Notification Error';
       return self.registration.showNotification(title, {
