@@ -1,6 +1,8 @@
 import redis from '../engine/redis-helper.js';
 import webPush from 'web-push';
 
+const ttl = 2419200;
+
 if (!process.env.GCM_API_KEY) {
   console.warn('Set the GCM_API_KEY environment variable to support GCM');
 }
@@ -46,6 +48,52 @@ function getRegisteredFeatures(deviceId, dbNumber) {
   .then(() => redis.smembers(client, `${deviceId}-notifications`));
 }
 
+/*
+ * send confirmation even if deviceId is already deleted
+ */
+function sendConfirmation(endpoint, key, deviceId, features, dbNumber) {
+  let payload = { title: 'Registration changed' };
+  payload.body = 'You\'re not registered to any feature';
+  if (features && features.length > 0) {
+    const numberOfFeatures = features.length;
+    const message = 'Registered to';
+    if (features.indexOf('all') >= 0) {
+      payload.body = `${message} all features`;
+    } else if (numberOfFeatures === 1) {
+      if (features.indexOf('new') === 0) {
+        payload.body = `${message} new features only`;
+      } else {
+        payload.body = `${message} one feature`;
+      }
+    } else {
+      payload.body = `${message} ${numberOfFeatures} features`;
+    }
+  }
+  payload = JSON.stringify(payload);
+  return setClient(dbNumber)
+  .then(() => {
+    if (endpoint.indexOf('https://android.googleapis.com/gcm/send') === 0) {
+      return redis.set(client, `${deviceId}-payload`, payload)
+      .then(webPush.sendNotification(endpoint, ttl));
+    }
+    return webPush.sendNotification(endpoint, ttl, key, payload);
+  });
+}
+
+/*
+ * send confirmation after user changed registration
+ * deviceId might be an endpoint
+ */
+function sendConfirmationToDevice(deviceId, dbNumber) {
+  return setClient(dbNumber)
+  .then(() => checkDeviceId(deviceId, dbNumber))
+  .then(() => redis.hgetall(client, `device-${deviceId}`))
+  .then(device =>
+    getRegisteredFeatures(deviceId, dbNumber)
+    .then(features => sendConfirmation(device.endpoint, device.key, deviceId, features, dbNumber))
+  );
+}
+
 function unregisterDevice(deviceId) {
   return redis.del(client, `device-${deviceId}`)
   .then(() => redis.smembers(client, `${deviceId}-notifications`))
@@ -62,8 +110,15 @@ function unregisterDevice(deviceId) {
 // * features
 // if no features provided unregister from all features and delete
 // endpoint entry
-function unregister(deviceId, features, dbNumber) {
+function unregister(deviceId, features, dbNumber, doNotConfirm) {
+  let endpoint;
+  let key;
   return checkDeviceId(deviceId, dbNumber)
+  .then(() => redis.hgetall(client, `device-${deviceId}`))
+  .then(device => {
+    endpoint = device.endpoint;
+    key = device.key;
+  })
   .then(() => {
     if (!features) {
       return unregisterDevice(deviceId);
@@ -76,11 +131,12 @@ function unregister(deviceId, features, dbNumber) {
           redis.srem(client, `${deviceId}-notifications`, slug)])
         );
       }
+      // user decided to unregister from `all`
       if (features.indexOf('all') >= 0) {
         return redis.srem(client, 'all-notifications', deviceId)
         .then(() => redis.srem(client, `${deviceId}-notifications`, 'all'));
       }
-      // unregister from 'all'
+      // unregister from `all` and register to negative of `features`
       return redis.srem(client, 'all-notifications', deviceId)
       .then(() => redis.srem(client, `${deviceId}-notifications`, 'all'))
       // register to everything except of features
@@ -104,6 +160,13 @@ function unregister(deviceId, features, dbNumber) {
       throw err;
     }
     return [];
+  })
+  .then(regFeatures => {
+    if (!doNotConfirm && endpoint) {
+      return sendConfirmation(endpoint, key, deviceId, regFeatures, dbNumber)
+      .then(() => regFeatures);
+    }
+    return regFeatures;
   });
 }
 
@@ -111,7 +174,7 @@ function unregister(deviceId, features, dbNumber) {
 // Removes registrations to individual features
 function registerToAll(deviceId, dbNumber) {
   return getRegisteredFeatures(deviceId, dbNumber)
-  .then(features => unregister(deviceId, features, dbNumber))
+  .then(features => unregister(deviceId, features, dbNumber, true))
   .then(() => Promise.all([
     redis.sadd(client, 'all-notifications', deviceId),
     redis.sadd(client, `${deviceId}-notifications`, 'all')]));
@@ -162,6 +225,7 @@ function register(deviceId, features, endpoint, key, dbNumber) {
         redis.sadd(client, `${slug}-notifications`, deviceId),
         redis.sadd(client, `${deviceId}-notifications`, slug)]));
   })
+  .then(() => sendConfirmationToDevice(deviceId, dbNumber))
   .then(() => getRegisteredFeatures(deviceId, dbNumber));
 }
 
@@ -177,7 +241,6 @@ function updateEndpoint(deviceId, endpoint, key, dbNumber) {
   .then(() => redis.hmset(client, `device-${deviceId}`, 'endpoint', endpoint, 'key', key));
 }
 
-const ttl = 2419200;
 function sendNotifications(feature, payload, isNew, dbNumber) {
   // make payload a string
   if (payload && Object.keys(payload).length > 0) {

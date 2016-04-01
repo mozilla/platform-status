@@ -47,9 +47,19 @@ define((require) => {
   }
 
   bdd.describe('Notifications unit', () => {
+    const nock = require('intern/dojo/node!nock');
+    const crypto = require('intern/dojo/node!crypto');
+    const urlBase64 = require('intern/dojo/node!urlsafe-base64');
+    const userCurve = crypto.createECDH('prime256v1');
+
+    const userPublicKey = userCurve.generateKeys();
+    const userKey = urlBase64.encode(userPublicKey);
+
     // clean and quit database after each test
     bdd.afterEach(() => notifications.default.setClient(5)
-      .then((client) => flushQuitDB(client)));
+      .then((client) => flushQuitDB(client))
+      .then(() => nock.cleanAll())
+    );
 
     bdd.describe('Backend', () => {
       bdd.describe('register', () => {
@@ -69,8 +79,12 @@ define((require) => {
           })
         );
 
-        bdd.it('should save the endpoint and notifications registration', () =>
-          register('someId', ['feature'], 'http://endpoint', 'someKey')
+        bdd.it('should save the endpoint and notifications registration and confirm', () => {
+          const server = nock('https://localhost:5005')
+          .post('/')
+          .reply(201);
+
+          return register('someId', ['feature'], 'https://localhost:5005', userKey)
           .then(features => {
             assert.include(features, 'feature');
           })
@@ -89,24 +103,35 @@ define((require) => {
             .then(() => redis.hgetall(client, 'device-someId')))
           .then(device => {
             assert.isObject(device);
-            assert.strictEqual(device.endpoint, 'http://endpoint');
-            assert.strictEqual(device.key, 'someKey');
-          })
-        );
+            assert.strictEqual(device.endpoint, 'https://localhost:5005');
+            assert.strictEqual(device.key, userKey);
+            assert.ok(server.isDone());
+          });
+        });
 
-        bdd.it('should save work without endpoint if already saved it', () =>
-          register('someId', 'feature', 'http://endpoint')
+        bdd.it('should save work without endpoint if already saved it', () => {
+          nock('https://localhost:5005')
+          .post('/')
+          .times(2)
+          .reply(201);
+
+          return register('someId', 'feature', 'https://localhost:5005', userKey)
           .then(() => register('someId', 'another-feature'))
           .then(() => notifications.default.setClient(5))
           .then(client => redis.hget(client, 'device-someId', 'endpoint'))
           .then(endpoint => {
             assert.ok(endpoint);
-            assert.strictEqual(endpoint, 'http://endpoint');
-          })
-        );
+            assert.strictEqual(endpoint, 'https://localhost:5005');
+          });
+        });
 
-        bdd.it('should register to a second feature', () =>
-          register('someId', 'feature', 'http://endpoint')
+        bdd.it('should register to a second feature', () => {
+          nock('https://localhost:5005')
+          .post('/')
+          .times(2)
+          .reply(201);
+
+          return register('someId', 'feature', 'https://localhost:5005', userKey)
           .then(() => register('someId', 'another-feature'))
           .then(() => notifications.default.setClient(5))
           .then(client => redis.smembers(client, 'someId-notifications'))
@@ -114,36 +139,54 @@ define((require) => {
             assert.lengthOf(deviceNotifications, 2);
             assert.include(deviceNotifications, 'feature');
             assert.include(deviceNotifications, 'another-feature');
-          })
-        );
+          });
+        });
 
-        bdd.it('should register many devices to a feature', () =>
-          register('someId', 'feature', 'http://endpoint')
-          .then(() => register('anotherId', 'feature', 'http://anotherEndpoint'))
+        bdd.it('should register many devices to a feature', () => {
+          nock('https://localhost:5005')
+          .post('/')
+          .reply(201);
+
+          nock('https://localhost:5006')
+          .post('/')
+          .reply(201);
+
+          return register('someId', 'feature', 'https://localhost:5005', userKey)
+          .then(() => register('anotherId', 'feature', 'http://localhost:5006', userKey))
           .then(() => notifications.default.setClient(5))
           .then(client => redis.smembers(client, 'feature-notifications'))
           .then(featureNotifications => {
             assert.lengthOf(featureNotifications, 2);
             assert.include(featureNotifications, 'someId');
             assert.include(featureNotifications, 'anotherId');
-          })
-        );
+          });
+        });
 
-        bdd.it('should register to multiple features in one call', () =>
-          register('someId', ['feature', 'another-feature'], 'http://endpoint')
+        bdd.it('should register to multiple features in one call', () => {
+          nock('https://localhost:5005')
+          .post('/')
+          .reply(201);
+
+          return register('someId', ['feature', 'another-feature'], 'https://localhost:5005', userKey)
+
           .then(() => notifications.default.setClient(5))
           .then(client => redis.smembers(client, 'someId-notifications'))
           .then(deviceNotifications => {
             assert.lengthOf(deviceNotifications, 2);
             assert.include(deviceNotifications, 'feature');
             assert.include(deviceNotifications, 'another-feature');
-          })
-        );
+          });
+        });
       });
 
       bdd.describe('all features', () => {
-        bdd.it('should add only all except of asking to add many', () =>
-          register('someId', ['feature', 'all', 'another-feature'], 'http://endpoint')
+        bdd.it('should add only all except of asking to add many', () => {
+          nock('https://localhost:5005')
+          .post('/')
+          .reply(201);
+
+          return register('someId', ['feature', 'all', 'another-feature'], 'https://localhost:5005', userKey)
+
           .then(() => notifications.default.setClient(5))
           .then(client => redis.smembers(client, 'someId-notifications'))
           .then(deviceNotifications => {
@@ -151,36 +194,52 @@ define((require) => {
             assert.notInclude(deviceNotifications, 'feature');
             assert.notInclude(deviceNotifications, 'another-feature');
             assert.include(deviceNotifications, 'all');
-          })
-        );
+          });
+        });
 
-        bdd.it('should remove registration to all', () =>
-          notifications.default.setClient(5)
+        bdd.it('should remove registration to all', () => {
+          nock('https://localhost:5005')
+          .post('/')
+          .times(2)
+          .reply(201);
+
+          return notifications.default.setClient(5)
           .then(client => redis.set(client, 'status', '{"feature": {"slug": "feature"}, "another-feature": {"slug": "another-feature"}}')
-            .then(() => register('someId', 'all', 'http://endpoint'))
+            .then(() => register('someId', 'all', 'https://localhost:5005', userKey))
             .then(() => notifications.default.unregister('someId', ['all']))
             .then(() => redis.smembers(client, 'someId-notifications'))
             .then(deviceNotifications => {
               assert.lengthOf(deviceNotifications, 0);
             })
-          )
-        );
+          );
+        });
 
-        bdd.it('should remove all registrations before adding all', () =>
-          register('someId', ['feature', 'new', 'another-feature'], 'http://endpoint')
+        bdd.it('should remove all registrations before adding all', () => {
+          nock('https://localhost:5005')
+          .post('/')
+          .times(2)
+          .reply(201);
+
+
+          return register('someId', ['feature', 'new', 'another-feature'], 'https://localhost:5005', userKey)
           .then(() => register('someId', 'all'))
           .then(() => notifications.default.setClient(5))
           .then(client => redis.smembers(client, 'someId-notifications'))
           .then(deviceNotifications => {
             assert.lengthOf(deviceNotifications, 1);
             assert.include(deviceNotifications, 'all');
-          })
-        );
+          });
+        });
 
-        bdd.it('should remove registration to all and register to other features', () =>
-          notifications.default.setClient(5)
+        bdd.it('should remove registration to all and register to other features', () => {
+          nock('https://localhost:5005')
+          .post('/')
+          .times(2)
+          .reply(201);
+
+          return notifications.default.setClient(5)
           .then(client => redis.set(client, 'status', '{"feature": {"slug": "feature"}, "another-feature": {"slug": "another-feature"}}')
-            .then(() => register('someId', 'all', 'http://endpoint'))
+            .then(() => register('someId', 'all', 'https://localhost:5005', userKey))
             .then(() => notifications.default.unregister('someId', ['another-feature']))
             .then(() => redis.smembers(client, 'someId-notifications'))
             .then(deviceNotifications => {
@@ -189,8 +248,8 @@ define((require) => {
               assert.include(deviceNotifications, 'feature');
               assert.include(deviceNotifications, 'new');
             })
-          )
-        );
+          );
+        });
       });
 
       bdd.describe('registered features', () => {
@@ -202,47 +261,62 @@ define((require) => {
           })
         );
 
-        bdd.it('should return saved notifications', () =>
-          register('someId', ['feature', 'another-feature'], 'http://endpoint')
+        bdd.it('should return saved notifications', () => {
+          nock('https://localhost:5005')
+          .post('/')
+          .reply(201);
+
+          return register('someId', ['feature', 'another-feature'], 'https://localhost:5005', userKey)
           .then(() => notifications.default.getRegisteredFeatures('someId', 5))
           .then(deviceNotifications => {
             assert.isArray(deviceNotifications);
             assert.lengthOf(deviceNotifications, 2);
             assert.include(deviceNotifications, 'feature');
             assert.include(deviceNotifications, 'another-feature');
-          })
-        );
+          });
+        });
       });
 
       bdd.describe('unregister', () => {
         bdd.it('should fail if no deviceId', () =>
-          notifications.default.unregister('someId', 5)
+          notifications.default.unregister('notExistingId', 5)
           .catch(err => {
             assert.ok(err);
             assert.strictEqual(err.message, 'Not Found');
           })
         );
 
-        bdd.it('should unregister from a notification', () =>
-          register('someId', ['feature', 'another-feature'], 'http://endpoint')
+        bdd.it('should unregister from a notification', () => {
+          nock('https://localhost:5005')
+          .post('/')
+          .times(2)
+          .reply(201);
+
+          return register('someId', ['feature', 'another-feature'], 'https://localhost:5005', userKey)
           .then(() => notifications.default.unregister('someId', ['feature'], 5))
           .then(() => notifications.default.getRegisteredFeatures('someId', 5))
           .then(deviceNotifications => {
             assert.isArray(deviceNotifications);
             assert.lengthOf(deviceNotifications, 1);
             assert.include(deviceNotifications, 'another-feature');
-          })
-        );
+          });
+        });
 
-        bdd.it('should unregister and remove device', () =>
-          register('someId', ['feature', 'another-feature'], 'http://endpoint')
+        bdd.it('should unregister and remove device', () => {
+          nock('https://localhost:5005')
+          .post('/')
+          .times(2)
+          .reply(201);
+
+          return register('someId', ['feature', 'another-feature'], 'https://localhost:5005', userKey)
           .then(() => notifications.default.unregister('someId', null, 5))
           .then(() => notifications.default.getRegisteredFeatures('someId', 5))
           .catch(err => {
+            console.log(err);
             assert.ok(err);
             assert.strictEqual(err.message, 'Not Found');
-          })
-        );
+          });
+        });
       });
 
       bdd.describe('update endpoint', () => {
@@ -254,59 +328,60 @@ define((require) => {
           })
         );
 
-        bdd.it('should fail if no endpoint', () =>
-          register('someId', 'feature', 'http://endpoint')
+        bdd.it('should fail if no endpoint', () => {
+          nock('https://localhost:5005')
+          .post('/')
+          .times(2)
+          .reply(201);
+
+          return register('someId', 'feature', 'https://localhost:5005', userKey)
           .then(() => notifications.default.updateEndpoint('someId', null, 5))
           .catch(err => {
             assert.ok(err);
             assert.strictEqual(err.message, 'No endpoint provided');
-          })
-        );
+          });
+        });
 
-        bdd.it('should set endpoint', () =>
-          register('someId', 'feature', 'http://endpoint')
+        bdd.it('should set endpoint', () => {
+          nock('https://localhost:5005')
+          .post('/')
+          .times(2)
+          .reply(201);
+
+          return register('someId', 'feature', 'https://localhost:5005', userKey)
           .then(() => notifications.default.updateEndpoint('someId', 'http://another-endpoint', 5))
           .then(() => notifications.default.setClient(5))
           .then(client => redis.hget(client, 'device-someId', 'endpoint'))
           .then(endpoint => {
             assert.ok(endpoint);
             assert.strictEqual(endpoint, 'http://another-endpoint');
-          })
-        );
+          });
+        });
       });
     });
 
     bdd.describe('Sending Notifications', () => {
-      const nock = require('intern/dojo/node!nock');
-      const crypto = require('intern/dojo/node!crypto');
-      const urlBase64 = require('intern/dojo/node!urlsafe-base64');
-      const userCurve = crypto.createECDH('prime256v1');
-
-      const userPublicKey = userCurve.generateKeys();
-      // const userPrivateKey = userCurve.getPrivateKey();
-
       bdd.describe('send notification', () => {
-        bdd.afterEach(() => {
-          nock.cleanAll();
-        });
         bdd.it('should post to endpoint', () => {
           const service = nock('https://localhost:5005')
           .post('/')
+          .times(2)
           .reply(201);
 
-          return register('someId', 'feature', 'https://localhost:5005/')
+          return register('someId', 'feature', 'https://localhost:5005/', userKey)
           .then(() => notifications.default.sendNotifications('feature', undefined, false, 5))
           .then(() => {
-            assert.ok(service.isDone(), 'is service called');
+            assert.ok(service.isDone());
           });
         });
 
         bdd.it('should post to non GCM endpoint with payload', () => {
           const service = nock('https://localhost:5005')
           .post('/')
+          .times(2)
           .reply(201);
 
-          return register('someId', 'feature', 'https://localhost:5005/', urlBase64.encode(userPublicKey))
+          return register('someId', 'feature', 'https://localhost:5005/', userKey)
           .then(() => notifications.default.sendNotifications('feature', 'hello', false, 5))
           .then(() => {
             assert.ok(service.isDone());
@@ -316,9 +391,10 @@ define((require) => {
         bdd.it('should not create a payload key if sending to non GCM endpoint with payload', () => {
           nock('https://localhost:5005')
           .post('/')
+          .times(2)
           .reply(201);
 
-          return register('someId', 'feature', 'https://localhost:5005/', urlBase64.encode(userPublicKey))
+          return register('someId', 'feature', 'https://localhost:5005/', userKey)
           .then(() => notifications.default.sendNotifications('feature', 'hello', false, 5))
           .then(() => notifications.default.setClient(5))
           .then(client => redis.get(client, 'someId-payload'))
@@ -330,6 +406,7 @@ define((require) => {
         bdd.it('should post to GCM endpoint and create a payload', () => {
           const service = nock('https://android.googleapis.com')
           .post('/gcm')
+          .times(2)
           .reply(201);
 
           return register('someId', 'feature', 'https://android.googleapis.com/gcm/send')
@@ -356,14 +433,16 @@ define((require) => {
         bdd.it('should post if someone registered to all', () => {
           const serviceA = nock('https://localhost:5005')
           .post('/')
+          .times(2)
           .reply(201);
 
           const serviceB = nock('https://localhost:5006')
           .post('/')
+          .times(2)
           .reply(201);
 
-          return register('someId', 'feature', 'https://localhost:5005/')
-          .then(() => register('anotherId', 'all', 'https://localhost:5006/'))
+          return register('someId', 'feature', 'https://localhost:5005/', userKey)
+          .then(() => register('anotherId', 'all', 'https://localhost:5006/', userKey))
           .then(() => notifications.default.sendNotifications('feature', undefined, false, 5))
           .then(() => {
             assert.ok(serviceA.isDone(), 'is serviceA called');
@@ -374,9 +453,10 @@ define((require) => {
         bdd.it('should post if someone registered to new', () => {
           const service = nock('https://localhost:5005')
           .post('/')
+          .times(2)
           .reply(201);
 
-          return register('someId', 'new', 'https://localhost:5005/')
+          return register('someId', 'new', 'https://localhost:5005/', userKey)
           .then(() => notifications.default.sendNotifications('feature', undefined, true, 5))
           .then(() => {
             assert.ok(service.isDone(), 'is service called');
@@ -386,14 +466,16 @@ define((require) => {
         bdd.it('should post to multiple endpoints', () => {
           const serviceA = nock('https://localhost:5005')
           .post('/')
+          .times(2)
           .reply(201);
 
           const serviceB = nock('https://localhost:5006')
           .post('/')
+          .times(2)
           .reply(201);
 
-          return register('someId', 'feature', 'https://localhost:5005/')
-          .then(() => register('anotherId', 'feature', 'https://localhost:5006/'))
+          return register('someId', 'feature', 'https://localhost:5005/', userKey)
+          .then(() => register('anotherId', 'feature', 'https://localhost:5006/', userKey))
           .then(() => notifications.default.sendNotifications('feature', undefined, false, 5))
           .then(() => {
             assert.ok(serviceA.isDone(), 'is serviceA called');
@@ -404,17 +486,7 @@ define((require) => {
     });
 
     bdd.describe('Link with checkNewFeatures', () => {
-      const nock = require('intern/dojo/node!nock');
-      const crypto = require('intern/dojo/node!crypto');
-      const urlBase64 = require('intern/dojo/node!urlsafe-base64');
-      const userCurve = crypto.createECDH('prime256v1');
       const engine = require('intern/dojo/node!../../../../engine/index');
-
-      const userPublicKey = userCurve.generateKeys();
-
-      bdd.afterEach(() => {
-        nock.cleanAll();
-      });
 
       bdd.it('should resolve if nothing to notify about', () => {
         const testData = [{
@@ -448,7 +520,7 @@ define((require) => {
       bdd.it('should notify about new entries', () => {
         const service = nock('https://localhost:5005')
         .post('/')
-        .times(2)
+        .times(3)
         .reply(201);
 
         const testData = [{
@@ -463,7 +535,7 @@ define((require) => {
           just_started: true,
         }];
 
-        return register('someId', 'all', 'https://localhost:5005/', urlBase64.encode(userPublicKey))
+        return register('someId', 'all', 'https://localhost:5005/', userKey)
         .then(() => engine.test.sendNotifications(testData, 5))
         .then(() => {
           assert.ok(service.isDone());
@@ -493,14 +565,19 @@ define((require) => {
 
       bdd.after(() => server.close());
 
-      bdd.it('registers a device', () =>
-        notifications.default.setClient(5)
+      bdd.it('registers a device', () => {
+        nock('https://localhost:5005')
+        .post('/')
+        .reply(201);
+
+        return notifications.default.setClient(5)
         .then(client =>
           api()
           .post('/register')
           .send({
             deviceId: 'someId',
-            endpoint: 'https://endpoint',
+            endpoint: 'https://localhost:5005',
+            key: userKey,
             features: ['feature', 'another-feature'],
           })
           .then(response => {
@@ -508,10 +585,11 @@ define((require) => {
             assert.isArray(response.body.features);
             assert.sameMembers(response.body.features, ['feature', 'another-feature']);
           })
-          .then(() => redis.hget(client, 'device-someId', 'endpoint'))
-          .then(endpoint => {
-            assert.ok(endpoint);
-            assert.strictEqual(endpoint, 'https://endpoint');
+          .then(() => redis.hgetall(client, 'device-someId'))
+          .then(device => {
+            assert.ok(device);
+            assert.strictEqual(device.endpoint, 'https://localhost:5005');
+            assert.strictEqual(device.key, userKey);
           })
           .then(() => redis.smembers(client, 'someId-notifications'))
           .then(deviceNotifications => {
@@ -528,18 +606,22 @@ define((require) => {
         .then(featureNotifications => {
           assert.lengthOf(featureNotifications, 1);
           assert.include(featureNotifications, 'someId');
-        })
-      );
+        });
+      });
 
-      bdd.it('/payload replies with 404 if there\'s no payload available', () =>
-        register('someId', 'feature', 'https://localhost:5005')
+      bdd.it('/payload replies with 404 if there\'s no payload available', () => {
+        nock('https://localhost:5005')
+        .post('/')
+        .reply(201);
+
+        return register('someId', 'feature', 'https://localhost:5005', userKey)
         .then(() => api()
           .get('/payload/someId')
           .send())
         .catch(err => {
           assert.strictEqual(err.response.statusCode, 404);
-        })
-      );
+        });
+      });
 
       bdd.it('/payload returns the right content', () => notifications.default.setClient(5)
         .then(client => redis.set(client, 'someId-payload', 'hello'))
@@ -552,8 +634,12 @@ define((require) => {
         })
       );
 
-      bdd.it('/registrations returns an array with registrations for device', () =>
-          register('someId', ['feature', 'another-feature'], 'https://localhost:5005/')
+      bdd.it('/registrations returns an array with registrations for device', () => {
+        nock('https://localhost:5005')
+        .post('/')
+        .reply(201);
+
+        return register('someId', ['feature', 'another-feature'], 'https://localhost:5005/', userKey)
         .then(() => api()
           .get('/registrations/someId')
           .send())
@@ -562,21 +648,30 @@ define((require) => {
           assert.isArray(response.body.features);
           assert.include(response.body.features, 'feature');
           assert.include(response.body.features, 'another-feature');
-        })
-      );
+        });
+      });
 
-      bdd.it('/registrations replies with 404 if no registrations for the user', () =>
-          register('someId', ['feature', 'another-feature'], 'https://localhost:5005/')
+      bdd.it('/registrations replies with 404 if no registrations for the user', () => {
+        nock('https://localhost:5005')
+        .post('/')
+        .reply(201);
+
+        return register('someId', ['feature', 'another-feature'], 'https://localhost:5005/', userKey)
         .then(() => api()
           .get('/registrations/someOtherId')
           .send())
         .catch(err => {
           assert.strictEqual(err.response.statusCode, 404);
-        })
-      );
+        });
+      });
 
-      bdd.it('/unregister removes only from the another-feature', () =>
-        register('someId', ['feature', 'another-feature'], 'https://localhost:5005/')
+      bdd.it('/unregister removes only from the another-feature', () => {
+        nock('https://localhost:5005')
+        .post('/')
+        .times(2)
+        .reply(201);
+
+        return register('someId', ['feature', 'another-feature'], 'https://localhost:5005/', userKey)
         .then(() => api()
           .post('/unregister')
           .send({
@@ -601,11 +696,16 @@ define((require) => {
           .then(() => redis.smembers(client, 'another-feature-notifications')))
         .then(featureNotifications => {
           assert.lengthOf(featureNotifications, 0);
-        })
-      );
+        });
+      });
 
-      bdd.it('/unregister removes all device info', () =>
-        register('someId', ['feature', 'another-feature'], 'https://localhost:5005/')
+      bdd.it('/unregister removes all device info', () => {
+        nock('https://localhost:5005')
+        .post('/')
+        .times(2)
+        .reply(201);
+
+        return register('someId', ['feature', 'another-feature'], 'https://localhost:5005/', userKey)
         .then(() => api()
           .post('/unregister')
           .send({
@@ -631,11 +731,15 @@ define((require) => {
           .then(() => redis.hgetall(client, 'device-deviceId')))
         .then(device => {
           assert.notOk(device);
-        })
-      );
+        });
+      });
 
-      bdd.it('/update_endpoint changes the endpoint info', () =>
-          register('someId', 'feature', 'https://localhost:5005/', 'akey')
+      bdd.it('/update_endpoint changes the endpoint info', () => {
+        nock('https://localhost:5005')
+        .post('/')
+        .reply(201);
+
+        return register('someId', 'feature', 'https://localhost:5005/', userKey)
         .then(() => api()
           .put('/update_endpoint')
           .send({
@@ -652,8 +756,8 @@ define((require) => {
           assert.isObject(device);
           assert.strictEqual(device.endpoint, 'https://localhost:5006/');
           assert.strictEqual(device.key, 'anotherkey');
-        })
-      );
+        });
+      });
 
       bdd.it('/update_endpoint replies with 404 if no registrations for the device', () =>
         notifications.default.setClient(5)
