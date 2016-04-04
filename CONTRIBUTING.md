@@ -4,8 +4,8 @@
 
 The easiest way to add a new feature is to use github's online file editor and create a new pull request from there.
 
-1. Create a [new file](https://github.com/mozilla/platatus/new/master/features) in the `features` folder and name it to reflect the feature name. The filename should end with the `.md` extension, be short, be descriptive, be lowercase, and use-dashes-for-spaces.
-1. Copy the contents [feature-template.md](https://github.com/mozilla/platatus/blob/master/feature-template.md) into the file.
+1. Create a [new file](https://github.com/mozilla/platform-status/new/master/features) in the `features` folder and name it to reflect the feature name. The filename should end with the `.md` extension, be short, be descriptive, be lowercase, and use-dashes-for-spaces.
+1. Copy the contents [feature-template.md](https://github.com/mozilla/platform-status/blob/master/feature-template.md) into the file.
 1. Fill as many values (documented below) as possible in `<the-feature>.md`.
 1. Create a pull request from the online editor, or if you're using git from the command line follow the usual steps for making a pull request.
 
@@ -37,10 +37,10 @@ This list isn't definitive, but a feature makes a good candidate if any of the f
 
 ## Developing the Site
 
-* Try to work on [open issues](https://github.com/mozilla/platatus/issues) or create a [new issue](https://github.com/mozilla/platatus/issues/new) before starting work.
+* Try to work on [open issues](https://github.com/mozilla/platform-status/issues) or create a [new issue](https://github.com/mozilla/platform-status/issues/new) before starting work.
 * Follow the style in the file and make sure to run `npm test`.
 * The minimum supported Node.js version is 4.
 
 ## Help
 
-Join the #apps channel on irc.mozilla.org or open an [issue](https://github.com/mozilla/platatus/issues).
+Join the #apps channel on irc.mozilla.org or open an [issue](https://github.com/mozilla/platform-status/issues).

@@ -54,7 +54,7 @@ define(require => {
 
         return page.followRepoLink().getPageTitle()
         .then(title => {
-          assert.equal(title, 'GitHub - mozilla/platatus: Project Platform Status');
+          assert.equal(title, 'GitHub - mozilla/platform-status: Project Platform Status');
         });
       });
 
