@@ -65,7 +65,7 @@
     "browser-sync": "^2.10.1",
     "chai-http": "^2.0.1",
     "fetch-mock": "^4.0.1",
-    "intern": "3.0.6",
+    "intern": "^3.0.6",
     "portfinder": "^1.0.2"
   },
   "scripts": {
