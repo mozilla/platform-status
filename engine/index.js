@@ -187,6 +187,31 @@ function populateBrowserFeatureData(browserData, features) {
   });
 }
 
+// For now, only fill in data for WebKit (Safari) and Opera.
+function fillInUsingCanIUseData(canIUseData, features) {
+  features.forEach(feature => {
+    if (feature.caniuse_ref) {
+      const data = canIUseData.data[feature.caniuse_ref];
+
+      if (feature.opera_status === 'unknown') {
+        if (data.stats.opera['36'] === 'y') {
+          feature.opera_status = 'shipped';
+        } else if (data.stats.opera['36'].indexOf('y') !== -1) {
+          feature.opera_status = 'in-development';
+        }
+      }
+
+      if (feature.webkit_status === 'unknown') {
+        if (data.stats.safari['9.1'] === 'y') {
+          feature.webkit_status = 'shipped';
+        } else if (data.stats.safari['9.1'].indexOf('y') !== -1) {
+          feature.webkit_status = 'in-development';
+        }
+      }
+    }
+  });
+}
+
 function populateSpecStatus(browserData, features) {
   features.forEach((feature) => {
     const browserFeatureData = browserData.chrome.get(feature.chrome_ref);
@@ -582,7 +607,8 @@ function buildStatus(options) {
     return populateBugzillaData(fixtureParser.results, options);
   }).then(() => {
     populateFirefoxStatus(firefoxVersionParser.results, fixtureParser.results);
-    populateBrowserFeatureData(browserParser.results, fixtureParser.results);
+    populateBrowserFeatureData(browserParser.results, fixtureParser.results, canIUseParser.results);
+    fillInUsingCanIUseData(canIUseParser.results, fixtureParser.results);
     populateSpecStatus(browserParser.results, fixtureParser.results);
     populateCanIUsePercent(canIUseParser.results, fixtureParser.results);
     return checkForNewData(fixtureParser.results);
