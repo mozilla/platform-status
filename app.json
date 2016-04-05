@@ -1,7 +1,7 @@
 {
-  "name": "Platatus",
+  "name": "platform-status",
   "description": "Firefox Platform Status",
-  "repository": "https://github.com/mozilla/platatus",
+  "repository": "https://github.com/mozilla/platform-status",
   "keywords": ["mozilla", "firefox"],
   "scripts": {
     "postdeploy": "npm run build"

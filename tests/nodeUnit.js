@@ -126,7 +126,7 @@ define(require => {
       });
 
       bdd.it('should cache files', () => {
-        const testURL = 'https://raw.githubusercontent.com/mozilla/platatus/master/package.json';
+        const testURL = 'https://raw.githubusercontent.com/mozilla/platform-status/master/package.json';
 
         // Cache our package.json file
         return cache.readJson(testURL, 5).then(originalText => {
@@ -142,7 +142,7 @@ define(require => {
       });
 
       bdd.it('should reject on 404s', () => {
-        const testURL = 'https://raw.githubusercontent.com/mozilla/platatus/master/package.json';
+        const testURL = 'https://raw.githubusercontent.com/mozilla/platform-status/master/package.json';
 
         // Cause the fetch to 404
         fetchMock.mock(testURL, 404);
