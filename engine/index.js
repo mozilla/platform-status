@@ -208,6 +208,10 @@ function fillInUsingCanIUseData(canIUseData, features) {
           feature.webkit_status = 'in-development';
         }
       }
+
+      if (!feature.spec_url && data.spec) {
+        feature.spec_url = data.spec;
+      }
     }
   });
 }
