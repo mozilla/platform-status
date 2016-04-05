@@ -611,7 +611,7 @@ function buildStatus(options) {
     return populateBugzillaData(fixtureParser.results, options);
   }).then(() => {
     populateFirefoxStatus(firefoxVersionParser.results, fixtureParser.results);
-    populateBrowserFeatureData(browserParser.results, fixtureParser.results, canIUseParser.results);
+    populateBrowserFeatureData(browserParser.results, fixtureParser.results);
     fillInUsingCanIUseData(canIUseParser.results, fixtureParser.results);
     populateSpecStatus(browserParser.results, fixtureParser.results);
     populateCanIUsePercent(canIUseParser.results, fixtureParser.results);
