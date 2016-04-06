@@ -43,8 +43,8 @@
     },
     "webkit": {
       "abbr": "WE",
-      "short": "WebKit",
-      "long": "WebKit Nightly"
+      "short": "Safari",
+      "long": "Safari Technology Preview"
     },
     "edge": {
       "abbr": "IE",
