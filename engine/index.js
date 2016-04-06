@@ -204,7 +204,7 @@ function fillInUsingCanIUseData(canIUseData, features) {
         browser: 'safari',
         engine: 'webkit',
         version: '9.1',
-      }].forEach(({ browser, engine, version}) => {
+      }].forEach(({ browser, engine, version }) => {
         if (feature[`${engine}_status`] !== 'unknown') {
           return;
         }
@@ -212,7 +212,7 @@ function fillInUsingCanIUseData(canIUseData, features) {
         if (data.stats[browser][version] === 'y') {
           filledInNum++;
           feature[`${engine}_status`] = 'shipped';
-        } else if (data.stats[browser][version].indexOf('y') !== -1) {
+        } else if (Object.values(data.stats[browser]).some(v => v.includes('y'))) {
           filledInNum++;
           feature[`${engine}_status`] = 'in-development';
         }
