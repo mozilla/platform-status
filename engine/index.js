@@ -195,25 +195,28 @@ function fillInUsingCanIUseData(canIUseData, features) {
     if (feature.caniuse_ref) {
       const data = canIUseData.data[feature.caniuse_ref];
 
-      if (feature.opera_status === 'unknown') {
-        if (data.stats.opera['36'] === 'y') {
-          filledInNum++;
-          feature.opera_status = 'shipped';
-        } else if (data.stats.opera['36'].indexOf('y') !== -1) {
-          filledInNum++;
-          feature.opera_status = 'in-development';
+      [{
+        browser: 'opera',
+        engine: 'opera',
+        version: '36',
+      },
+      {
+        browser: 'safari',
+        engine: 'webkit',
+        version: '9.1',
+      }].forEach(({ browser, engine, version}) => {
+        if (feature[`${engine}_status`] !== 'unknown') {
+          return;
         }
-      }
 
-      if (feature.webkit_status === 'unknown') {
-        if (data.stats.safari['9.1'] === 'y') {
+        if (data.stats[browser][version] === 'y') {
           filledInNum++;
-          feature.webkit_status = 'shipped';
-        } else if (data.stats.safari['9.1'].indexOf('y') !== -1) {
+          feature[`${engine}_status`] = 'shipped';
+        } else if (data.stats[browser][version].indexOf('y') !== -1) {
           filledInNum++;
-          feature.webkit_status = 'in-development';
+          feature[`${engine}_status`] = 'in-development';
         }
-      }
+      });
 
       if (!feature.spec_url && data.spec) {
         filledInNum++;
