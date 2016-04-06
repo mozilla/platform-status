@@ -189,31 +189,40 @@ function populateBrowserFeatureData(browserData, features) {
 
 // For now, only fill in data for WebKit (Safari) and Opera.
 function fillInUsingCanIUseData(canIUseData, features) {
+  var filledInNum = 0;
+
   features.forEach(feature => {
     if (feature.caniuse_ref) {
       const data = canIUseData.data[feature.caniuse_ref];
 
       if (feature.opera_status === 'unknown') {
         if (data.stats.opera['36'] === 'y') {
+          filledInNum++;
           feature.opera_status = 'shipped';
         } else if (data.stats.opera['36'].indexOf('y') !== -1) {
+          filledInNum++;
           feature.opera_status = 'in-development';
         }
       }
 
       if (feature.webkit_status === 'unknown') {
         if (data.stats.safari['9.1'] === 'y') {
+          filledInNum++;
           feature.webkit_status = 'shipped';
         } else if (data.stats.safari['9.1'].indexOf('y') !== -1) {
+          filledInNum++;
           feature.webkit_status = 'in-development';
         }
       }
 
       if (!feature.spec_url && data.spec) {
+        filledInNum++;
         feature.spec_url = data.spec;
       }
     }
   });
+
+  console.log(filledInNum + ' properties filled in from caniuse data');
 }
 
 function populateSpecStatus(browserData, features) {
