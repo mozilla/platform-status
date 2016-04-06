@@ -37,10 +37,6 @@ define((require) => {
   function flushDB(client) {
     return redis.flushdb(client);
   }
-  function flushQuitDB(client) {
-    return flushDB(client).then(() => digger.quitClient(5));
-  }
-
 
   bdd.describe('digger module', () => {
     // clean and quit database after each test
@@ -48,7 +44,7 @@ define((require) => {
 
     bdd.afterEach(() =>
       digger.setClient(5)
-      .then((client) => flushQuitDB(client)));
+      .then((client) => flushDB(client)));
 
     bdd.describe('getStatus', () => {
       bdd.it('should return null if no status in db', () =>
@@ -134,7 +130,7 @@ define((require) => {
     // clean and quit database after each test
     bdd.afterEach(() =>
       digger.setClient(5)
-      .then((client) => flushQuitDB(client)));
+      .then((client) => flushDB(client)));
 
     bdd.describe('/api/status', () => {
       bdd.it('returns null if no status', () =>

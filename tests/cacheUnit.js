@@ -36,16 +36,11 @@ define((require) => {
   function flushDB(client) {
     return redis.flushdb(client);
   }
-  function flushQuitDB(client) {
-    return flushDB(client)
-    .then(() => redis.quit(client));
-  }
-
 
   bdd.describe('cache module', () => {
     bdd.afterEach(() =>
       redis.getClient(5)
-      .then(client => flushQuitDB(client))
+      .then(client => flushDB(client))
       .then(nock.cleanAll())
     );
 

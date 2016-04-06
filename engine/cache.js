@@ -1,12 +1,15 @@
 import Eu from 'eu';
 import redis from 'redis';
 
-function readJson(url, dbNumber) {
+let eu = null;
+
+function getRequest(dbNumber) {
+  if (eu) {
+    return Promise.resolve(eu);
+  }
   return new Promise((resolve, reject) => {
     const client = redis.createClient({
       url: process.env.REDIS_URL,
-      no_ready_check: true,
-      socket_keepalive: true,
     });
     if (!dbNumber) {
       resolve(client);
@@ -14,37 +17,34 @@ function readJson(url, dbNumber) {
     }
     client.select(dbNumber || 0, err => {
       if (err) {
-        client.quit();
         reject(err);
         return;
       }
       resolve(client);
     });
   })
-  .then(client => {
+  .then((client) => {
     const store = new Eu.RedisStore(client);
     const cache = new Eu.Cache(store);
-    const eu = new Eu(cache);
-    return new Promise((resolve, reject) => {
-      // we're getting the JSON anyway (?)
-      eu.get(url, { json: true }, (err, res, body) => {
-        if (err) {
-          reject(err);
-          return;
-        }
-        if (res.statusCode === 404) {
-          reject(new Error('Not Found'));
-        }
-        client.quit(() => {
-          resolve(body);
-        });
-      });
-    })
-    .catch(err => {
-      client.quit();
-      throw err;
-    });
+    eu = new Eu(cache);
+    return eu;
   });
+}
+
+function readJson(url, dbNumber) {
+  return getRequest(dbNumber)
+  .then((request) => new Promise((resolve, reject) => {
+    // we're getting the JSON anyway (?)
+    request.get(url, { json: true }, (err, res, body) => {
+      if (err) {
+        return reject(err);
+      }
+      if (res.statusCode === 404) {
+        return reject(new Error('Not Found'));
+      }
+      resolve(body);
+    });
+  }));
 }
 
 
