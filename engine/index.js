@@ -198,18 +198,19 @@ function fillInUsingCanIUseData(canIUseData, features) {
       [{
         browser: 'opera',
         engine: 'opera',
-        version: '36',
       },
       {
         browser: 'safari',
         engine: 'webkit',
-        version: '9.1',
-      }].forEach(({ browser, engine, version }) => {
+      }].forEach(({ browser, engine }) => {
         if (feature[`${engine}_status`] !== 'unknown') {
           return;
         }
 
-        if (data.stats[browser][version] === 'y') {
+        const versions = canIUseData.agents[browser].versions;
+        const stableVersion = versions[versions.length - 4];
+
+        if (data.stats[browser][stableVersion] === 'y') {
           filledInNum++;
           feature[`${engine}_status`] = 'shipped';
         } else if (Object.values(data.stats[browser]).some(v => v.includes('y'))) {
