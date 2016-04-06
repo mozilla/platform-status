@@ -11,7 +11,12 @@ function handleErrorResponse(err, res) {
 }
 
 router.post('/register', (req, res) =>
-  notifications.register(req.body.deviceId, req.body.features, req.body.endpoint, req.body.key)
+  notifications.register(
+    req.body.deviceId,
+    req.body.features,
+    req.body.endpoint,
+    req.body.key,
+    req.body.authSecret)
   .catch(err => handleErrorResponse(err, res))
   .then(features => res.json({ features }))
 );
@@ -28,8 +33,12 @@ router.post('/unregister', (req, res) =>
   .then(features => res.json({ features }))
 );
 
-router.put('/update_endpoint', (req, res) =>
-  notifications.updateEndpoint(req.body.deviceId, req.body.endpoint, req.body.key)
+router.put('/update_device', (req, res) =>
+  notifications.updateDevice(
+    req.body.deviceId,
+    req.body.endpoint,
+    req.body.key,
+    req.body.authSecret)
   .catch(err => handleErrorResponse(err, res))
   .then(() => res.json({ success: 'success' }))
 );

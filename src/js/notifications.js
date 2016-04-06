@@ -1,26 +1,9 @@
 import { default as localforage } from 'localforage';
 
 let deviceId;
-// const subscribeButton = document.getElementById('subscribeAll');
-// const unsubscribeButton = document.getElementById('unsubscribeAll');
-
-if (!document.getElementsByClassName) {
-  document.getElementsByClassName = classname => {
-    const elArray = [];
-    const tmp = document.getElementsByTagName('*');
-
-    const regex = new RegExp(`(^|\\s)${classname}(\\s|$)`);
-    for (let i = 0; i < tmp.length; i++) {
-      if (regex.test(tmp[i].className)) {
-        elArray.push(tmp[i]);
-      }
-    }
-    return elArray;
-  };
-}
 
 function resetNotifications(onclickCallback) {
-  const notifications = document.getElementsByClassName('notification');
+  const notifications = document.querySelectorAll('.notification');
   for (let i = 0; i < notifications.length; i++) {
     const notification = notifications[i];
     if (onclickCallback) {
@@ -34,7 +17,7 @@ function resetNotifications(onclickCallback) {
 }
 
 function receiveAllNotificationsUI() {
-  const notifications = document.getElementsByClassName('notification');
+  const notifications = document.querySelectorAll('.notification');
   for (let i = 0; i < notifications.length; i++) {
     const notification = notifications[i];
     notification.dataset.notification = true;
@@ -113,7 +96,14 @@ function register(feature) {
       return registration.pushManager.subscribe({ userVisibleOnly: true });
     }))
   .then(subscription => {
-    const key = subscription.getKey ? subscription.getKey('p256dh') : '';
+    const rawKey = subscription.getKey ? subscription.getKey('p256dh') : '';
+    const key = rawKey ?
+              btoa(String.fromCharCode.apply(null, new Uint8Array(rawKey))) :
+              '';
+    const rawAuthSecret = subscription.getKey ? subscription.getKey('auth') : '';
+    const authSecret = rawAuthSecret ?
+              btoa(String.fromCharCode.apply(null, new Uint8Array(rawAuthSecret))) :
+              '';
 
     return fetch('/register', {
       method: 'post',
@@ -121,7 +111,8 @@ function register(feature) {
       body: JSON.stringify({
         deviceId,
         endpoint: subscription.endpoint,
-        key: key ? btoa(String.fromCharCode.apply(null, new Uint8Array(key))) : '',
+        key,
+        authSecret,
         features: [feature],
       }),
     });

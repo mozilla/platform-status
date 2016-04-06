@@ -20,10 +20,15 @@ self.addEventListener('push', event => {
     .then(data => {
       // TODO add a way to unregister from the back-end
       // data.command (?)
-      const title = data ? data.title : 'Platform Status';
-      const body = data ? data.body : 'Notification Error';
-      return self.registration.showNotification(title, {
-        body,
+      if (data && !data.title) {
+        data = JSON.parse(data);
+      }
+      if (!(data && data.title && data.body)) {
+        console.log('ERROR: Notification without payload', data, data.title);
+        return;
+      }
+      return self.registration.showNotification(data.title, {
+        body: data.body,
         icon: '/images/browsers/firefox_64x64.png',
         actions: [{ title: 'Show Platform Status', action: 'click' }],
       });
@@ -56,9 +61,16 @@ self.addEventListener('pushsubscriptionchange', event => {
 
       return self.registration.pushManager.subscribe({ userVisibleOnly: true })
       .then(subscription => {
-        const key = subscription.getKey ? subscription.getKey('p256dh') : '';
+        const rawKey = subscription.getKey ? subscription.getKey('p256dh') : '';
+        const key = rawKey ?
+                  btoa(String.fromCharCode.apply(null, new Uint8Array(rawKey))) :
+                  '';
+        const rawAuthSecret = subscription.getKey ? subscription.getKey('auth') : '';
+        const authSecret = rawAuthSecret ?
+                  btoa(String.fromCharCode.apply(null, new Uint8Array(rawAuthSecret))) :
+                  '';
 
-        return fetch('./update_endpoint', {
+        return fetch('./update_device', {
           method: 'post',
           headers: {
             'Content-type': 'application/json',
@@ -66,7 +78,8 @@ self.addEventListener('pushsubscriptionchange', event => {
           body: JSON.stringify({
             deviceId,
             endpoint: subscription.endpoint,
-            key: key ? btoa(String.fromCharCode.apply(null, new Uint8Array(key))) : '',
+            key,
+            authSecret,
           }),
         });
       });
