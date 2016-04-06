@@ -189,7 +189,7 @@ function populateBrowserFeatureData(browserData, features) {
 
 // For now, only fill in data for WebKit (Safari) and Opera.
 function fillInUsingCanIUseData(canIUseData, features) {
-  var filledInNum = 0;
+  let filledInNum = 0;
 
   features.forEach(feature => {
     if (feature.caniuse_ref) {
@@ -226,7 +226,7 @@ function fillInUsingCanIUseData(canIUseData, features) {
     }
   });
 
-  console.log(filledInNum + ' properties filled in from caniuse data');
+  console.log(`${filledInNum} properties filled in from caniuse data`);
 }
 
 function populateSpecStatus(browserData, features) {
