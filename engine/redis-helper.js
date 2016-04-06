@@ -1,17 +1,17 @@
 import redis from 'redis';
 
-function getClient(dbTestNumber) {
-  const client = redis.createClient({
-    url: process.env.REDIS_URL,
-    no_ready_check: true,
-    socket_keepalive: true,
-  });
-  return new Promise((resolve, reject) => {
-    if (!dbTestNumber) {
-      resolve(client);
-      return;
-    }
+let client;
 
+function getClient(dbTestNumber) {
+  if (!client) {
+    client = redis.createClient({
+      url: process.env.REDIS_URL,
+    });
+  }
+  if (!dbTestNumber) {
+    return Promise.resolve(client);
+  }
+  return new Promise((resolve, reject) => {
     client.select(dbTestNumber, (err) => err ? reject(err) : resolve(client));
   });
 }
@@ -24,12 +24,12 @@ const commands = {
 // redis function:
 // `client.methodName(arguments, callback(err, response))`
 ['set', 'get', 'del', 'exists', 'sismember', 'hmset', 'hget', 'smembers',
- 'sadd', 'hgetall', 'srem', 'select', 'flushdb', 'quit']
+ 'sadd', 'hgetall', 'srem', 'select', 'flushdb']
 .forEach(name => {
-  commands[name] = function redisFunction(client, ...args) {
+  commands[name] = function redisFunction(instance, ...args) {
     return new Promise((resolve, reject) => {
       args.push((err, response) => err ? reject(err) : resolve(response));
-      client[name](...args);
+      instance[name](...args);
     });
   };
 });

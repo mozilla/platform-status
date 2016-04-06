@@ -396,7 +396,6 @@ function checkForNewData(features, dbTestNumber) {
     }).catch((err) => {
       console.error('ERROR:', err);
     })
-    .then(() => redis.quit(client))
     .then(() => features)
   );
 }
@@ -434,7 +433,6 @@ function saveData(features, dbTestNumber) {
     }).catch((err) => {
       console.error('ERROR:', err);
     })
-    .then(() => redis.quit(client))
     .then(() => features)
   );
 }

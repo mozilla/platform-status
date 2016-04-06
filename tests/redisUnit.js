@@ -31,16 +31,14 @@ define((require) => {
   const engine = require('intern/dojo/node!../../../../engine/index').test;
   const redis = require('intern/dojo/node!../../../../engine/redis-helper').default;
 
-  function quitDB(client) {
-    return redis.flushdb(client)
-    .then(() => redis.quit(client));
+  function flushDB(client) {
+    return redis.flushdb(client);
   }
-
 
   bdd.describe('Saves status in redis', () => {
     // clean database after each test
     bdd.afterEach(() => redis.getClient(5)
-      .then(client => quitDB(client))
+      .then(client => flushDB(client))
     );
 
     bdd.describe('`status` key', () => {
@@ -58,7 +56,7 @@ define((require) => {
             assert.ok(statusData);
             statusData = JSON.parse(statusData);
             assert.deepEqual(testData[0], statusData.feature);
-            return quitDB(client);
+            return flushDB(client);
           })
         );
       });
@@ -121,7 +119,7 @@ define((require) => {
             const after = new Date();
             assert.isTrue((now <= logTime), 'too early');
             assert.isTrue((after >= logTime), 'too late');
-            return quitDB(client);
+            return flushDB(client);
           })
         );
       });
@@ -146,7 +144,6 @@ define((require) => {
             redis.hgetall(client, 'changelog')
             .then(logs => {
               firstLogKey = Object.keys(logs)[0];
-              return redis.quit(client);
             });
           })
           // go on with the test
@@ -174,7 +171,7 @@ define((require) => {
             const after = new Date();
             assert((now <= logTime), 'too early');
             assert((after >= logTime), 'too late');
-            return quitDB(client);
+            return flushDB(client);
           })
         );
       });
