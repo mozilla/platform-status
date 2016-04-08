@@ -188,6 +188,48 @@ function populateBrowserFeatureData(browserData, features) {
   });
 }
 
+// For now, only fill in data for WebKit (Safari) and Opera.
+function fillInUsingCanIUseData(canIUseData, features) {
+  let filledInNum = 0;
+
+  features.forEach(feature => {
+    if (feature.caniuse_ref) {
+      const data = canIUseData.data[feature.caniuse_ref];
+
+      [{
+        browser: 'opera',
+        engine: 'opera',
+      },
+      {
+        browser: 'safari',
+        engine: 'webkit',
+      }].forEach(({ browser, engine }) => {
+        if (feature[`${engine}_status`] !== 'unknown') {
+          return;
+        }
+
+        const versions = canIUseData.agents[browser].versions;
+        const stableVersion = versions[versions.length - 4];
+
+        if (data.stats[browser][stableVersion] === 'y') {
+          filledInNum++;
+          feature[`${engine}_status`] = 'shipped';
+        } else if (Object.values(data.stats[browser]).some(v => v.includes('y'))) {
+          filledInNum++;
+          feature[`${engine}_status`] = 'in-development';
+        }
+      });
+
+      if (!feature.spec_url && data.spec) {
+        filledInNum++;
+        feature.spec_url = data.spec;
+      }
+    }
+  });
+
+  console.log(`${filledInNum} properties filled in from caniuse data`);
+}
+
 function populateSpecStatus(browserData, features) {
   features.forEach((feature) => {
     const browserFeatureData = browserData.chrome.get(feature.chrome_ref);
@@ -609,6 +651,7 @@ function buildStatus(options) {
   }).then(() => {
     populateFirefoxStatus(firefoxVersionParser.results, fixtureParser.results);
     populateBrowserFeatureData(browserParser.results, fixtureParser.results);
+    fillInUsingCanIUseData(canIUseParser.results, fixtureParser.results);
     populateSpecStatus(browserParser.results, fixtureParser.results);
     populateCanIUsePercent(canIUseParser.results, fixtureParser.results);
     return checkForNewData(fixtureParser.results);

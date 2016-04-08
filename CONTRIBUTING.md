@@ -14,7 +14,7 @@ The easiest way to add a new feature is to use github's online file editor and c
 | title | ✓ | Short descriptive title |
 | summary | ✓ | Short descriptive summary in one sentence |
 | firefox_status | ✓        | Either the version number of Firefox that the feature was shipped in or `unknown`, `not-planned`, `deprecated`, `under-consideration`, `in-development` |
-| bugzilla | | Tracking bug ID from [bugzilla.mozilla.org](https://bugzilla.mozilla.org/) |
+| bugzilla | | Tracking (meta) bug ID from [bugzilla.mozilla.org](https://bugzilla.mozilla.org/) |
 | mdn_url | | URL to documentation on the [Mozilla Developer Network](https://developer.mozilla.org/) |
 | spec_url | | URL to the specification |
 | caniuse_ref | | Corresponding name used by caniuse from the url after `feat=` e.g. `http://caniuse.com/#feat=promises` |
