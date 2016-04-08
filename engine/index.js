@@ -614,15 +614,21 @@ function buildFeatures(status) {
 
 function buildStatus(options) {
   validationWarnings = [];
-  return Promise.all([
+  return cache.getRequest()
+  .then(() => Promise.all([
     fixtureParser.read(),
     browserParser.read(),
     firefoxVersionParser.read(),
     canIUseParser.read(),
-  ]).then(() => {
+  ]))
+  .then(() => {
     validateFeatureInput(fixtureParser.results);
     return populateBugzillaData(fixtureParser.results, options);
-  }).then(() => {
+  })
+  .then(() => {
+    cache.quitRedis();
+  })
+  .then(() => {
     populateFirefoxStatus(firefoxVersionParser.results, fixtureParser.results);
     populateBrowserFeatureData(browserParser.results, fixtureParser.results);
     fillInUsingCanIUseData(canIUseParser.results, fixtureParser.results);
