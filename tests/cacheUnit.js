@@ -41,8 +41,19 @@ define((require) => {
     .then(() => redis.quit(client));
   }
 
-
   bdd.describe('cache module', () => {
+    var redisIndex;
+
+    bdd.before(() => {
+      redisIndex = process.env.REDIS_INDEX;
+      process.env.REDIS_INDEX = 5;
+    });
+
+    bdd.after(() => {
+      process.env.REDIS_INDEX = redisIndex;
+      cache.quitRedis();
+    });
+
     bdd.afterEach(() =>
       redis.getClient(5)
       .then(client => flushQuitDB(client))
@@ -55,7 +66,7 @@ define((require) => {
         .get('/')
         .reply(404);
 
-        return cache.readJson('http://localhost:8001/', 5)
+        return cache.readJson('http://localhost:8001/')
         .catch(err => {
           assert.ok(err);
           assert.equal(err.message, 'Not Found');
@@ -72,7 +83,7 @@ define((require) => {
         .get('/')
         .reply(200, JSON.stringify(testJSON));
 
-        return cache.readJson('http://localhost:8001/', 5)
+        return cache.readJson('http://localhost:8001/')
         .then(response => {
           assert.isObject(response);
           assert.deepEqual(response, testJSON);
