@@ -33,29 +33,30 @@ define((require) => {
   // const fetch = require('intern/dojo/node!node-fetch');
   const nock = require('intern/dojo/node!nock');
 
-  function flushDB(client) {
-    return redis.flushdb(client);
-  }
-  function flushQuitDB(client) {
-    return flushDB(client)
-    .then(() => redis.quit(client));
-  }
-
-
   bdd.describe('cache module', () => {
-    bdd.afterEach(() =>
-      redis.getClient(5)
-      .then(client => flushQuitDB(client))
-      .then(nock.cleanAll())
-    );
-
     bdd.describe('readJson', () => {
+      var originalRedisIndex;
+
+      bdd.before(() => {
+        originalRedisIndex = process.env.REDIS_INDEX || 0;
+        process.env.REDIS_INDEX = 5;
+      });
+
+      bdd.after(() => cache.quitRedis()
+        .then(() => redis.quitClient())
+        .then(() => {
+          process.env.REDIS_INDEX = originalRedisIndex;
+        })
+      );
+
+      bdd.afterEach(() => redis.flushdb());
+
       bdd.it('should throw `Not Found` for 404', () => {
         nock('http://localhost:8001')
         .get('/')
         .reply(404);
 
-        return cache.readJson('http://localhost:8001/', 5)
+        return cache.readJson('http://localhost:8001/')
         .catch(err => {
           assert.ok(err);
           assert.equal(err.message, 'Not Found');
@@ -72,7 +73,7 @@ define((require) => {
         .get('/')
         .reply(200, JSON.stringify(testJSON));
 
-        return cache.readJson('http://localhost:8001/', 5)
+        return cache.readJson('http://localhost:8001/')
         .then(response => {
           assert.isObject(response);
           assert.deepEqual(response, testJSON);

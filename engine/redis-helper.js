@@ -1,24 +1,32 @@
 import redis from 'redis';
 
-function getClient(dbTestNumber) {
-  const client = redis.createClient({
-    url: process.env.REDIS_URL,
-    no_ready_check: true,
-    socket_keepalive: true,
-  });
-  return new Promise((resolve, reject) => {
-    if (!dbTestNumber) {
-      resolve(client);
-      return;
-    }
+let client = null;
+let redisIndex = null;
 
-    client.select(dbTestNumber, (err) => err ? reject(err) : resolve(client));
+function getClient() {
+  if (!client) {
+    client = redis.createClient({
+      url: process.env.REDIS_URL,
+    });
+  }
+  if (process.env.REDIS_INDEX === undefined || redisIndex === process.env.REDIS_INDEX) {
+    return Promise.resolve(client);
+  }
+  redisIndex = process.env.REDIS_INDEX || 0;
+  return new Promise((resolve, reject) => {
+    client.select(redisIndex, err => {
+      if (err) {
+        console.log('REDIS ERROR:', err);
+        client.quit();
+        reject(err);
+        return;
+      }
+      resolve(client);
+    });
   });
 }
 
-const commands = {
-  getClient,
-};
+const commands = {};
 
 // promisify following commads (add client as the first argument)
 // redis function:
@@ -26,12 +34,27 @@ const commands = {
 ['set', 'get', 'del', 'exists', 'sismember', 'hmset', 'hget', 'smembers',
  'sadd', 'hgetall', 'srem', 'select', 'flushdb', 'quit']
 .forEach(name => {
-  commands[name] = function redisFunction(client, ...args) {
-    return new Promise((resolve, reject) => {
+  commands[name] = function redisFunction(...args) {
+    return getClient()
+    .then(() => new Promise((resolve, reject) => {
       args.push((err, response) => err ? reject(err) : resolve(response));
       client[name](...args);
-    });
+    }));
   };
 });
+
+function quitClient() {
+  if (!client) {
+    return Promise.reject(new Error('No redis client open'));
+  }
+  const response = commands.quit()
+  .then(() => {
+    client = null;
+  });
+  return response;
+}
+
+commands.getClient = getClient;
+commands.quitClient = quitClient;
 
 export default commands;
