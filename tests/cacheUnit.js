@@ -33,34 +33,24 @@ define((require) => {
   // const fetch = require('intern/dojo/node!node-fetch');
   const nock = require('intern/dojo/node!nock');
 
-  function flushDB(client) {
-    return redis.flushdb(client);
-  }
-  function flushQuitDB(client) {
-    return flushDB(client)
-    .then(() => redis.quit(client));
-  }
-
   bdd.describe('cache module', () => {
-    var redisIndex;
-
-    bdd.before(() => {
-      redisIndex = process.env.REDIS_INDEX;
-      process.env.REDIS_INDEX = 5;
-    });
-
-    bdd.after(() => {
-      process.env.REDIS_INDEX = redisIndex;
-      cache.quitRedis();
-    });
-
-    bdd.afterEach(() =>
-      redis.getClient(5)
-      .then(client => flushQuitDB(client))
-      .then(nock.cleanAll())
-    );
-
     bdd.describe('readJson', () => {
+      var originalRedisIndex;
+
+      bdd.before(() => {
+        originalRedisIndex = process.env.REDIS_INDEX || 0;
+        process.env.REDIS_INDEX = 5;
+      });
+
+      bdd.after(() => cache.quitRedis()
+        .then(() => redis.quitClient())
+        .then(() => {
+          process.env.REDIS_INDEX = originalRedisIndex;
+        })
+      );
+
+      bdd.afterEach(() => redis.flushdb());
+
       bdd.it('should throw `Not Found` for 404', () => {
         nock('http://localhost:8001')
         .get('/')

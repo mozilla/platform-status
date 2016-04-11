@@ -34,25 +34,26 @@ define((require) => {
   const engine = require('intern/dojo/node!../../../../engine/index').test;
   const redis = require('intern/dojo/node!../../../../engine/redis-helper').default;
 
-  function flushDB(client) {
-    return redis.flushdb(client);
-  }
-  function flushQuitDB(client) {
-    return flushDB(client).then(() => digger.quitClient(5));
-  }
-
-
   bdd.describe('digger module', () => {
-    // clean and quit database after each test
-    bdd.beforeEach(() => digger.setClient(5));
+    var redisIndex;
 
-    bdd.afterEach(() =>
-      digger.setClient(5)
-      .then((client) => flushQuitDB(client)));
+    bdd.before(() => {
+      redisIndex = process.env.REDIS_INDEX || 0;
+      process.env.REDIS_INDEX = 5;
+    });
+
+    bdd.after(() => redis.quitClient()
+      .then(() => {
+        process.env.REDIS_INDEX = redisIndex;
+      })
+    );
+
+    // clean database after each test
+    bdd.afterEach(() => redis.flushdb());
 
     bdd.describe('getStatus', () => {
       bdd.it('should return null if no status in db', () =>
-        digger.getStatus(5)
+        digger.getStatus()
         .then(status => {
           assert.notOk(status);
           assert.isNull(status);
@@ -60,8 +61,7 @@ define((require) => {
       );
 
       bdd.it('should return an object saved as JSON in status key', () =>
-        digger.setClient(5)
-        .then(client => redis.set(client, 'status', '{ "test": "data" }'))
+        redis.set('status', '{ "test": "data" }')
         .then(() => digger.getStatus())
         .then(status => {
           assert.ok(status);
@@ -72,16 +72,15 @@ define((require) => {
 
     bdd.describe('getFeatureStatus', () => {
       bdd.it('should throw if no status in db', () =>
-        digger.getFeatureStatus('not-existing', 5)
+        digger.getFeatureStatus('not-existing')
         .catch(err => {
           assert.equal(err.message, 'Not Found');
         })
       );
 
       bdd.it('should throw if no feature in status', () =>
-        digger.setClient(5)
-        .then(client => redis.set(client, 'status', '{ "test": "data" }'))
-        .then(() => digger.getFeatureStatus('not-existing', 5))
+        redis.set('status', '{ "test": "data" }')
+        .then(() => digger.getFeatureStatus('not-existing'))
         .catch(err => {
           assert.equal(err.message, 'Not Found');
         })
@@ -94,9 +93,8 @@ define((require) => {
           b: 'value B',
           updated: {} };
 
-        return digger.setClient(5)
-        .then(() => engine.saveData([testData], 5))
-        .then(() => digger.getFeatureStatus('feature', 5))
+        return engine.saveData([testData])
+        .then(() => digger.getFeatureStatus('feature'))
         .then(featureStatus => {
           assert.ok(featureStatus);
           assert.deepEqual(featureStatus, testData);
@@ -111,15 +109,17 @@ define((require) => {
 
     var port;
     var server;
+    var redisIndex;
+
     function api() {
       return chai.request(`http://localhost:${port}`);
     }
 
-    // set database channel
-    bdd.beforeEach(() => digger.setClient(5));
-
-    // find port and spin the server
     bdd.before(() => new Promise((resolve) => {
+      redisIndex = process.env.REDIS_INDEX || 0;
+      process.env.REDIS_INDEX = 5;
+
+      // find port and spin the server
       portfinder.getPort((err, receivedPort) => {
         port = receivedPort;
         server = platatus.listen(port, () => {
@@ -129,12 +129,15 @@ define((require) => {
       });
     }));
 
-    bdd.after(() => server.close());
+    bdd.after(() => redis.quitClient()
+      .then(() => {
+        process.env.REDIS_INDEX = redisIndex;
+        return server.close();
+      })
+    );
 
-    // clean and quit database after each test
-    bdd.afterEach(() =>
-      digger.setClient(5)
-      .then((client) => flushQuitDB(client)));
+    // clean database after each test
+    bdd.afterEach(() => redis.flushdb());
 
     bdd.describe('/api/status', () => {
       bdd.it('returns null if no status', () =>
@@ -142,6 +145,7 @@ define((require) => {
         .get('/api/status')
         .send()
         .then(response => {
+          assert.strictEqual(!!response.body, false);
           assert.strictEqual(response.body, null);
         })
       );
@@ -153,8 +157,7 @@ define((require) => {
           b: 'value B',
           updated: {} };
 
-        return digger.setClient(5)
-        .then(() => engine.saveData([testData], 5))
+        return engine.saveData([testData])
         .then(() => api()
           .get('/api/status')
           .send()
@@ -188,8 +191,7 @@ define((require) => {
           b: 'another B',
           updated: {} };
 
-        return digger.setClient(5)
-        .then(() => engine.saveData([testData1, testData2], 5))
+        return engine.saveData([testData1, testData2])
         .then(() => api()
           .get('/api/feature/feature')
           .send()

@@ -91,10 +91,11 @@ define(require => {
       const cache = require('intern/dojo/node!../../../../engine/cache').default;
       const cacheDir = 'tests/support/var/engineCache';
       const fetchMock = require('intern/dojo/node!fetch-mock');
+      const redis = require('intern/dojo/node!../../../../engine/redis-helper').default;
       var redisIndex;
 
       bdd.before(() => {
-        redisIndex = process.env.REDIS_INDEX;
+        redisIndex = process.env.REDIS_INDEX || 0;
         process.env.REDIS_INDEX = 5;
 
         // Create the tests var dir if it doesn't already exist
@@ -118,13 +119,19 @@ define(require => {
         return del([cacheDir]);
       });
 
-      bdd.after(() => {
-        process.env.REDIS_INDEX = redisIndex;
-        cache.quitRedis();
-      });
+      bdd.after(() =>
+        cache.quitRedis()
+        .then(() => redis.quitClient())
+        .then(() => {
+          process.env.REDIS_INDEX = redisIndex;
+        })
+      );
 
       // Remove the test cache dir
-      bdd.afterEach(() => del([cacheDir]));
+      bdd.afterEach(() =>
+        del([cacheDir])
+        .then(() => redis.flushdb())
+      );
 
       bdd.beforeEach(() => {
         // Don't let tests interfere with each other's calls to `fetch`

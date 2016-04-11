@@ -31,17 +31,22 @@ define((require) => {
   const engine = require('intern/dojo/node!../../../../engine/index').test;
   const redis = require('intern/dojo/node!../../../../engine/redis-helper').default;
 
-  function quitDB(client) {
-    return redis.flushdb(client)
-    .then(() => redis.quit(client));
-  }
-
-
   bdd.describe('Saves status in redis', () => {
-    // clean database after each test
-    bdd.afterEach(() => redis.getClient(5)
-      .then(client => quitDB(client))
+    var redisIndex;
+
+    bdd.before(() => {
+      redisIndex = process.env.REDIS_INDEX || 0;
+      process.env.REDIS_INDEX = 5;
+    });
+
+    bdd.after(() => redis.quitClient()
+      .then(() => {
+        process.env.REDIS_INDEX = redisIndex;
+      })
     );
+
+    // clean database after each test
+    bdd.afterEach(() => redis.flushdb());
 
     bdd.describe('`status` key', () => {
       bdd.it('should hold all info provided to saveData', () => {
@@ -51,16 +56,13 @@ define((require) => {
           a: 'value A',
           b: 'value B',
           updated: {} }];
-        return engine.saveData(testData, 5)
-        .then(() => redis.getClient(5))
-        .then(client => redis.get(client, 'status')
-          .then(statusData => {
-            assert.ok(statusData);
-            statusData = JSON.parse(statusData);
-            assert.deepEqual(testData[0], statusData.feature);
-            return quitDB(client);
-          })
-        );
+        return engine.saveData(testData)
+        .then(() => redis.get('status'))
+        .then(statusData => {
+          assert.ok(statusData);
+          statusData = JSON.parse(statusData);
+          assert.deepEqual(testData[0], statusData.feature);
+        });
       });
     });
 
@@ -70,7 +72,7 @@ define((require) => {
           slug: 'feature',
           firefox_status: 'value A',
           b: 'value B' }];
-        return engine.checkForNewData(testData, 5)
+        return engine.checkForNewData(testData)
         .then(features => {
           assert.deepEqual(features[0].updated, {});
           assert.isTrue(features[0].just_started);
@@ -83,11 +85,11 @@ define((require) => {
           firefox_status: 'first',
           b: 'value B',
         }];
-        return engine.checkForNewData(testData, 5)
-        .then(features => engine.saveData(features, 5))
+        return engine.checkForNewData(testData)
+        .then(features => engine.saveData(features))
         .then(features => {
           features[0].firefox_status = 'last';
-          return engine.checkForNewData(features, 5);
+          return engine.checkForNewData(features);
         })
         .then(features => {
           assert.notOk(features[0].just_started);
@@ -105,25 +107,22 @@ define((require) => {
           firefox_status: 'first',
           b: 'value B',
         }];
-        return engine.checkForNewData(testData, 5)
-        .then(features => engine.saveData(features, 5))
-        .then(() => redis.getClient(5))
-        .then(client => redis.hgetall(client, 'changelog')
-          .then(logs => {
-            assert.isObject(logs);
-            var logTime = Object.keys(logs)[0];
-            const log = JSON.parse(logs[logTime]);
-            assert.lengthOf(log.started, 1);
-            assert.isTrue(log.started[0].just_started);
-            assert.equal(log.started[0].firefox_status, 'first');
-            // did it happen in the right period of time?
-            logTime = new Date(logTime);
-            const after = new Date();
-            assert.isTrue((now <= logTime), 'too early');
-            assert.isTrue((after >= logTime), 'too late');
-            return quitDB(client);
-          })
-        );
+        return engine.checkForNewData(testData)
+        .then(features => engine.saveData(features))
+        .then(() => redis.hgetall('changelog'))
+        .then(logs => {
+          assert.isObject(logs);
+          var logTime = Object.keys(logs)[0];
+          const log = JSON.parse(logs[logTime]);
+          assert.lengthOf(log.started, 1);
+          assert.isTrue(log.started[0].just_started);
+          assert.equal(log.started[0].firefox_status, 'first');
+          // did it happen in the right period of time?
+          logTime = new Date(logTime);
+          const after = new Date();
+          assert.isTrue((now <= logTime), 'too early');
+          assert.isTrue((after >= logTime), 'too late');
+        });
       });
 
       bdd.it('should contain latest changes', () => {
@@ -135,48 +134,40 @@ define((require) => {
           updated: {},
         }];
         var firstLogKey;
-        return engine.checkForNewData(testData, 5)
-        .then(features => engine.saveData(features, 5))
+        return engine.checkForNewData(testData)
+        .then(features => engine.saveData(features))
         .then(features => {
           // change status
           features[0].firefox_status = 'last';
           // read first log key
-          return redis.getClient(5)
-          .then(client => {
-            redis.hgetall(client, 'changelog')
-            .then(logs => {
-              firstLogKey = Object.keys(logs)[0];
-              return redis.quit(client);
-            });
+          return redis.hgetall('changelog')
+          .then(logs => {
+            firstLogKey = Object.keys(logs)[0];
           })
           // go on with the test
-          .then(() => engine.checkForNewData(features, 5));
+          .then(() => engine.checkForNewData(features));
         })
-        .then(features => engine.saveData(features, 5))
-        .then(() => redis.getClient(5))
-        .then(client =>
-          redis.hgetall(client, 'changelog')
-          .then(logs => {
-            assert.ok(logs);
-            // there shoulf be only one change logged
-            assert.equal(Object.keys(logs).length, 2);
-            // find older entry
-            const logTimes = Object.keys(logs);
-            var logTime = logTimes[0];
-            if (logTime === firstLogKey) {
-              logTime = logTimes[1];
-            }
-            const log = JSON.parse(logs[logTime]);
-            assert.equal(log.updated.feature.firefox_status.from, 'first');
-            assert.equal(log.updated.feature.firefox_status.to, 'last');
-            // did it happen in the right period of time?
-            logTime = new Date(logTime);
-            const after = new Date();
-            assert((now <= logTime), 'too early');
-            assert((after >= logTime), 'too late');
-            return quitDB(client);
-          })
-        );
+        .then(features => engine.saveData(features))
+        .then(() => redis.hgetall('changelog'))
+        .then(logs => {
+          assert.ok(logs);
+          // there shoulf be only one change logged
+          assert.equal(Object.keys(logs).length, 2);
+          // find older entry
+          const logTimes = Object.keys(logs);
+          var logTime = logTimes[0];
+          if (logTime === firstLogKey) {
+            logTime = logTimes[1];
+          }
+          const log = JSON.parse(logs[logTime]);
+          assert.equal(log.updated.feature.firefox_status.from, 'first');
+          assert.equal(log.updated.feature.firefox_status.to, 'last');
+          // did it happen in the right period of time?
+          logTime = new Date(logTime);
+          const after = new Date();
+          assert((now <= logTime), 'too early');
+          assert((after >= logTime), 'too late');
+        });
       });
     });
   });
