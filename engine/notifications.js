@@ -8,33 +8,9 @@ if (!process.env.GCM_API_KEY) {
 }
 webPush.setGCMAPIKey(process.env.GCM_API_KEY);
 
-// there is only one client (useful especially while testing)
-let client;
-function setClient(dbNumber) {
-  if (client) {
-    return Promise.resolve(client);
-  }
-  return redis.getClient(dbNumber)
-  .then(redisClient => {
-    client = redisClient;
-    return client;
-  });
-}
-
-// eported only for test as we will not need to kill database
-function quitClient(dbNumber) {
-  return setClient(dbNumber)
-  .then(() => {
-    const p = redis.quit(client);
-    client = null;
-    return p;
-  });
-}
-
 // check if such device exists in database, reject if not
-function checkDeviceId(deviceId, dbNumber) {
-  return setClient(dbNumber)
-  .then(() => redis.hgetall(client, `device-${deviceId}`))
+function checkDeviceId(deviceId) {
+  return redis.hgetall(`device-${deviceId}`)
   .then(device => {
     if (!device || !device.endpoint) {
       throw new Error('Not Found');
@@ -43,15 +19,15 @@ function checkDeviceId(deviceId, dbNumber) {
 }
 
 // get all registrations for a deviceId
-function getRegisteredFeatures(deviceId, dbNumber) {
-  return checkDeviceId(deviceId, dbNumber)
-  .then(() => redis.smembers(client, `${deviceId}-notifications`));
+function getRegisteredFeatures(deviceId) {
+  return checkDeviceId(deviceId)
+  .then(() => redis.smembers(`${deviceId}-notifications`));
 }
 
 function sendWebPush(endpoint, key, auth, deviceId, payload) {
   payload = JSON.stringify(payload);
   if (!key || !auth) {
-    return redis.set(client, `${deviceId}-payload`, payload)
+    return redis.set(`${deviceId}-payload`, payload)
     .then(() =>
       webPush.sendNotification(endpoint, { TTL: ttl })
     );
@@ -94,30 +70,28 @@ function sendConfirmation(endpoint, key, auth, deviceId, features) {
  * send confirmation after user changed registration
  * deviceId might be an endpoint
  */
-function sendConfirmationToDevice(deviceId, dbNumber) {
-  return setClient(dbNumber)
-  .then(() => checkDeviceId(deviceId, dbNumber))
-  .then(() => redis.hgetall(client, `device-${deviceId}`))
+function sendConfirmationToDevice(deviceId) {
+  return checkDeviceId(deviceId)
+  .then(() => redis.hgetall(`device-${deviceId}`))
   .then(device =>
-    getRegisteredFeatures(deviceId, dbNumber)
+    getRegisteredFeatures(deviceId)
     .then(features => sendConfirmation(
       device.endpoint,
       device.key,
       device.authSecret,
       deviceId,
       features,
-      dbNumber
     ))
   );
 }
 
 function unregisterDevice(deviceId) {
-  return redis.del(client, `device-${deviceId}`)
-  .then(() => redis.smembers(client, `${deviceId}-notifications`))
+  return redis.del(`device-${deviceId}`)
+  .then(() => redis.smembers(`${deviceId}-notifications`))
   .then(deviceFeatures => Promise.all(
-        deviceFeatures.map(slug => redis.srem(client, `${slug}-notifications`, deviceId))
+        deviceFeatures.map(slug => redis.srem(`${slug}-notifications`, deviceId))
   ))
-  .then(() => redis.del(client, `${deviceId}-notifications`));
+  .then(() => redis.del(`${deviceId}-notifications`));
 }
 
 // unregisters from receiving notifications
@@ -127,12 +101,12 @@ function unregisterDevice(deviceId) {
 // * features
 // if no features provided unregister from all features and delete
 // endpoint entry
-function unregister(deviceId, features, dbNumber, doNotConfirm) {
+function unregister(deviceId, features, doNotConfirm) {
   let endpoint;
   let key;
   let authSecret;
-  return checkDeviceId(deviceId, dbNumber)
-  .then(() => redis.hgetall(client, `device-${deviceId}`))
+  return checkDeviceId(deviceId)
+  .then(() => redis.hgetall(`device-${deviceId}`))
   .then(device => {
     endpoint = device.endpoint;
     key = device.key;
@@ -142,24 +116,24 @@ function unregister(deviceId, features, dbNumber, doNotConfirm) {
     if (!features) {
       return unregisterDevice(deviceId);
     }
-    return redis.sismember(client, `${deviceId}-notifications`, 'all')
+    return redis.sismember(`${deviceId}-notifications`, 'all')
     .then(registeredToAll => {
       if (!registeredToAll) {
         return Promise.all(features.map(slug => [
-          redis.srem(client, `${slug}-notifications`, deviceId),
-          redis.srem(client, `${deviceId}-notifications`, slug)])
+          redis.srem(`${slug}-notifications`, deviceId),
+          redis.srem(`${deviceId}-notifications`, slug)])
         );
       }
       // user decided to unregister from `all`
       if (features.indexOf('all') >= 0) {
-        return redis.srem(client, 'all-notifications', deviceId)
-        .then(() => redis.srem(client, `${deviceId}-notifications`, 'all'));
+        return redis.srem('all-notifications', deviceId)
+        .then(() => redis.srem(`${deviceId}-notifications`, 'all'));
       }
       // unregister from `all` and register to negative of `features`
-      return redis.srem(client, 'all-notifications', deviceId)
-      .then(() => redis.srem(client, `${deviceId}-notifications`, 'all'))
+      return redis.srem('all-notifications', deviceId)
+      .then(() => redis.srem(`${deviceId}-notifications`, 'all'))
       // register to everything except of features
-      .then(() => redis.get(client, 'status'))
+      .then(() => redis.get('status'))
       .then(status => {
         let allFeatures = ['new'];
         allFeatures = allFeatures.concat(Object.keys(JSON.parse(status)));
@@ -167,13 +141,13 @@ function unregister(deviceId, features, dbNumber, doNotConfirm) {
           if (features.indexOf(slug) >= 0) {
             return Promise.resolve();
           }
-          return redis.sadd(client, `${deviceId}-notifications`, slug)
-          .then(() => redis.sadd(client, `${slug}-notifications`, deviceId));
+          return redis.sadd(`${deviceId}-notifications`, slug)
+          .then(() => redis.sadd(`${slug}-notifications`, deviceId));
         }));
       });
     });
   })
-  .then(() => getRegisteredFeatures(deviceId, dbNumber))
+  .then(() => getRegisteredFeatures(deviceId))
   .catch(err => {
     if (err.message !== 'Not Found') {
       throw err;
@@ -182,7 +156,7 @@ function unregister(deviceId, features, dbNumber, doNotConfirm) {
   })
   .then(regFeatures => {
     if (!doNotConfirm && endpoint) {
-      return sendConfirmation(endpoint, key, authSecret, deviceId, regFeatures, dbNumber)
+      return sendConfirmation(endpoint, key, authSecret, deviceId, regFeatures)
       .then(() => regFeatures);
     }
     return regFeatures;
@@ -191,12 +165,12 @@ function unregister(deviceId, features, dbNumber, doNotConfirm) {
 
 // Registers to all notifications including new ones
 // Removes registrations to individual features
-function registerToAll(deviceId, dbNumber) {
-  return getRegisteredFeatures(deviceId, dbNumber)
-  .then(features => unregister(deviceId, features, dbNumber, true))
+function registerToAll(deviceId) {
+  return getRegisteredFeatures(deviceId)
+  .then(features => unregister(deviceId, features, true))
   .then(() => Promise.all([
-    redis.sadd(client, 'all-notifications', deviceId),
-    redis.sadd(client, `${deviceId}-notifications`, 'all')]));
+    redis.sadd('all-notifications', deviceId),
+    redis.sadd(`${deviceId}-notifications`, 'all')]));
 }
 
 // registers to receive notifications
@@ -211,13 +185,12 @@ function registerToAll(deviceId, dbNumber) {
 // one can register to a feature without providing an endpoint
 // if it was already saved:
 // * key
-// * dbNumber
-function register(deviceId, features, endpoint, key, authSecret, dbNumber) {
+function register(deviceId, features, endpoint, key, authSecret) {
   if (!features || features.length === 0) {
     return Promise.reject(new Error('No features provided'));
   }
 
-  return setClient(dbNumber)
+  return Promise.resolve()
   .then(() => {
     if (endpoint) {
       const device = {
@@ -226,11 +199,10 @@ function register(deviceId, features, endpoint, key, authSecret, dbNumber) {
         key: key || '',
         authSecret: authSecret || '',
       };
-      redis.hmset(client, `device-${deviceId}`, device);
-      return device;
+      return redis.hmset(`device-${deviceId}`, device);
     }
-    return redis.hgetall(client, `device-${deviceId}`);
   })
+  .then(() => redis.hgetall(`device-${deviceId}`))
   .then(device => {
     if (!device || !device.endpoint) {
       throw new Error('No endpoint provided');
@@ -238,46 +210,45 @@ function register(deviceId, features, endpoint, key, authSecret, dbNumber) {
   })
   .then(() => {
     if (features.indexOf('all') >= 0) {
-      return registerToAll(deviceId, dbNumber);
+      return registerToAll(deviceId);
     }
     return Promise.all(
       features.map(slug => [
-        redis.sadd(client, `${slug}-notifications`, deviceId),
-        redis.sadd(client, `${deviceId}-notifications`, slug)]));
+        redis.sadd(`${slug}-notifications`, deviceId),
+        redis.sadd(`${deviceId}-notifications`, slug)]));
   })
-  .then(() => sendConfirmationToDevice(deviceId, dbNumber))
-  .then(() => getRegisteredFeatures(deviceId, dbNumber));
+  .then(() => sendConfirmationToDevice(deviceId))
+  .then(() => getRegisteredFeatures(deviceId));
 }
 
 // update endpoint for the device
 // required:
 // * machineId
 // * endpoint
-function updateDevice(deviceId, endpoint, key, authSecret, dbNumber) {
+function updateDevice(deviceId, endpoint, key, authSecret) {
   if (!endpoint) {
     return Promise.reject(new Error('No endpoint provided'));
   }
-  return checkDeviceId(deviceId, dbNumber)
-  .then(() => redis.hmset(client, `device-${deviceId}`,
+  return checkDeviceId(deviceId)
+  .then(() => redis.hmset(`device-${deviceId}`,
                           'endpoint', endpoint, 'key', key, 'authSecret', authSecret));
 }
 
-function sendNotifications(feature, payload, isNew, dbNumber) {
-  return setClient(dbNumber)
-  .then(() => redis.smembers(client, `${feature}-notifications`))
+function sendNotifications(feature, payload, isNew) {
+  return redis.smembers(`${feature}-notifications`)
   .then(devices =>
-    redis.smembers(client, 'all-notifications')
+    redis.smembers('all-notifications')
     .then(all => devices.concat(all))
   )
   .then(devices => {
     if (isNew) {
-      return redis.smembers(client, 'new-notifications')
+      return redis.smembers('new-notifications')
       .then(fresh => devices.concat(fresh));
     }
     return devices;
   })
   .then(devices => Promise.all(
-        devices.map(deviceId => redis.hgetall(client, `device-${deviceId}`))))
+        devices.map(deviceId => redis.hgetall(`device-${deviceId}`))))
   .then(devices => Promise.all(
     // XXX potential problem if many notifications to the same
     // machine. An idea to fix it: store an array of messages
@@ -289,11 +260,10 @@ function sendNotifications(feature, payload, isNew, dbNumber) {
   ));
 }
 
-function getPayload(deviceId, dbNumber) {
-  return setClient(dbNumber)
-  .then(() => redis.get(client, `${deviceId}-payload`))
+function getPayload(deviceId) {
+  return redis.get(`${deviceId}-payload`)
   .then(payload =>
-    redis.del(client, `${deviceId}-payload`)
+    redis.del(`${deviceId}-payload`)
     .then(() => payload)
   );
 }
@@ -305,8 +275,6 @@ export default {
   updateDevice,
   getPayload,
   sendNotifications,
-  quitClient,
-  setClient,
 };
 
 const test = {

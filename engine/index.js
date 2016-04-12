@@ -363,53 +363,49 @@ function populateCanIUsePercent(canIUseData, features) {
 const statusFields = ['firefox_status', 'spec_status', 'opera_status',
                       'webkit_status', 'ie_status'];
 // checking for changes in 'status' object
-function checkForNewData(features, dbTestNumber) {
-  return redis.getClient(dbTestNumber)
-  .then(client => redis.get(client, 'status')
-    .then((oldStatus) => {
-      try {
-        oldStatus = JSON.parse(oldStatus);
-      } catch (e) {
-        console.error(e, oldStatus);
-      }
-      if (!oldStatus) {
-        oldStatus = {};
-      }
-      features.forEach((feature) => {
-        feature.updated = {};
-        if (!oldStatus[feature.slug]) {
-          feature.just_started = true;
-        } else {
-          // XXX: check if that can happen outside of test...
-          if (feature.just_started) {
-            delete feature.just_started;
-          }
-          statusFields.forEach((name) => {
-            if (feature[name] !== oldStatus[feature.slug][name]) {
-              feature.updated[name] = {
-                from: oldStatus[feature.slug][name],
-                to: feature[name],
-              };
-            }
-          });
+function checkForNewData(features) {
+  return redis.get('status')
+  .then((oldStatus) => {
+    try {
+      oldStatus = JSON.parse(oldStatus);
+    } catch (e) {
+      console.error(e, oldStatus);
+    }
+    if (!oldStatus) {
+      oldStatus = {};
+    }
+    features.forEach((feature) => {
+      feature.updated = {};
+      if (!oldStatus[feature.slug]) {
+        feature.just_started = true;
+      } else {
+        // XXX: check if that can happen outside of test...
+        if (feature.just_started) {
+          delete feature.just_started;
         }
-      });
-    }).catch((err) => {
-      console.error('ERROR:', err);
-    })
-    .then(() => redis.quit(client))
-    .then(() => features)
-  );
+        statusFields.forEach((name) => {
+          if (feature[name] !== oldStatus[feature.slug][name]) {
+            feature.updated[name] = {
+              from: oldStatus[feature.slug][name],
+              to: feature[name],
+            };
+          }
+        });
+      }
+    });
+  }).catch((err) => {
+    console.error('ERROR:', err);
+  })
+  .then(() => features);
 }
 
-function sendNotifications(features, dbNumber) {
-  return notifications.setClient(dbNumber)
-  .then(() => Promise.all(features.map(feature => {
+function sendNotifications(features) {
+  return Promise.all(features.map(feature => {
     if (feature.just_started) {
       return notifications.sendNotifications(feature.slug, {
         feature: feature.slug,
         message: 'started watching',
-      }, true, dbNumber);
+      }, true);
     }
     if (Object.keys(feature.updated).length > 0) {
       let message = '';
@@ -420,16 +416,15 @@ function sendNotifications(features, dbNumber) {
       return notifications.sendNotifications(feature.slug, {
         feature: feature.slug,
         message,
-      }, false, dbNumber);
+      }, false);
     }
     return Promise.resolve();
-  })))
-  .then(() => notifications.quitClient(dbNumber));
+  }));
 }
 
 // `status` key holds an Object representation of `status.json`
 // `changed` is a hashtag with just changed data stored by date
-function saveData(features, dbTestNumber) {
+function saveData(features) {
   // store changes under date
   const date = new Date().toISOString();
   const statusData = {};
@@ -449,20 +444,17 @@ function saveData(features, dbTestNumber) {
       changedData.started.push(feature);
     }
   });
-  return redis.getClient(dbTestNumber)
-  .then(client => redis.set(client, 'status', JSON.stringify(statusData))
-    .then(() => {
-      if (isChanged) {
-        console.log('DEBUG: found new changes');
-        return redis.hmset(client, 'changelog', date, JSON.stringify(changedData));
-      }
-      console.log('DEBUG: no changes found');
-    }).catch((err) => {
-      console.error('ERROR:', err);
-    })
-    .then(() => redis.quit(client))
-    .then(() => features)
-  );
+  return redis.set('status', JSON.stringify(statusData))
+  .then(() => {
+    if (isChanged) {
+      console.log('DEBUG: found new changes');
+      return redis.hmset('changelog', date, JSON.stringify(changedData));
+    }
+    console.log('DEBUG: no changes found');
+  }).catch((err) => {
+    console.error('ERROR:', err);
+  })
+  .then(() => features);
 }
 
 function validateFeatureInput(features) {
@@ -640,23 +632,29 @@ function buildFeatures(status) {
 
 function buildStatus(options) {
   validationWarnings = [];
-  return Promise.all([
+  return cache.getRequest()
+  .then(() => Promise.all([
     fixtureParser.read(),
     browserParser.read(),
     firefoxVersionParser.read(),
     canIUseParser.read(),
-  ]).then(() => {
+  ]))
+  .then(() => {
     validateFeatureInput(fixtureParser.results);
     return populateBugzillaData(fixtureParser.results, options);
-  }).then(() => {
+  })
+  .then(() => {
     populateFirefoxStatus(firefoxVersionParser.results, fixtureParser.results);
     populateBrowserFeatureData(browserParser.results, fixtureParser.results);
     fillInUsingCanIUseData(canIUseParser.results, fixtureParser.results);
     populateSpecStatus(browserParser.results, fixtureParser.results);
     populateCanIUsePercent(canIUseParser.results, fixtureParser.results);
     return checkForNewData(fixtureParser.results);
-  }).then(saveData)
+  })
+  .then(saveData)
   .then(sendNotifications)
+  .then(cache.quitRedis)
+  .then(redis.quitClient)
   .then(() => {
     const data = {
       created: (new Date()).toISOString(),

@@ -33,17 +33,11 @@ define((require) => {
   const notifications = require('intern/dojo/node!../../../../engine/notifications');
   const redis = require('intern/dojo/node!../../../../engine/redis-helper').default;
 
-  function flushDB(client) {
-    return redis.flushdb(client);
-  }
-  function flushQuitDB(client) {
-    return flushDB(client).then(() => notifications.default.quitClient(5));
-  }
   function register(deviceId, features, endpoint, key, auth) {
     if (Object.prototype.toString.call(features) !== '[object Array]') {
       features = [features];
     }
-    return notifications.default.register(deviceId, features, endpoint, key, auth, 5);
+    return notifications.default.register(deviceId, features, endpoint, key, auth);
   }
 
   bdd.describe('Notifications unit', () => {
@@ -56,9 +50,21 @@ define((require) => {
     const userKey = urlBase64.encode(userPublicKey);
     const userAuth = crypto.randomBytes(16);
 
+    var redisIndex;
+
+    bdd.before(() => {
+      redisIndex = process.env.REDIS_INDEX || 0;
+      process.env.REDIS_INDEX = 5;
+    });
+
+    bdd.after(() => redis.quitClient()
+      .then(() => {
+        process.env.REDIS_INDEX = redisIndex;
+      })
+    );
+
     // clean and quit database after each test
-    bdd.afterEach(() => notifications.default.setClient(5)
-      .then((client) => flushQuitDB(client))
+    bdd.afterEach(() => redis.flushdb()
       .then(() => nock.cleanAll())
     );
 
@@ -89,19 +95,18 @@ define((require) => {
           .then(features => {
             assert.include(features, 'feature');
           })
-          .then(() => notifications.default.setClient(5))
-          .then(client =>
-            redis.smembers(client, 'feature-notifications')
+          .then(() =>
+            redis.smembers('feature-notifications')
             .then(featureNotifications => {
               assert.lengthOf(featureNotifications, 1);
               assert.strictEqual(featureNotifications[0], 'someId');
             })
-            .then(() => redis.smembers(client, 'someId-notifications'))
+            .then(() => redis.smembers('someId-notifications'))
             .then(deviceNotifications => {
               assert.lengthOf(deviceNotifications, 1);
               assert.strictEqual(deviceNotifications[0], 'feature');
             })
-            .then(() => redis.hgetall(client, 'device-someId')))
+            .then(() => redis.hgetall('device-someId')))
           .then(device => {
             assert.isObject(device);
             assert.strictEqual(device.endpoint, 'https://localhost:5005');
@@ -118,8 +123,7 @@ define((require) => {
 
           return register('someId', 'feature', 'https://localhost:5005', userKey, userAuth)
           .then(() => register('someId', 'another-feature'))
-          .then(() => notifications.default.setClient(5))
-          .then(client => redis.hget(client, 'device-someId', 'endpoint'))
+          .then(() => redis.hget('device-someId', 'endpoint'))
           .then(endpoint => {
             assert.ok(endpoint);
             assert.strictEqual(endpoint, 'https://localhost:5005');
@@ -134,8 +138,7 @@ define((require) => {
 
           return register('someId', 'feature', 'https://localhost:5005', userKey, userAuth)
           .then(() => register('someId', 'another-feature'))
-          .then(() => notifications.default.setClient(5))
-          .then(client => redis.smembers(client, 'someId-notifications'))
+          .then(() => redis.smembers('someId-notifications'))
           .then(deviceNotifications => {
             assert.lengthOf(deviceNotifications, 2);
             assert.include(deviceNotifications, 'feature');
@@ -154,8 +157,7 @@ define((require) => {
 
           return register('someId', 'feature', 'https://localhost:5005', userKey, userAuth)
           .then(() => register('anotherId', 'feature', 'http://localhost:5006', userKey, userAuth))
-          .then(() => notifications.default.setClient(5))
-          .then(client => redis.smembers(client, 'feature-notifications'))
+          .then(() => redis.smembers('feature-notifications'))
           .then(featureNotifications => {
             assert.lengthOf(featureNotifications, 2);
             assert.include(featureNotifications, 'someId');
@@ -170,8 +172,7 @@ define((require) => {
 
           return register('someId', ['feature', 'another-feature'], 'https://localhost:5005', userKey, userAuth)
 
-          .then(() => notifications.default.setClient(5))
-          .then(client => redis.smembers(client, 'someId-notifications'))
+          .then(() => redis.smembers('someId-notifications'))
           .then(deviceNotifications => {
             assert.lengthOf(deviceNotifications, 2);
             assert.include(deviceNotifications, 'feature');
@@ -188,8 +189,7 @@ define((require) => {
 
           return register('someId', ['feature', 'all', 'another-feature'], 'https://localhost:5005', userKey, userAuth)
 
-          .then(() => notifications.default.setClient(5))
-          .then(client => redis.smembers(client, 'someId-notifications'))
+          .then(() => redis.smembers('someId-notifications'))
           .then(deviceNotifications => {
             assert.lengthOf(deviceNotifications, 1);
             assert.notInclude(deviceNotifications, 'feature');
@@ -204,15 +204,13 @@ define((require) => {
           .times(2)
           .reply(201);
 
-          return notifications.default.setClient(5)
-          .then(client => redis.set(client, 'status', '{"feature": {"slug": "feature"}, "another-feature": {"slug": "another-feature"}}')
-            .then(() => register('someId', 'all', 'https://localhost:5005', userKey, userAuth))
-            .then(() => notifications.default.unregister('someId', ['all']))
-            .then(() => redis.smembers(client, 'someId-notifications'))
-            .then(deviceNotifications => {
-              assert.lengthOf(deviceNotifications, 0);
-            })
-          );
+          return redis.set('status', '{"feature": {"slug": "feature"}, "another-feature": {"slug": "another-feature"}}')
+          .then(() => register('someId', 'all', 'https://localhost:5005', userKey, userAuth))
+          .then(() => notifications.default.unregister('someId', ['all']))
+          .then(() => redis.smembers('someId-notifications'))
+          .then(deviceNotifications => {
+            assert.lengthOf(deviceNotifications, 0);
+          });
         });
 
         bdd.it('should remove all registrations before adding all', () => {
@@ -224,8 +222,7 @@ define((require) => {
 
           return register('someId', ['feature', 'new', 'another-feature'], 'https://localhost:5005', userKey, userAuth)
           .then(() => register('someId', 'all'))
-          .then(() => notifications.default.setClient(5))
-          .then(client => redis.smembers(client, 'someId-notifications'))
+          .then(() => redis.smembers('someId-notifications'))
           .then(deviceNotifications => {
             assert.lengthOf(deviceNotifications, 1);
             assert.include(deviceNotifications, 'all');
@@ -238,24 +235,22 @@ define((require) => {
           .times(2)
           .reply(201);
 
-          return notifications.default.setClient(5)
-          .then(client => redis.set(client, 'status', '{"feature": {"slug": "feature"}, "another-feature": {"slug": "another-feature"}}')
-            .then(() => register('someId', 'all', 'https://localhost:5005', userKey, userAuth))
-            .then(() => notifications.default.unregister('someId', ['another-feature']))
-            .then(() => redis.smembers(client, 'someId-notifications'))
-            .then(deviceNotifications => {
-              assert.lengthOf(deviceNotifications, 2);
-              assert.notInclude(deviceNotifications, 'all');
-              assert.include(deviceNotifications, 'feature');
-              assert.include(deviceNotifications, 'new');
-            })
-          );
+          return redis.set('status', '{"feature": {"slug": "feature"}, "another-feature": {"slug": "another-feature"}}')
+          .then(() => register('someId', 'all', 'https://localhost:5005', userKey, userAuth))
+          .then(() => notifications.default.unregister('someId', ['another-feature']))
+          .then(() => redis.smembers('someId-notifications'))
+          .then(deviceNotifications => {
+            assert.lengthOf(deviceNotifications, 2);
+            assert.notInclude(deviceNotifications, 'all');
+            assert.include(deviceNotifications, 'feature');
+            assert.include(deviceNotifications, 'new');
+          });
         });
       });
 
       bdd.describe('registered features', () => {
         bdd.it('should fail if no deviceId', () =>
-          notifications.default.getRegisteredFeatures('someId', 5)
+          notifications.default.getRegisteredFeatures('someId')
           .catch(err => {
             assert.ok(err);
             assert.strictEqual(err.message, 'Not Found');
@@ -268,7 +263,7 @@ define((require) => {
           .reply(201);
 
           return register('someId', ['feature', 'another-feature'], 'https://localhost:5005', userKey, userAuth)
-          .then(() => notifications.default.getRegisteredFeatures('someId', 5))
+          .then(() => notifications.default.getRegisteredFeatures('someId'))
           .then(deviceNotifications => {
             assert.isArray(deviceNotifications);
             assert.lengthOf(deviceNotifications, 2);
@@ -280,7 +275,7 @@ define((require) => {
 
       bdd.describe('unregister', () => {
         bdd.it('should fail if no deviceId', () =>
-          notifications.default.unregister('notExistingId', 5)
+          notifications.default.unregister('notExistingId')
           .catch(err => {
             assert.ok(err);
             assert.strictEqual(err.message, 'Not Found');
@@ -294,8 +289,8 @@ define((require) => {
           .reply(201);
 
           return register('someId', ['feature', 'another-feature'], 'https://localhost:5005', userKey, userAuth)
-          .then(() => notifications.default.unregister('someId', ['feature'], 5))
-          .then(() => notifications.default.getRegisteredFeatures('someId', 5))
+          .then(() => notifications.default.unregister('someId', ['feature']))
+          .then(() => notifications.default.getRegisteredFeatures('someId'))
           .then(deviceNotifications => {
             assert.isArray(deviceNotifications);
             assert.lengthOf(deviceNotifications, 1);
@@ -310,8 +305,8 @@ define((require) => {
           .reply(201);
 
           return register('someId', ['feature', 'another-feature'], 'https://localhost:5005', userKey, userAuth)
-          .then(() => notifications.default.unregister('someId', null, 5))
-          .then(() => notifications.default.getRegisteredFeatures('someId', 5))
+          .then(() => notifications.default.unregister('someId', null))
+          .then(() => notifications.default.getRegisteredFeatures('someId'))
           .catch(err => {
             console.log(err);
             assert.ok(err);
@@ -322,7 +317,7 @@ define((require) => {
 
       bdd.describe('update endpoint', () => {
         bdd.it('should fail if no deviceId', () =>
-          notifications.default.updateDevice('someId', 'http://endpoint', null, null, 5)
+          notifications.default.updateDevice('someId', 'http://endpoint', null, null)
           .catch(err => {
             assert.ok(err);
             assert.strictEqual(err.message, 'Not Found');
@@ -336,7 +331,7 @@ define((require) => {
           .reply(201);
 
           return register('someId', 'feature', 'https://localhost:5005', userKey, userAuth)
-          .then(() => notifications.default.updateDevice('someId', null, null, null, 5))
+          .then(() => notifications.default.updateDevice('someId', null, null, null))
           .catch(err => {
             assert.ok(err);
             assert.strictEqual(err.message, 'No endpoint provided');
@@ -350,9 +345,8 @@ define((require) => {
           .reply(201);
 
           return register('someId', 'feature', 'https://localhost:5005', userKey, userAuth)
-          .then(() => notifications.default.updateDevice('someId', 'http://another-endpoint', 'otherKey', 'otherAuth', 5))
-          .then(() => notifications.default.setClient(5))
-          .then(client => redis.hgetall(client, 'device-someId'))
+          .then(() => notifications.default.updateDevice('someId', 'http://another-endpoint', 'otherKey', 'otherAuth'))
+          .then(() => redis.hgetall('device-someId'))
           .then(device => {
             assert.ok(device);
             assert.strictEqual(device.endpoint, 'http://another-endpoint');
@@ -372,7 +366,7 @@ define((require) => {
           .reply(201);
 
           return register('someId', 'feature', 'https://localhost:5005/', userKey, userAuth)
-          .then(() => notifications.default.sendNotifications('feature', undefined, false, 5))
+          .then(() => notifications.default.sendNotifications('feature', undefined, false))
           .then(() => {
             assert.ok(service.isDone());
           });
@@ -385,9 +379,8 @@ define((require) => {
           .reply(201);
 
           return register('someId', 'feature', 'https://localhost:5005/', userKey, userAuth)
-          .then(() => notifications.default.sendNotifications('feature', 'hello', false, 5))
-          .then(() => notifications.default.setClient(5))
-          .then(client => redis.get(client, 'someId-payload'))
+          .then(() => notifications.default.sendNotifications('feature', 'hello', false))
+          .then(() => redis.get('someId-payload'))
           .then(payload => {
             assert.notOk(payload);
           });
@@ -400,9 +393,8 @@ define((require) => {
           .reply(200);
 
           return register('someId', 'feature', 'https://android.googleapis.com/gcm/send', '', '')
-          .then(() => notifications.default.sendNotifications('feature', 'hello', false, 5))
-          .then(() => notifications.default.setClient(5))
-          .then(client => redis.get(client, 'someId-payload'))
+          .then(() => notifications.default.sendNotifications('feature', 'hello', false))
+          .then(() => redis.get('someId-payload'))
           .then(payload => {
             assert.strictEqual(payload, '"hello"');
             assert.ok(service.isDone());
@@ -410,11 +402,9 @@ define((require) => {
         });
 
         bdd.it('should delete payload after providing it', () =>
-          notifications.default.setClient(5)
-          .then(client =>
-            redis.set(client, 'someId-payload', 'hello')
-            .then(() => notifications.default.getPayload('someId', 5))
-            .then(() => redis.get(client, 'someId-payload')))
+          redis.set('someId-payload', 'hello')
+          .then(() => notifications.default.getPayload('someId'))
+          .then(() => redis.get('someId-payload'))
           .then(payload => {
             assert.notOk(payload);
           })
@@ -427,7 +417,7 @@ define((require) => {
           .reply(200);
 
           return register('someId', 'feature', 'https://android.googleapis.com/gcm/send', '', '')
-          .then(() => notifications.default.sendNotifications('feature', 'hello', false, 5))
+          .then(() => notifications.default.sendNotifications('feature', 'hello', false))
           .then(() => {
             assert.ok(service.isDone());
           });
@@ -446,7 +436,7 @@ define((require) => {
 
           return register('someId', 'feature', 'https://localhost:5005/', userKey, userAuth)
           .then(() => register('anotherId', 'all', 'https://localhost:5006/', userKey, userAuth))
-          .then(() => notifications.default.sendNotifications('feature', undefined, false, 5))
+          .then(() => notifications.default.sendNotifications('feature', undefined, false))
           .then(() => {
             assert.ok(serviceA.isDone(), 'is serviceA called');
             assert.ok(serviceB.isDone(), 'is serviceB called');
@@ -460,7 +450,7 @@ define((require) => {
           .reply(201);
 
           return register('someId', 'new', 'https://localhost:5005/', userKey, userAuth)
-          .then(() => notifications.default.sendNotifications('feature', undefined, true, 5))
+          .then(() => notifications.default.sendNotifications('feature', undefined, true))
           .then(() => {
             assert.ok(service.isDone(), 'is service called');
           });
@@ -479,7 +469,7 @@ define((require) => {
 
           return register('someId', 'feature', 'https://localhost:5005/', userKey, userAuth)
           .then(() => register('anotherId', 'feature', 'https://localhost:5006/', userKey, userAuth))
-          .then(() => notifications.default.sendNotifications('feature', undefined, false, 5))
+          .then(() => notifications.default.sendNotifications('feature', undefined, false))
           .then(() => {
             assert.ok(serviceA.isDone(), 'is serviceA called');
             assert.ok(serviceB.isDone(), 'is serviceB called');
@@ -499,7 +489,7 @@ define((require) => {
           updated: {},
         }];
 
-        return engine.test.sendNotifications(testData, 5)
+        return engine.test.sendNotifications(testData)
         .then(() => {
           assert.ok(true);
         });
@@ -514,7 +504,7 @@ define((require) => {
           just_started: true,
         }];
 
-        return engine.test.sendNotifications(testData, 5)
+        return engine.test.sendNotifications(testData)
         .then(() => {
           assert.ok(true);
         });
@@ -539,7 +529,7 @@ define((require) => {
         }];
 
         return register('someId', 'all', 'https://localhost:5005/', userKey, userAuth)
-        .then(() => engine.test.sendNotifications(testData, 5))
+        .then(() => engine.test.sendNotifications(testData))
         .then(() => {
           assert.ok(service.isDone());
         });
@@ -573,39 +563,37 @@ define((require) => {
         .post('/')
         .reply(201);
 
-        return notifications.default.setClient(5)
-        .then(client =>
-          api()
-          .post('/register')
-          .send({
-            deviceId: 'someId',
-            endpoint: 'https://localhost:5005',
-            key: userKey,
-            features: ['feature', 'another-feature'],
-          })
-          .then(response => {
-            assert.property(response.body, 'features');
-            assert.isArray(response.body.features);
-            assert.sameMembers(response.body.features, ['feature', 'another-feature']);
-          })
-          .then(() => redis.hgetall(client, 'device-someId'))
-          .then(device => {
-            assert.ok(device);
-            assert.strictEqual(device.endpoint, 'https://localhost:5005');
-            assert.strictEqual(device.key, userKey);
-          })
-          .then(() => redis.smembers(client, 'someId-notifications'))
-          .then(deviceNotifications => {
-            assert.lengthOf(deviceNotifications, 2);
-            assert.include(deviceNotifications, 'feature');
-            assert.include(deviceNotifications, 'another-feature');
-          })
-          .then(() => redis.smembers(client, 'feature-notifications'))
-          .then(featureNotifications => {
-            assert.lengthOf(featureNotifications, 1);
-            assert.include(featureNotifications, 'someId');
-          })
-          .then(() => redis.smembers(client, 'another-feature-notifications')))
+        return api()
+        .post('/register')
+        .send({
+          deviceId: 'someId',
+          endpoint: 'https://localhost:5005',
+          key: userKey,
+          features: ['feature', 'another-feature'],
+        })
+        .then(response => {
+          assert.property(response.body, 'features');
+          assert.isArray(response.body.features);
+          assert.sameMembers(response.body.features, ['feature', 'another-feature']);
+        })
+        .then(() => redis.hgetall('device-someId'))
+        .then(device => {
+          assert.ok(device);
+          assert.strictEqual(device.endpoint, 'https://localhost:5005');
+          assert.strictEqual(device.key, userKey);
+        })
+        .then(() => redis.smembers('someId-notifications'))
+        .then(deviceNotifications => {
+          assert.lengthOf(deviceNotifications, 2);
+          assert.include(deviceNotifications, 'feature');
+          assert.include(deviceNotifications, 'another-feature');
+        })
+        .then(() => redis.smembers('feature-notifications'))
+        .then(featureNotifications => {
+          assert.lengthOf(featureNotifications, 1);
+          assert.include(featureNotifications, 'someId');
+        })
+        .then(() => redis.smembers('another-feature-notifications'))
         .then(featureNotifications => {
           assert.lengthOf(featureNotifications, 1);
           assert.include(featureNotifications, 'someId');
@@ -659,19 +647,17 @@ define((require) => {
         .then(response => {
           assert.equal(response.status, 200);
         })
-        .then(() => notifications.default.setClient(5))
-        .then(client =>
-          redis.smembers(client, 'someId-notifications')
-          .then(deviceNotifications => {
-            assert.lengthOf(deviceNotifications, 1);
-            assert.strictEqual(deviceNotifications[0], 'feature');
-          })
-          .then(() => redis.smembers(client, 'feature-notifications'))
-          .then(featureNotifications => {
-            assert.lengthOf(featureNotifications, 1);
-            assert.strictEqual(featureNotifications[0], 'someId');
-          })
-          .then(() => redis.smembers(client, 'another-feature-notifications')))
+        .then(() => redis.smembers('someId-notifications'))
+        .then(deviceNotifications => {
+          assert.lengthOf(deviceNotifications, 1);
+          assert.strictEqual(deviceNotifications[0], 'feature');
+        })
+        .then(() => redis.smembers('feature-notifications'))
+        .then(featureNotifications => {
+          assert.lengthOf(featureNotifications, 1);
+          assert.strictEqual(featureNotifications[0], 'someId');
+        })
+        .then(() => redis.smembers('another-feature-notifications'))
         .then(featureNotifications => {
           assert.lengthOf(featureNotifications, 0);
         });
@@ -692,21 +678,19 @@ define((require) => {
         .then(response => {
           assert.equal(response.status, 200);
         })
-        .then(() => notifications.default.setClient(5))
-        .then(client =>
-          redis.smembers(client, 'someId-notifications')
-          .then(deviceNotifications => {
-            assert.lengthOf(deviceNotifications, 0);
-          })
-          .then(() => redis.smembers(client, 'feature-notifications'))
-          .then(featureNotifications => {
-            assert.lengthOf(featureNotifications, 0);
-          })
-          .then(() => redis.smembers(client, 'another-feature-notifications'))
-          .then(featureNotifications => {
-            assert.lengthOf(featureNotifications, 0);
-          })
-          .then(() => redis.hgetall(client, 'device-deviceId')))
+        .then(() => redis.smembers('someId-notifications'))
+        .then(deviceNotifications => {
+          assert.lengthOf(deviceNotifications, 0);
+        })
+        .then(() => redis.smembers('feature-notifications'))
+        .then(featureNotifications => {
+          assert.lengthOf(featureNotifications, 0);
+        })
+        .then(() => redis.smembers('another-feature-notifications'))
+        .then(featureNotifications => {
+          assert.lengthOf(featureNotifications, 0);
+        })
+        .then(() => redis.hgetall('device-deviceId'))
         .then(device => {
           assert.notOk(device);
         });
@@ -728,8 +712,7 @@ define((require) => {
         .then(response => {
           assert.equal(response.status, 200);
         })
-        .then(() => notifications.default.setClient(5))
-        .then(client => redis.hgetall(client, 'device-someId'))
+        .then(() => redis.hgetall('device-someId'))
         .then(device => {
           assert.isObject(device);
           assert.strictEqual(device.endpoint, 'https://localhost:5006/');
@@ -738,14 +721,13 @@ define((require) => {
       });
 
       bdd.it('/update_device replies with 404 if no registrations for the device', () =>
-        notifications.default.setClient(5)
-        .then(() => api()
-          .put('/update_device')
-          .send({
-            deviceId: 'someId',
-            endpoint: 'https://localhost:5006/',
-            key: 'anotherkey',
-          }))
+        api()
+        .put('/update_device')
+        .send({
+          deviceId: 'someId',
+          endpoint: 'https://localhost:5006/',
+          key: 'anotherkey',
+        })
         .catch(err => {
           assert.strictEqual(err.response.statusCode, 404);
         })
