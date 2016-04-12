@@ -48,7 +48,7 @@ define((require) => {
 
     const userPublicKey = userCurve.generateKeys();
     const userKey = urlBase64.encode(userPublicKey);
-    const userAuth = crypto.randomBytes(16);
+    const userAuth = urlBase64.encode(crypto.randomBytes(16));
 
     var redisIndex;
 

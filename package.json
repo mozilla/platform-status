@@ -7,7 +7,7 @@
     "node": ">= 4"
   },
   "dependencies": {
-    "babel-core": "^6.2.1",
+    "babel-core": "^6.7.6",
     "babel-eslint": "^6.0.0",
     "babel-preset-es2015": "^6.3.13",
     "babel-preset-es2015-loose": "^7.0.0",
@@ -42,7 +42,7 @@
     "gulp-uglify": "^1.4.2",
     "handlebars": "^4.0.3",
     "localforage": "^1.4.0",
-    "lodash.debounce": "^4.0.0",
+    "lodash.debounce": "^4.0.5",
     "lunr": "^0.7.0",
     "markdown-it": "^6.0.0",
     "mkdirp": "^0.5.1",
@@ -61,14 +61,14 @@
     "source-map-support": "^0.4.0",
     "vinyl-buffer": "^1.0.0",
     "vinyl-source-stream": "^1.1.0",
-    "web-push": "^2.0.0"
+    "web-push": "^2.0.2"
   },
   "devDependencies": {
-    "babel-cli": "^6.5.1",
-    "browser-sync": "^2.10.1",
+    "babel-cli": "^6.7.5",
+    "browser-sync": "^2.12.1",
     "chai-http": "^2.0.1",
     "crypto": "0.0.3",
-    "fetch-mock": "^4.0.1",
+    "fetch-mock": "^4.4.0",
     "intern": "^3.0.6",
     "nock": "^8.0.0",
     "portfinder": "^1.0.1",
