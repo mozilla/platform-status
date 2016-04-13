@@ -366,7 +366,7 @@ define((require) => {
           .reply(201);
 
           return register('someId', 'feature', 'https://localhost:5005/', userKey, userAuth)
-          .then(() => notifications.default.sendNotifications('feature', undefined, false))
+          .then(() => notifications.default.sendNotifications('feature', {}, false))
           .then(() => {
             assert.ok(service.isDone());
           });
@@ -379,7 +379,7 @@ define((require) => {
           .reply(201);
 
           return register('someId', 'feature', 'https://localhost:5005/', userKey, userAuth)
-          .then(() => notifications.default.sendNotifications('feature', 'hello', false))
+          .then(() => notifications.default.sendNotifications('feature', { body: 'hello' }, false))
           .then(() => redis.get('someId-payload'))
           .then(payload => {
             assert.notOk(payload);
@@ -393,16 +393,16 @@ define((require) => {
           .reply(200);
 
           return register('someId', 'feature', 'https://android.googleapis.com/gcm/send', '', '')
-          .then(() => notifications.default.sendNotifications('feature', 'hello', false))
-          .then(() => redis.get('someId-payload'))
+          .then(() => notifications.default.sendNotifications('feature', { body: 'hello' }, false))
+          .then(() => notifications.default.getPayload('someId'))
           .then(payload => {
-            assert.strictEqual(payload, '"hello"');
+            assert.deepEqual(payload, { body: 'hello' });
             assert.ok(service.isDone());
           });
         });
 
         bdd.it('should delete payload after providing it', () =>
-          redis.set('someId-payload', 'hello')
+          redis.set('someId-payload', '{"body": "hello"}')
           .then(() => notifications.default.getPayload('someId'))
           .then(() => redis.get('someId-payload'))
           .then(payload => {
@@ -417,7 +417,7 @@ define((require) => {
           .reply(200);
 
           return register('someId', 'feature', 'https://android.googleapis.com/gcm/send', '', '')
-          .then(() => notifications.default.sendNotifications('feature', 'hello', false))
+          .then(() => notifications.default.sendNotifications('feature', { body: 'hello' }, false))
           .then(() => {
             assert.ok(service.isDone());
           });
@@ -436,7 +436,7 @@ define((require) => {
 
           return register('someId', 'feature', 'https://localhost:5005/', userKey, userAuth)
           .then(() => register('anotherId', 'all', 'https://localhost:5006/', userKey, userAuth))
-          .then(() => notifications.default.sendNotifications('feature', undefined, false))
+          .then(() => notifications.default.sendNotifications('feature', {}, false))
           .then(() => {
             assert.ok(serviceA.isDone(), 'is serviceA called');
             assert.ok(serviceB.isDone(), 'is serviceB called');
@@ -450,7 +450,7 @@ define((require) => {
           .reply(201);
 
           return register('someId', 'new', 'https://localhost:5005/', userKey, userAuth)
-          .then(() => notifications.default.sendNotifications('feature', undefined, true))
+          .then(() => notifications.default.sendNotifications('feature', {}, true))
           .then(() => {
             assert.ok(service.isDone(), 'is service called');
           });
@@ -469,7 +469,7 @@ define((require) => {
 
           return register('someId', 'feature', 'https://localhost:5005/', userKey, userAuth)
           .then(() => register('anotherId', 'feature', 'https://localhost:5006/', userKey, userAuth))
-          .then(() => notifications.default.sendNotifications('feature', undefined, false))
+          .then(() => notifications.default.sendNotifications('feature', {}, false))
           .then(() => {
             assert.ok(serviceA.isDone(), 'is serviceA called');
             assert.ok(serviceB.isDone(), 'is serviceB called');

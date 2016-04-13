@@ -1,8 +1,6 @@
 import redis from '../engine/redis-helper.js';
 import webPush from 'web-push';
 
-const ttl = 2419200;
-
 if (!process.env.GCM_API_KEY) {
   console.warn('Set the GCM_API_KEY environment variable to support GCM');
 }
@@ -25,19 +23,21 @@ function getRegisteredFeatures(deviceId) {
 }
 
 function sendWebPush(endpoint, key, auth, deviceId, payload) {
-  payload = JSON.stringify(payload);
-  if (!key || !auth) {
-    return redis.set(`${deviceId}-payload`, payload)
-    .then(() =>
-      webPush.sendNotification(endpoint, { TTL: ttl })
-    );
+  if (typeof payload !== 'object') {
+    return Promise.reject(new Error(`payload "${payload}" needs to be an object`));
   }
-  return webPush.sendNotification(endpoint, {
-    TTL: ttl,
-    userPublicKey: key,
-    userAuth: auth,
-    payload,
-  });
+  payload = JSON.stringify(payload);
+  if (key || auth) {
+    return webPush.sendNotification(endpoint, {
+      userPublicKey: key,
+      userAuth: auth,
+      payload,
+    });
+  }
+  return redis.set(`${deviceId}-payload`, payload)
+  .then(() =>
+    webPush.sendNotification(endpoint)
+  );
 }
 
 /*
@@ -70,19 +70,15 @@ function sendConfirmation(endpoint, key, auth, deviceId, features) {
  * send confirmation after user changed registration
  * deviceId might be an endpoint
  */
-function sendConfirmationToDevice(deviceId) {
-  return checkDeviceId(deviceId)
-  .then(() => redis.hgetall(`device-${deviceId}`))
-  .then(device =>
-    getRegisteredFeatures(deviceId)
-    .then(features => sendConfirmation(
-      device.endpoint,
-      device.key,
-      device.authSecret,
-      deviceId,
-      features,
-    ))
-  );
+function sendConfirmationToDevice(device) {
+  return getRegisteredFeatures(device.id)
+  .then(features => sendConfirmation(
+    device.endpoint,
+    device.key,
+    device.authSecret,
+    device.id,
+    features,
+  ));
 }
 
 function unregisterDevice(deviceId) {
@@ -199,25 +195,27 @@ function register(deviceId, features, endpoint, key, authSecret) {
         key: key || '',
         authSecret: authSecret || '',
       };
-      return redis.hmset(`device-${deviceId}`, device);
+      return redis.hmset(`device-${deviceId}`, device)
+      .then(() => device);
     }
+    return redis.hgetall(`device-${deviceId}`);
   })
-  .then(() => redis.hgetall(`device-${deviceId}`))
   .then(device => {
     if (!device || !device.endpoint) {
       throw new Error('No endpoint provided');
     }
-  })
-  .then(() => {
     if (features.indexOf('all') >= 0) {
-      return registerToAll(deviceId);
+      return registerToAll(deviceId)
+      .then(() => device);
     }
     return Promise.all(
       features.map(slug => [
         redis.sadd(`${slug}-notifications`, deviceId),
-        redis.sadd(`${deviceId}-notifications`, slug)]));
+        redis.sadd(`${deviceId}-notifications`, slug)])
+    )
+    .then(() => device);
   })
-  .then(() => sendConfirmationToDevice(deviceId))
+  .then(device => sendConfirmationToDevice(device))
   .then(() => getRegisteredFeatures(deviceId));
 }
 
@@ -235,6 +233,9 @@ function updateDevice(deviceId, endpoint, key, authSecret) {
 }
 
 function sendNotifications(feature, payload, isNew) {
+  if (!payload) {
+    return Promise.reject(new Error('No payload provided'));
+  }
   return redis.smembers(`${feature}-notifications`)
   .then(devices =>
     redis.smembers('all-notifications')
@@ -264,7 +265,7 @@ function getPayload(deviceId) {
   return redis.get(`${deviceId}-payload`)
   .then(payload =>
     redis.del(`${deviceId}-payload`)
-    .then(() => payload)
+    .then(() => JSON.parse(payload))
   );
 }
 
