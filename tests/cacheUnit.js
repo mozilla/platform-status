@@ -35,19 +35,8 @@ define((require) => {
 
   bdd.describe('cache module', () => {
     bdd.describe('readJson', () => {
-      var originalRedisIndex;
-
-      bdd.before(() => {
-        originalRedisIndex = process.env.REDIS_INDEX || 0;
-        process.env.REDIS_INDEX = 5;
-      });
-
       bdd.after(() => cache.quitRedis()
-        .then(() => redis.quitClient())
-        .then(() => {
-          process.env.REDIS_INDEX = originalRedisIndex;
-        })
-      );
+        .then(() => redis.quitClient()));
 
       bdd.afterEach(() => redis.flushdb());
 

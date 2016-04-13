@@ -92,12 +92,7 @@ define(require => {
       const cacheDir = 'tests/support/var/engineCache';
       const fetchMock = require('intern/dojo/node!fetch-mock');
       const redis = require('intern/dojo/node!../../../../engine/redis-helper').default;
-      var redisIndex;
-
       bdd.before(() => {
-        redisIndex = process.env.REDIS_INDEX || 0;
-        process.env.REDIS_INDEX = 5;
-
         // Create the tests var dir if it doesn't already exist
         const dir = path.dirname(cacheDir);
 
@@ -121,11 +116,7 @@ define(require => {
 
       bdd.after(() =>
         cache.quitRedis()
-        .then(() => redis.quitClient())
-        .then(() => {
-          process.env.REDIS_INDEX = redisIndex;
-        })
-      );
+        .then(() => redis.quitClient()));
 
       // Remove the test cache dir
       bdd.afterEach(() =>
