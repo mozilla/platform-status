@@ -20,9 +20,6 @@ self.addEventListener('push', event => {
     .then(data => {
       // TODO add a way to unregister from the back-end
       // data.command (?)
-      if (data && !data.title) {
-        data = JSON.parse(data);
-      }
       if (!(data && data.title && data.body)) {
         console.log('ERROR: Notification without payload', data, data.title);
         return;
