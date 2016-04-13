@@ -27,10 +27,10 @@ function sendWebPush(endpoint, key, auth, deviceId, payload) {
     return Promise.reject(new Error(`payload "${payload}" needs to be an object`));
   }
   payload = JSON.stringify(payload);
-  if (key || auth) {
+  if (key) {
     return webPush.sendNotification(endpoint, {
       userPublicKey: key,
-      userAuth: auth,
+      userAuth: auth || '',
       payload,
     });
   }
@@ -53,12 +53,10 @@ function sendConfirmation(endpoint, key, auth, deviceId, features) {
     const message = 'Registered to';
     if (features.indexOf('all') >= 0) {
       payload.body = `${message} all features`;
+    } else if (features.indexOf('new') >= 0) {
+      payload.body = `${message} new features only`;
     } else if (numberOfFeatures === 1) {
-      if (features.indexOf('new') === 0) {
-        payload.body = `${message} new features only`;
-      } else {
-        payload.body = `${message} one feature`;
-      }
+      payload.body = `${message} one feature`;
     } else {
       payload.body = `${message} ${numberOfFeatures} features`;
     }
@@ -229,7 +227,8 @@ function updateDevice(deviceId, endpoint, key, authSecret) {
   }
   return checkDeviceId(deviceId)
   .then(() => redis.hmset(`device-${deviceId}`,
-                          'endpoint', endpoint, 'key', key, 'authSecret', authSecret));
+                          'endpoint', endpoint,
+                          'key', key, 'authSecret', authSecret || ''));
 }
 
 function sendNotifications(feature, payload, isNew) {
