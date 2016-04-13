@@ -35,18 +35,7 @@ define((require) => {
   const redis = require('intern/dojo/node!../../../../engine/redis-helper').default;
 
   bdd.describe('digger module', () => {
-    var redisIndex;
-
-    bdd.before(() => {
-      redisIndex = process.env.REDIS_INDEX || 0;
-      process.env.REDIS_INDEX = 5;
-    });
-
-    bdd.after(() => redis.quitClient()
-      .then(() => {
-        process.env.REDIS_INDEX = redisIndex;
-      })
-    );
+    bdd.after(() => redis.quitClient());
 
     // clean database after each test
     bdd.afterEach(() => redis.flushdb());
@@ -109,16 +98,12 @@ define((require) => {
 
     var port;
     var server;
-    var redisIndex;
 
     function api() {
       return chai.request(`http://localhost:${port}`);
     }
 
     bdd.before(() => new Promise((resolve) => {
-      redisIndex = process.env.REDIS_INDEX || 0;
-      process.env.REDIS_INDEX = 5;
-
       // find port and spin the server
       portfinder.getPort((err, receivedPort) => {
         port = receivedPort;
@@ -130,10 +115,7 @@ define((require) => {
     }));
 
     bdd.after(() => redis.quitClient()
-      .then(() => {
-        process.env.REDIS_INDEX = redisIndex;
-        return server.close();
-      })
+      .then(() => server.close())
     );
 
     // clean database after each test
