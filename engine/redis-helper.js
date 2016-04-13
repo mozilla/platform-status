@@ -9,7 +9,6 @@ function getClient() {
       url: process.env.REDIS_URL,
     });
   }
-  console.log('XXX', process.env.REDIS_INDEX);
   if (process.env.REDIS_INDEX === undefined || redisIndex === process.env.REDIS_INDEX) {
     return Promise.resolve(client);
   }
