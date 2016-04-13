@@ -22,28 +22,28 @@ function getRegisteredFeatures(deviceId) {
   .then(() => redis.smembers(`${deviceId}-notifications`));
 }
 
-function sendWebPush(endpoint, key, auth, deviceId, payload) {
+function sendWebPush(device, payload) {
   if (typeof payload !== 'object') {
     return Promise.reject(new Error(`payload "${payload}" needs to be an object`));
   }
   payload = JSON.stringify(payload);
-  if (key) {
-    return webPush.sendNotification(endpoint, {
-      userPublicKey: key,
-      userAuth: auth || '',
+  if (device.key) {
+    return webPush.sendNotification(device.endpoint, {
+      userPublicKey: device.key,
+      userAuth: device.auth || '',
       payload,
     });
   }
-  return redis.set(`${deviceId}-payload`, payload)
+  return redis.set(`${device.id}-payload`, payload)
   .then(() =>
-    webPush.sendNotification(endpoint)
+    webPush.sendNotification(device.endpoint)
   );
 }
 
 /*
  * send confirmation even if deviceId is already deleted
  */
-function sendConfirmation(endpoint, key, auth, deviceId, features) {
+function sendConfirmation(device, features) {
   const payload = {
     title: 'Registration changed',
     body: 'You\'re not registered to any feature',
@@ -61,22 +61,7 @@ function sendConfirmation(endpoint, key, auth, deviceId, features) {
       payload.body = `${message} ${numberOfFeatures} features`;
     }
   }
-  return sendWebPush(endpoint, key, auth, deviceId, payload);
-}
-
-/*
- * send confirmation after user changed registration
- * deviceId might be an endpoint
- */
-function sendConfirmationToDevice(device) {
-  return getRegisteredFeatures(device.id)
-  .then(features => sendConfirmation(
-    device.endpoint,
-    device.key,
-    device.authSecret,
-    device.id,
-    features,
-  ));
+  return sendWebPush(device, payload);
 }
 
 function unregisterDevice(deviceId) {
@@ -150,7 +135,12 @@ function unregister(deviceId, features, doNotConfirm) {
   })
   .then(regFeatures => {
     if (!doNotConfirm && endpoint) {
-      return sendConfirmation(endpoint, key, authSecret, deviceId, regFeatures)
+      return sendConfirmation({
+        endpoint,
+        key,
+        authSecret,
+        id: deviceId,
+      }, regFeatures)
       .then(() => regFeatures);
     }
     return regFeatures;
@@ -213,8 +203,10 @@ function register(deviceId, features, endpoint, key, authSecret) {
     )
     .then(() => device);
   })
-  .then(device => sendConfirmationToDevice(device))
-  .then(() => getRegisteredFeatures(deviceId));
+  .then(device => getRegisteredFeatures(device.id)
+    .then(regFeatures => sendConfirmation(device, features)
+      .then(() => regFeatures))
+  );
 }
 
 // update endpoint for the device
@@ -254,9 +246,7 @@ function sendNotifications(feature, payload, isNew) {
     // machine. An idea to fix it: store an array of messages
     // instead. Delete after showing it. If a notifications comes
     // and no payload - just leave it there.
-    devices.map(device =>
-      sendWebPush(device.endpoint, device.key, device.authSecret, device.id, payload)
-    )
+    devices.map(device => sendWebPush(device, payload))
   ));
 }
 

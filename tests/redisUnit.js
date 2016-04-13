@@ -35,10 +35,7 @@ define((require) => {
     bdd.after(() => redis.quitClient());
 
     // clean database after each test
-    bdd.afterEach(() => {
-      console.log('--- flushing');
-      return redis.flushdb();
-    });
+    bdd.afterEach(() => redis.flushdb());
 
     bdd.describe('`status` key', () => {
       bdd.it('should hold all info provided to saveData', () => {
