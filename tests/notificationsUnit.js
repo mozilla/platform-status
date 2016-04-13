@@ -50,18 +50,7 @@ define((require) => {
     const userKey = urlBase64.encode(userPublicKey);
     const userAuth = urlBase64.encode(crypto.randomBytes(16));
 
-    var redisIndex;
-
-    bdd.before(() => {
-      redisIndex = process.env.REDIS_INDEX || 0;
-      process.env.REDIS_INDEX = 5;
-    });
-
-    bdd.after(() => redis.quitClient()
-      .then(() => {
-        process.env.REDIS_INDEX = redisIndex;
-      })
-    );
+    bdd.after(() => redis.quitClient());
 
     // clean and quit database after each test
     bdd.afterEach(() => redis.flushdb()

@@ -32,18 +32,7 @@ define((require) => {
   const redis = require('intern/dojo/node!../../../../engine/redis-helper').default;
 
   bdd.describe('Saves status in redis', () => {
-    var redisIndex;
-
-    bdd.before(() => {
-      redisIndex = process.env.REDIS_INDEX || 0;
-      process.env.REDIS_INDEX = 5;
-    });
-
-    bdd.after(() => redis.quitClient()
-      .then(() => {
-        process.env.REDIS_INDEX = redisIndex;
-      })
-    );
+    bdd.after(() => redis.quitClient());
 
     // clean database after each test
     bdd.afterEach(() => {
@@ -148,7 +137,13 @@ define((require) => {
             firstLogKey = Object.keys(logs)[0];
           })
           // go on with the test
-          .then(() => engine.checkForNewData(features));
+          .then(() => new Promise(resolve => {
+            // wait for a while before running next check
+            setTimeout(() => {
+              engine.checkForNewData(features)
+              .then(resolve);
+            }, 100);
+          }));
         })
         .then(features => engine.saveData(features))
         .then(() => redis.hgetall('changelog'))
