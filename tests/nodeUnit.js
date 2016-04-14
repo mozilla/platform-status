@@ -91,7 +91,6 @@ define(require => {
       const nock = require('intern/dojo/node!nock');
       const cache = require('intern/dojo/node!../../../../engine/cache').default;
       const cacheDir = 'tests/support/var/engineCache';
-      const fetchMock = require('intern/dojo/node!fetch-mock');
       const redis = require('intern/dojo/node!../../../../engine/redis-helper').default;
       bdd.before(() => {
         // Create the tests var dir if it doesn't already exist
@@ -123,12 +122,11 @@ define(require => {
       bdd.afterEach(() =>
         del([cacheDir])
         .then(() => redis.flushdb())
+        // Don't let tests interfere with each other's calls to `fetch`
+        .then(() => nock.cleanAll())
       );
 
       bdd.beforeEach(() => {
-        // Don't let tests interfere with each other's calls to `fetch`
-        fetchMock.reset();
-
         // Make dir to cache files to during tests
         fs.mkdirSync(cacheDir);
       });
