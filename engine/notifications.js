@@ -13,6 +13,7 @@ function checkDeviceId(deviceId) {
     if (!device || !device.endpoint) {
       throw new Error('Not Found');
     }
+    return device;
   });
 }
 
@@ -81,36 +82,29 @@ function unregisterDevice(deviceId) {
 // if no features provided unregister from all features and delete
 // endpoint entry
 function unregister(deviceId, features, doNotConfirm) {
-  let endpoint;
-  let key;
-  let authSecret;
+  let device;
   return checkDeviceId(deviceId)
-  .then(() => redis.hgetall(`device-${deviceId}`))
-  .then(device => {
-    endpoint = device.endpoint;
-    key = device.key;
-    authSecret = device.authSecret;
-  })
-  .then(() => {
+  .then(gotDevice => {
+    device = gotDevice;
     if (!features) {
-      return unregisterDevice(deviceId);
+      return unregisterDevice(device.id);
     }
-    return redis.sismember(`${deviceId}-notifications`, 'all')
+    return redis.sismember(`${device.id}-notifications`, 'all')
     .then(registeredToAll => {
       if (!registeredToAll) {
         return Promise.all(features.map(slug => [
-          redis.srem(`${slug}-notifications`, deviceId),
-          redis.srem(`${deviceId}-notifications`, slug)])
+          redis.srem(`${slug}-notifications`, device.id),
+          redis.srem(`${device.id}-notifications`, slug)])
         );
       }
       // user decided to unregister from `all`
       if (features.indexOf('all') >= 0) {
-        return redis.srem('all-notifications', deviceId)
-        .then(() => redis.srem(`${deviceId}-notifications`, 'all'));
+        return redis.srem('all-notifications', device.id)
+        .then(() => redis.srem(`${device.id}-notifications`, 'all'));
       }
       // unregister from `all` and register to negative of `features`
-      return redis.srem('all-notifications', deviceId)
-      .then(() => redis.srem(`${deviceId}-notifications`, 'all'))
+      return redis.srem('all-notifications', device.id)
+      .then(() => redis.srem(`${device.id}-notifications`, 'all'))
       // register to everything except of features
       .then(() => redis.get('status'))
       .then(status => {
@@ -120,27 +114,23 @@ function unregister(deviceId, features, doNotConfirm) {
           if (features.indexOf(slug) >= 0) {
             return Promise.resolve();
           }
-          return redis.sadd(`${deviceId}-notifications`, slug)
-          .then(() => redis.sadd(`${slug}-notifications`, deviceId));
+          return redis.sadd(`${device.id}-notifications`, slug)
+          .then(() => redis.sadd(`${slug}-notifications`, device.id));
         }));
       });
     });
   })
-  .then(() => getRegisteredFeatures(deviceId))
-  .catch(err => {
-    if (err.message !== 'Not Found') {
-      throw err;
-    }
-    return [];
-  })
+  .then(() => getRegisteredFeatures(device.id)
+    .catch(err => {
+      if (err.message !== 'Not Found') {
+        throw err;
+      }
+      return [];
+    })
+  )
   .then(regFeatures => {
-    if (!doNotConfirm && endpoint) {
-      return sendConfirmation({
-        endpoint,
-        key,
-        authSecret,
-        id: deviceId,
-      }, regFeatures)
+    if (!doNotConfirm && device.endpoint) {
+      return sendConfirmation(device, regFeatures)
       .then(() => regFeatures);
     }
     return regFeatures;
