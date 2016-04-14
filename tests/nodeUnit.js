@@ -88,6 +88,7 @@ define(require => {
     });
 
     bdd.describe('Cache', () => {
+      const nock = require('intern/dojo/node!nock');
       const cache = require('intern/dojo/node!../../../../engine/cache').default;
       const cacheDir = 'tests/support/var/engineCache';
       const fetchMock = require('intern/dojo/node!fetch-mock');
@@ -133,28 +134,37 @@ define(require => {
       });
 
       bdd.it('should cache files', () => {
-        const testURL = 'https://raw.githubusercontent.com/mozilla/platform-status/master/package.json';
+        const testURL = 'http://somejsonurl.com';
+        const testObject = { some: 'value' };
+
+        nock(testURL)
+        .get('/')
+        .reply(200, testObject, {
+          'cache-control': 'max-age=100',
+        })
+        .get('/')
+        .reply(304);
 
         // Cache our package.json file
-        return cache.readJson(testURL, 5).then(originalText => {
-          // Cause the next fetch to fail
-          fetchMock.mock(testURL, 404);
-
-          // Get our package.json (should succeed from cache)
-          return cache.readJson(testURL, 5).then(cachedText => {
+        return cache.readJson(testURL)
+        // Get our package.json (should succeed from cache)
+        .then(originalText => cache.readJson(testURL)
+          .then(cachedText => {
             // Compare the original text with the cached text
-            assert.equal(JSON.stringify(cachedText), JSON.stringify(originalText));
-          });
-        });
+            assert.deepEqual(cachedText, originalText);
+            assert.deepEqual(cachedText, testObject);
+          })
+        );
       });
 
       bdd.it('should reject on 404s', () => {
-        const testURL = 'https://raw.githubusercontent.com/mozilla/platform-status/master/package.json';
+        const testURL = 'https://somejsonurl.com';
 
-        // Cause the fetch to 404
-        fetchMock.mock(testURL, 404);
+        nock(testURL)
+        .get('/')
+        .reply(404);
 
-        return cache.readJson(testURL, 5).then(() => {
+        return cache.readJson(testURL).then(() => {
           assert.fail('`cache.readJson` should have rejected on a 404');
         }).catch(err => {
           assert(err instanceof Error);
