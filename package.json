@@ -67,8 +67,6 @@
     "babel-cli": "^6.7.5",
     "browser-sync": "^2.12.1",
     "chai-http": "^2.0.1",
-    "crypto": "0.0.3",
-    "fetch-mock": "^4.4.0",
     "intern": "^3.0.6",
     "nock": "^8.0.0",
     "portfinder": "^1.0.1",
