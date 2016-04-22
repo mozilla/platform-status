@@ -9,10 +9,12 @@ app.use(bodyParser.json());
 const distPublicDir = './dist/public';
 
 // forceHost
-app.use((req, res) => {
+app.use((req, res, next) => {
   const host = req.get('Host');
   if (!/local|-pr-\d+\./.test(host) && host !== 'platform-status.mozilla.org') {
     res.redirect(301, `https://platform-status.mozilla.org${req.url}`);
+  } else {
+    next();
   }
 });
 
