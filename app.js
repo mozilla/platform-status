@@ -14,7 +14,6 @@ app.use((req, res, next) => {
   if (!/local|-pr-\d+\./.test(host) && host !== 'platform-status.mozilla.org') {
     res.redirect(301, `https://platform-status.mozilla.org${req.url}`);
   }
-  return next();
 });
 
 // forceSSL
