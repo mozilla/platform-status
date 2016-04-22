@@ -27,6 +27,8 @@ babelRegister();
 import sourceMapSupport from 'source-map-support';
 sourceMapSupport.install();
 
+import browserSyncCreator from 'browser-sync';
+
 const develop = process.env.NODE_ENV !== 'production';
 console.log(`Building for ${develop ? 'development' : 'production'}`);
 
@@ -219,7 +221,6 @@ function offline() {
 gulp.task('build', ['build:dist'], offline);
 
 gulp.task('watch', ['build', 'lint'], () => {
-  const browserSyncCreator = require('browser-sync');
   const browserSync = browserSyncCreator.create();
   const cachePath = path.join(cacheDir, '*.json');
   browserSync.init({
