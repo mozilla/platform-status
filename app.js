@@ -14,6 +14,8 @@ app.use((req, res, next) => {
   const host = req.get('Host');
   if (!/local|-pr-\d+\./.test(host) && host !== 'platform-status.mozilla.org') {
     res.redirect(301, `https://platform-status.mozilla.org${req.url}`);
+  } else {
+    next();
   }
 });
 
