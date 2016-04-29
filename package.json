@@ -60,10 +60,10 @@
     "slug": "^0.9.1",
     "source-map-support": "^0.4.0",
     "vinyl-buffer": "^1.0.0",
-    "vinyl-source-stream": "^1.1.0"
+    "vinyl-source-stream": "^1.1.0",
+    "browser-sync": "^2.10.1"
   },
   "devDependencies": {
-    "browser-sync": "^2.10.1",
     "chai-http": "^2.0.1",
     "intern": "^3.0.6",
     "nock": "^8.0.0",
