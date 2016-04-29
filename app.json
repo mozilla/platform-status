@@ -11,5 +11,7 @@
       "required": true
     }
   },
-  "addons": []
+  "addons": [
+    "heroku-redis:hobby-dev"
+  ]
 }
