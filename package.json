@@ -62,11 +62,11 @@
     "source-map-support": "^0.4.0",
     "vinyl-buffer": "^1.0.0",
     "vinyl-source-stream": "^1.1.0",
-    "web-push": "^2.0.2"
+    "web-push": "^2.0.2",
+    "browser-sync": "^2.12.1"
   },
   "devDependencies": {
     "babel-cli": "^6.7.5",
-    "browser-sync": "^2.12.1",
     "chai-http": "^2.0.1",
     "intern": "^3.0.6",
     "nock": "^8.0.0",
