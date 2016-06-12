@@ -4,7 +4,12 @@ define({
     },
   },
 
-  suites: ['tests/nodeUnit', 'tests/redisUnit', 'tests/apiUnit', 'tests/cacheUnit'],
+  suites: [
+    'tests/nodeUnit',
+    'tests/redisUnit',
+    'tests/notificationsUnit',
+    'tests/apiUnit',
+    'tests/cacheUnit'],
   functionalSuites: [],
 
   // A regexp to exclude from code coverage calculations

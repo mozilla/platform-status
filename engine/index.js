@@ -11,6 +11,7 @@ import FirefoxVersionParser from './firefoxVersionParser.js';
 import CanIUseParser from './canIUseParser.js';
 import cache from './cache.js';
 import redis from './redis-helper.js';
+import { default as notifications } from './notifications.js';
 
 const fixtureDir = path.resolve('./features');
 const fixtureParser = new FixtureParser(fixtureDir);
@@ -398,6 +399,29 @@ function checkForNewData(features) {
   .then(() => features);
 }
 
+function sendNotifications(features) {
+  return Promise.all(features.map(feature => {
+    if (feature.just_started) {
+      return notifications.sendNotifications(feature.slug, {
+        feature: feature.slug,
+        message: 'started watching',
+      }, true);
+    }
+    if (Object.keys(feature.updated).length > 0) {
+      let message = '';
+      const browsers = Object.keys(feature.updated);
+      browsers.forEach(browser => {
+        message += `${browser}: ${feature.updated[browser].from} -> ${feature.updated[browser].to}; `;
+      });
+      return notifications.sendNotifications(feature.slug, {
+        feature: feature.slug,
+        message,
+      }, false);
+    }
+    return Promise.resolve();
+  }));
+}
+
 // `status` key holds an Object representation of `status.json`
 // `changed` is a hashtag with just changed data stored by date
 function saveData(features) {
@@ -628,6 +652,7 @@ function buildStatus(options) {
     return checkForNewData(fixtureParser.results);
   })
   .then(saveData)
+  .then(sendNotifications)
   .then(cache.quitRedis)
   .then(redis.quitClient)
   .then(() => {
@@ -657,5 +682,6 @@ const test = {
   saveData,
   checkForNewData,
   buildFeatures,
+  sendNotifications,
 };
 export { test };

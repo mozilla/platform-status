@@ -2,6 +2,7 @@ const express = require('express');
 const fs = require('fs');
 const compression = require('compression');
 const app = express();
+const notifications = require('./routes/notifications');
 const diggerAPI = require('./routes/api');
 const bodyParser = require('body-parser');
 app.use(bodyParser.json());
@@ -47,6 +48,7 @@ if (!fs.existsSync(distPublicDir)) {
 }
 app.use(express.static(distPublicDir));
 
+app.use(notifications);
 app.use(diggerAPI);
 
 console.log('App is configured');
