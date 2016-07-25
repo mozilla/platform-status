@@ -1,4 +1,4 @@
-require ('newrelic');
+require('newrelic');
 const app = require('./dist/app');
 
 const port = process.env.PORT || 3003;

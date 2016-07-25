@@ -24,10 +24,10 @@ function validateWarning(msg) {
 }
 
 function normalizeStatus(status, browser) {
+  if (typeof status !== 'string') {
+    return 'unknown';
+  }
   switch (status.trim().toLowerCase()) {
-    case '':
-    case 'unknown':
-      return 'unknown';
     case 'no active development':
     case 'not currently planned':
     case 'not considering':
@@ -57,7 +57,7 @@ function normalizeStatus(status, browser) {
       return 'shipped';
     default:
       console.warn(`Unmapped status: "${status}" for "${browser}"`);
-      return 'in-development';
+      return 'unknown';
   }
 }
 

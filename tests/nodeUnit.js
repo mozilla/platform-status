@@ -70,19 +70,19 @@ define(require => {
           });
         });
 
-        bdd.it('should throw Error objects for invalid strings', () => {
+        bdd.it('should return unknown for invalid strings', () => {
           var indexJS = require('intern/dojo/node!../../../../engine/index').test;
-          assert.throws(indexJS.normalizeStatus.bind(null, 'asdf'));
-          assert.throws(indexJS.normalizeStatus.bind(null, 'a string'));
+          assert.equal(indexJS.normalizeStatus(null, 'asdf'), 'unknown');
+          assert.equal(indexJS.normalizeStatus(null, 'a string'), 'unknown');
 
-          assert.throws(indexJS.normalizeStatus.bind(null, '-8023'));
-          assert.throws(indexJS.normalizeStatus.bind(null, '91257'));
+          assert.equal(indexJS.normalizeStatus(null, '-8023'), 'unknown');
+          assert.equal(indexJS.normalizeStatus(null, '91257'), 'unknown');
 
-          assert.throws(indexJS.normalizeStatus.bind(null, 1234));
-          assert.throws(indexJS.normalizeStatus.bind(null, -1234));
+          assert.equal(indexJS.normalizeStatus(null, 1234), 'unknown');
+          assert.equal(indexJS.normalizeStatus(null, -1234), 'unknown');
 
-          assert.throws(indexJS.normalizeStatus.bind(null, null));
-          assert.throws(indexJS.normalizeStatus.bind(null));
+          assert.equal(indexJS.normalizeStatus(null, null), 'unknown');
+          assert.equal(indexJS.normalizeStatus(null), 'unknown');
         });
       });
     });

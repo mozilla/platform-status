@@ -156,8 +156,10 @@ define((require) => {
         api()
         .get('/api/feature/some-status')
         .send()
-        .catch(err => {
-          assert.equal(err.response.status, 404);
+        .then(res => {
+          assert.equal(res.status, 404);
+        })
+        .catch(() => {
         })
       );
 

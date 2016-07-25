@@ -52,9 +52,11 @@ gulp.task('clean', () => del([distDir]));
 gulp.task('lint', () =>
   gulp
   .src(['./*.js', './engine/*.js', './src/js/*.js', './tests/**/*.js'])
-  .pipe(plugins.eslint())
+  .pipe(plugins.eslint({
+    fix: true,
+  }))
   .pipe(plugins.eslint.format())
-  .pipe(plugins.eslint.failOnError())
+  .pipe(plugins.eslint.failAfterError())
 );
 
 gulp.task('build:engines', () =>
