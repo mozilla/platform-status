@@ -47,6 +47,7 @@ function normalizeStatus(status, browser) {
     case 'prototyping':
     case 'preview release':
     case 'in-development':
+    case 'origin trial':
       return 'in-development';
     case 'shipped':
     case 'enabled by default':
@@ -55,7 +56,8 @@ function normalizeStatus(status, browser) {
     case 'prefixed':
       return 'shipped';
     default:
-      throw new Error(`Unmapped status: "${status}" for "${browser}"`);
+      console.warn(`Unmapped status: "${status}" for "${browser}"`);
+      return 'in-development';
   }
 }
 
