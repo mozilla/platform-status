@@ -76,7 +76,7 @@
     "server": "node server.js",
     "lint": "gulp lint",
     "start": "gulp watch",
-    "test": "npm run lint && REDIS_INDEX=5 npm run build && REDIS_INDEX=5 intern-client config=tests/config/intern-node && REDIS_INDEX=5 intern-runner config=tests/config/intern-browser",
+    "test": "npm run lint && REDIS_INDEX=5 npm run build && REDIS_INDEX=5 intern-client config=tests/config/intern-node",
     "testNode": "npm run lint && REDIS_INDEX=5 intern-client config=tests/config/intern-node",
     "update-browser-logos": "npm i alrra/browser-logos && cp node_modules/browser-logos/*/{chrome,edge,firefox,firefox-beta,firefox-developer-edition,firefox-nightly,opera,safari-technology-preview}_64x64.png src/images/browsers/"
   },
