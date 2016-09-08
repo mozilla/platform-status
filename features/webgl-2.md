@@ -1,7 +1,7 @@
 ---
 title: WebGL 2.0
 category: graphics, games
-firefox_status: in-development
+firefox_status: 51
 bugzilla: 889977
 mdn_url: https://developer.mozilla.org/en-US/docs/Web/API/WebGL2RenderingContext
 spec_url: https://www.khronos.org/registry/webgl/specs/latest/2.0/
