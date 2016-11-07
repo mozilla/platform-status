@@ -2,7 +2,7 @@
 title: Async functions
 category: js
 bugzilla: 1185106
-firefox_status: in-development
+firefox_status: 52
 mdn_url: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/async_function
 spec_url: https://tc39.github.io/ecmascript-asyncawait/
 spec_repo: https://github.com/tc39/ecmascript-asyncawait
