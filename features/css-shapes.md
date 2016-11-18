@@ -2,7 +2,7 @@
 title: CSS Shapes
 category: css, layout
 bugzilla: 1040714
-firefox_status: under-consideration
+firefox_status: developing
 mdn_url: https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Shapes
 spec_url: https://www.w3.org/TR/css-shapes-1/
 caniuse_ref: css-shapes
