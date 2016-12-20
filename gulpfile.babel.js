@@ -133,10 +133,17 @@ gulp.task('build:tabzilla', () =>
   .pipe(gulp.dest(path.join(publicDir, 'images')))
 );
 
+gulp.task('build:browser-logos', () =>
+  gulp
+  .src(['./node_modules/@browser-logos/*/*_64x64.png'])
+  .pipe(plugins.rename({dirname: ''}))
+  .pipe(gulp.dest(path.join(publicDir, 'images', 'browsers')))
+);
+
 gulp.task('build:root', () =>
   gulp
   .src(
-    ['./src/*.*', './src/fonts/*.*', './src/images/**/*.*'],
+    ['./src/*.*', './src/fonts/*.*', './src/images/*.*'],
     { base: './src' }
   )
   .pipe(gulp.dest(publicDir))
@@ -186,7 +193,7 @@ gulp.task('build:css', () => {
     .pipe(gulp.dest(publicDir));
 });
 
-gulp.task('build:dist', ['build:app', 'build:root', 'build:tabzilla', 'build:status', 'build:search', 'build:html', 'build:js', 'build:css']);
+gulp.task('build:dist', ['build:app', 'build:root', 'build:tabzilla', 'build:browser-logos', 'build:status', 'build:search', 'build:html', 'build:js', 'build:css']);
 
 function offline() {
   return oghliner.offline({
