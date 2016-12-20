@@ -40,6 +40,7 @@
     "gulp-inline-source": "^3.0.0",
     "gulp-load-plugins": "^1.0.0-rc.1",
     "gulp-postcss": "^6.0.1",
+    "gulp-rename": "^1.2.2",
     "gulp-replace": "^0.5.4",
     "gulp-sourcemaps": "^1.6.0",
     "gulp-uglify": "^2.0.0",
@@ -65,6 +66,14 @@
     "vinyl-source-stream": "^1.1.0"
   },
   "devDependencies": {
+    "@browser-logos/chrome": "^1.0.0",
+    "@browser-logos/edge": "^1.0.0",
+    "@browser-logos/firefox": "^1.0.0",
+    "@browser-logos/firefox-beta": "^1.0.0",
+    "@browser-logos/firefox-developer-edition": "^1.0.0",
+    "@browser-logos/firefox-nightly": "^1.0.0",
+    "@browser-logos/opera": "^1.0.0",
+    "@browser-logos/safari-technology-preview": "^1.0.0",
     "chai-http": "^3.0.0",
     "intern": "^3.3.1",
     "nock": "^8.0.0",
@@ -77,8 +86,7 @@
     "lint": "gulp lint",
     "start": "gulp watch",
     "test": "npm run lint && REDIS_INDEX=5 npm run build && REDIS_INDEX=5 intern-client config=tests/config/intern-node",
-    "testNode": "npm run lint && REDIS_INDEX=5 intern-client config=tests/config/intern-node",
-    "update-browser-logos": "npm i alrra/browser-logos && cp node_modules/browser-logos/*/{chrome,edge,firefox,firefox-beta,firefox-developer-edition,firefox-nightly,opera,safari-technology-preview}_64x64.png src/images/browsers/"
+    "testNode": "npm run lint && REDIS_INDEX=5 intern-client config=tests/config/intern-node"
   },
   "repository": {
     "type": "git",
