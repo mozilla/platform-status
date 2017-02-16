@@ -2,7 +2,7 @@
 title: Web Animations API
 category: graphics, multimedia, apps
 bugzilla: 875219
-firefox_status: in-development
+firefox_status: 52
 mdn_url: https://developer.mozilla.org/en-US/docs/Web/API/Web_Animations_API
 spec_url: https://w3c.github.io/web-animations/
 spec_repo: https://github.com/w3c/web-animations
