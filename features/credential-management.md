@@ -5,7 +5,7 @@ bugzilla: 1156047
 firefox_status: under-consideration
 spec_url: https://w3c.github.io/webappsec-credential-management/ 
 caniuse_ref: feat=credential-management
-chrome_ref:a 5026422640869376
+chrome_ref: 5026422640869376
 ie_ref: Credential Management API 
 ---
 
