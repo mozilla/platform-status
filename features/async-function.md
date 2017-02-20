@@ -11,6 +11,7 @@ webkit_ref:
 chrome_ref: 5643236399906816
 ie_ref: Async Functions
 firefox_footnote: https://blog.nightly.mozilla.org/2016/11/01/async-await-support-in-firefox/
+opera_ref:
 ---
 
 Async functions make it possible treat functions returning Promise objects as if they were synchronous.
