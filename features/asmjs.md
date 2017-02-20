@@ -10,6 +10,7 @@ webkit_ref: ASM.js
 chrome_ref: 5053365658583040
 ie_ref: ASM.js
 caniuse_ref: asmjs
+opera_ref:
 ---
 
 Strict & highly optimizable subset of JavaScript that can be used as low-level compile target.

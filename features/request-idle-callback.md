@@ -2,7 +2,7 @@
 title: requestIdleCallback
 category: apps
 bugzilla: 1198381
-firefox_status: 52
+firefox_status: in-development 
 mdn_url: https://developer.mozilla.org/en-US/docs/Web/API/Window/requestIdleCallback
 spec_url: https://w3c.github.io/requestidlecallback/
 spec_repo: https://github.com/w3c/requestidlecallback

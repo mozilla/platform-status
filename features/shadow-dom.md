@@ -12,4 +12,4 @@ webkit_ref: Shadow DOM
 caniuse_ref: shadowdom
 ---
 
-Provides encapsulation for  JavaScript, CSS, and templating in a [Web Component](https://developer.mozilla.org/en-US/docs/Web/Web_Components).
+Provides encapsulation for JavaScript, CSS, and templating in a [Web Component](https://developer.mozilla.org/en-US/docs/Web/Web_Components). Note that this is about the modern standard Shadow DOM, not the original experimental version developed by Chrome.

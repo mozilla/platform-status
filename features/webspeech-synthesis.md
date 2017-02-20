@@ -12,4 +12,4 @@ chrome_ref: 4782875580825600
 ie_ref: Web Speech API (synthesis)
 ---
 
-Javascript API to generate text-to-speech output in web applications.
+Web API to generate text-to-speech output in web applications.

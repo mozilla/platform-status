@@ -1,8 +1,9 @@
 ---
 title: WebAssembly (WASM)
 category: apps, games
-firefox_status: in-development
+firefox_status: 52
 bugzilla: 1188259
+mdn_url: https://developer.mozilla.org/en-US/docs/WebAssembly
 spec_url: https://github.com/WebAssembly/spec
 spec_status: working-draft-or-equivalent
 chrome_ref: 5453022515691520
