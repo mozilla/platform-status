@@ -6,7 +6,7 @@ firefox_status: 52
 mdn_url: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/async_function
 spec_url: https://tc39.github.io/ecmascript-asyncawait/
 spec_repo: https://github.com/tc39/ecmascript-asyncawait
-caniuse_ref: http://caniuse.com/#feat=script-async 
+caniuse_ref: script-async 
 webkit_ref: 
 chrome_ref: 5643236399906816
 ie_ref: Async Functions
