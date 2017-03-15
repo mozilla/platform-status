@@ -11,4 +11,4 @@ chrome_ref: 5831574356492288
 ie_ref: fontvariationproperties
 ---
 
-A two-dimensional grid-based layout system, optimized for user interface design.
+Provides low-level control over OpenType or TrueType font typographic features.
