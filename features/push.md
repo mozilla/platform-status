@@ -11,4 +11,4 @@ ie_ref: Push API
 caniuse_ref: push-api
 ---
 
-Receive messages pushed to the client from a server even when the site isn't focused or even open in the user-agent.
+Allows messages to be pushed to the client from a server even when the site isn't focused or even open in the user agent.

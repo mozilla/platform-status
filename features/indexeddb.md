@@ -12,4 +12,4 @@ ie_ref: IndexedDB
 caniuse_ref: indexeddb
 ---
 
-An asynchronous client-side storage API offering fast access to large amounts of structured data
+An asynchronous client-side storage API offering fast access to large amounts of structured data.

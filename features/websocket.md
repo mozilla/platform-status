@@ -11,4 +11,4 @@ ie_ref: WebSocket
 caniuse_ref: websockets
 ---
 
-Allows creating and managing a WebSocket connection to a server, as well as sending and receiving data on the connection.
+Allows for the creation and management of a WebSocket connection to a server, as well as sending and receiving data via the connection.

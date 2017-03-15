@@ -11,4 +11,4 @@ chrome_ref: 5163890719588352
 ie_ref: Shapes
 ---
 
-The CSS shape-outside property allows to wrap document content around non-rectangular shapes; it is a subset of the CSS Shapes Level 1 features.
+Allows document content to be wrapped around non-rectangular shapes; it is a subset of the CSS Shapes Level 1 spec.

@@ -2,7 +2,7 @@
 title: Web Speech Recognition
 category: api
 bugzilla: 1244460
-firefox_status: under-consideration 
+firefox_status: under-consideration
 mdn_url: https://developer.mozilla.org/en-US/docs/Web/API/Web_Speech_API#Speech_recognition
 spec_url: https://dvcs.w3.org/hg/speech-api/raw-file/tip/webspeechapi.html
 spec_repo: https://dvcs.w3.org/hg/speech-api/
@@ -11,4 +11,4 @@ chrome_ref: 5908775487668224
 ie_ref: Web Speech API (input)
 ---
 
-Web API to recognize speech input in web applications.
+Recognizes speech input in web applications.

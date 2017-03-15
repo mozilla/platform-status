@@ -12,5 +12,5 @@ webkit_ref: Web Animations
 ie_ref: Web Animations JavaScript API
 ---
 
-Create and manage animations run by the browser. ([Detailed Firefox
-implementation status](https://birtles.github.io/areweanimatedyet/))
+Creates and manages animations run by the browser ([detailed Firefox
+implementation status](https://birtles.github.io/areweanimatedyet/)).

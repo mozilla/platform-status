@@ -10,4 +10,4 @@ chrome_ref: 5698768766763008
 ie_ref: Vibration API
 ---
 
-Access to vibration hardware, allowing physical feedback to the user by causing the device to shake.
+Provides access to vibration hardware, allowing physical feedback to the user by causing the device to shake.

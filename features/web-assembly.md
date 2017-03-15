@@ -11,4 +11,4 @@ ie_ref: Web Assembly (MVP)
 webkit_ref: WebAssembly
 ---
 
-*WebAssembly* is a low-level, portable, size- and load-time-efficient binary code format; designed to serve as a compilation target for the web.
+A low-level, portable, size- and load-time-efficient binary code format designed to serve as a compilation target for the Web.

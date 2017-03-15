@@ -12,4 +12,4 @@ webkit_ref: Fetch API
 caniuse_ref: fetch
 ---
 
-Low level API for fetching network resources that is more powerful and flexible than [XMLHttpRequest](https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest).
+A low-level API for fetching network resources that is more powerful and flexible than [`XMLHttpRequest`](https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest).

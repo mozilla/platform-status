@@ -2,7 +2,7 @@
 title: requestIdleCallback
 category: apps
 bugzilla: 1198381
-firefox_status: in-development 
+firefox_status: in-development
 mdn_url: https://developer.mozilla.org/en-US/docs/Web/API/Window/requestIdleCallback
 spec_url: https://w3c.github.io/requestidlecallback/
 spec_repo: https://github.com/w3c/requestidlecallback
@@ -11,6 +11,4 @@ ie_ref: requestIdleCallback
 caniuse_ref: requestidlecallback
 ---
 
-Request a callback when the user agent is idle.
-
-With requestIdleCallback web developers will be able to schedule background computation tasks on the event loop that has a better chance of not interfering with other more time-critical operations.
+Requests a callback when the user agent is idle, allowing developers to schedule background computation tasks on the event loop that have a better chance of not interfering with other more time-critical operations.

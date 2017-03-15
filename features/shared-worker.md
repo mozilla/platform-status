@@ -12,4 +12,4 @@ ie_ref: Shared Web Workers
 caniuse_ref: sharedworkers
 ---
 
-A specific kind of worker that can be accessed from several browsing contexts, such as several windows, iframes or even workers.
+A specific kind of worker that can be accessed from several browsing contexts (including windows, iframes, and other workers).

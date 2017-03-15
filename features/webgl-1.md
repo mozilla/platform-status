@@ -11,4 +11,4 @@ ie_ref: WebGL  (Canvas 3D)
 caniuse_ref: webgl
 ---
 
-An API closely conforming to [OpenGL ES 2.0](https://www.khronos.org/opengles/2_X/) for rendering 3D and 2D graphics in a `<canvas>` element.
+An API closely conforming to [OpenGL ES 2.0](https://www.khronos.org/opengles/2_X/), for rendering 2D and 3D graphics in a `<canvas>` element.
