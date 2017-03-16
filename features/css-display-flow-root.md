@@ -1,5 +1,5 @@
 ---
-title: CSS display: flow-root
+title: "CSS display: flow-root"
 category: css, layout
 bugzilla: 1322191
 firefox_status: 53
@@ -9,4 +9,4 @@ caniuse_ref: flow-root
 chrome_ref: 5769454877147136
 ---
 
-Provides a native clearfix solution that doesn't rely on extra markup and css hacks.
+Provides a native clearfix solution that doesn't rely on extra markup and CSS hacks.
