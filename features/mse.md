@@ -12,4 +12,4 @@ ie_ref: Media Source Extensions
 caniuse_ref: mediasource
 ---
 
-Allows creating media streams via JavaScript and play them using `<audio>` and `<video>` elements.
+Allows for the creation of media streams via JavaScript, which can be played using `<audio>` and `<video>` elements.

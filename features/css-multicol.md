@@ -11,4 +11,4 @@ chrome_ref: 6526151266664448
 ie_ref: Multi-column (full support)
 ---
 
-A CSS layout allowing to spread content on multiple columns, like a book index or a newspaper layout.
+Allows content to be broken across multiple columns, like a book index or a newspaper layout.

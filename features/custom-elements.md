@@ -12,4 +12,4 @@ webkit_ref: Custom Elements
 caniuse_ref: custom-elements
 ---
 
-Define a custom HTML tag and associate it with an ES6 class.
+Allows for the definition of custom HTML elements that are then associated with ES6 classes.

@@ -1,5 +1,5 @@
 ---
-title: HTMLCanvasElement toBlob
+title: HTMLCanvasElement.toBlob()
 category: games
 firefox_status: 19
 bugzilla: 648610
@@ -8,4 +8,4 @@ spec_url: https://html.spec.whatwg.org/multipage/scripting.html#dom-canvas-toblo
 chrome_ref: 4562033294966784
 ---
 
-Creates a Blob object representing a file containing the image in a canvas.
+Creates a Blob object representing a file containing an image captured from a canvas.

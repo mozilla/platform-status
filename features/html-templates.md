@@ -10,4 +10,4 @@ ie_ref: <template> Element
 caniuse_ref: template
 ---
 
-Declared fragments of markup which are parsed as HTML, implicitly inactive until instantiated later on at runtime.
+Declared fragments of markup that are parsed as HTML, but implicitly inactive until instantiated later on at runtime.

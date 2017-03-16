@@ -12,4 +12,4 @@ ie_ref: WebRTC – WebRTC v1.0 API
 caniuse_ref: rtcpeerconnection
 ---
 
-Capture and stream audio, video, and arbitrary data between browsers without requiring an intermediary.
+Captures and streams audio, video, and arbitrary data between browsers without requiring an intermediary.

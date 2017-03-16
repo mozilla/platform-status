@@ -11,4 +11,4 @@ ie_ref: Pointer Events
 caniuse_ref: pointer
 ---
 
-Handle hardware agnostic pointer input from devices including mouse, pen, touchscreen, etc..
+Handles hardware-agnostic pointer input from devices including mouse, pen, touchscreen, etc.

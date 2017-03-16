@@ -11,4 +11,4 @@ ie_ref: GamePad API
 caniuse_ref: gamepad
 ---
 
-Access and respond to signals from gamepads and other game controllers.
+Provides access and responses to signals from gamepads and other game controllers.

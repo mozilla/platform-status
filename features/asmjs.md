@@ -13,4 +13,4 @@ caniuse_ref: asmjs
 opera_ref:
 ---
 
-Strict & highly optimizable subset of JavaScript that can be used as low-level compile target.
+A Strict & highly optimizable subset of JavaScript that can be used as a low-level compile target.

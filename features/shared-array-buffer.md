@@ -10,4 +10,4 @@ chrome_ref: 4570991992766464
 ie_ref: Shared Memory and Atomics
 ---
 
-Fine-grained borrowing and sharing for `ArrayBuffer` between workers.
+Fine-grained sharing and borrowing of `ArrayBuffer`s between workers.

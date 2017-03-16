@@ -8,7 +8,7 @@ spec_url: https://w3c.github.io/manifest/
 spec_repo: https://github.com/w3c/manifest
 chrome_ref: 6488656873259008
 ie_ref: Web Application Manifest
-opera_ref: 
+opera_ref:
 ---
 
-JSON-based manifest that provides developers with a centralized place to put metadata associated with a web application.
+A JSON-based manifest providing developers with a centralized place to put metadata associated with a web application.

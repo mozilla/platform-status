@@ -10,4 +10,4 @@ webkit_ref: Initial Letter
 ie_ref: Initial Letter
 ---
 
-A CSS property allowing to control styling for dropped, raised, and sunken initial letters.
+A CSS property providing styling for dropped, raised, and sunken initial letters.

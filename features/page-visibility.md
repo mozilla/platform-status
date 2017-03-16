@@ -12,4 +12,4 @@ ie_ref: Page Visibility API
 caniuse_ref: pagevisibility
 ---
 
-Programmatically determine the visibility state of a page, and to be notified if the visibility state changes.
+Programmatically determines the visibility state of a page, and provides notification if the visibility state changes.

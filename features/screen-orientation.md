@@ -11,4 +11,4 @@ ie_ref: Screen Orientation API
 caniuse_ref: screen-orientation
 ---
 
-Allows reading to the current screen orientations, getting events on orientation changes and locking orientation state.
+Allows screen orientation to be programmatically set and locked, and provides events to signal orientation changes.

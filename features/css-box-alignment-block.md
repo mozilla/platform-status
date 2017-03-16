@@ -9,4 +9,4 @@ chrome_ref: 6173208034148352
 ie_ref: Box Alignment
 ---
 
-Extend the use of CSS Box Alignment properties beyond CSS grid  and flexbox layouts, to any block layout. 
+Extends the use of CSS Box Alignment properties beyond CSS Grid and Flexbox layouts, to any block layout. 

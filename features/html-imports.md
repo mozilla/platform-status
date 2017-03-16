@@ -12,4 +12,4 @@ webkit_ref: HTML imports
 caniuse_ref: imports
 ---
 
-Include reusable HTML documents in other HTML documents
+Allows HTML documents and fragments to be conveniently reused in other HTML documents.

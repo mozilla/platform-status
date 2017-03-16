@@ -9,4 +9,4 @@ chrome_ref: 5929649028726784
 ie_ref: MediaRecorder
 ---
 
-Encode audio and video streams in the browser.
+Provides the ability to encode audio and video streams on the fly in the browser.

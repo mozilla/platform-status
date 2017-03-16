@@ -12,4 +12,4 @@ webkit_status: shipped
 caniuse_ref: audio-api
 ---
 
-High-level Web API for processing and synthesizing audio in web applications.
+A high-level web API for processing and synthesizing audio in web applications.
