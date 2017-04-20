@@ -19,6 +19,11 @@ export default class FixtureParser {
 
   readFile(src) {
     const meta = matter.read(src);
+
+    if (Object.keys(meta.data).length === 0) {
+        throw new Error(`Error while parsing '${src}'.`);
+    }
+
     const summary = markdown.renderInline(meta.content);
     const slug = path.basename(src, '.md');
     const file = path.relative(this.root, src);
