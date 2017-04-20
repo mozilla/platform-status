@@ -1,5 +1,5 @@
 ---
-title: CSS clip-path
+title: "CSS clip-path"
 category: css
 bugzilla: 1247229
 firefox_status: 54
@@ -9,4 +9,4 @@ caniuse_ref: clip-path
 chrome_ref: 5742325112242176
 ---
 
-Defines a shape as a clipping region over an element; only the part of the element inside the clipping region is displayed.
+Defines a shape as a clipping region over an element. Only the part of the element inside the clipping region is displayed.
