@@ -198,6 +198,10 @@ function fillInUsingCanIUseData(canIUseData, features) {
     if (feature.caniuse_ref) {
       const data = canIUseData.data[feature.caniuse_ref];
 
+      if (!data) {
+        throw new Error(`Can't find '${feature.caniuse_ref}' feature on caniuse.com.`);
+      }
+
       [{
         browser: 'opera',
         engine: 'opera',
