@@ -199,7 +199,7 @@ function fillInUsingCanIUseData(canIUseData, features) {
       const data = canIUseData.data[feature.caniuse_ref];
 
       if (!data) {
-        throw new Error(`Can't find '${feature.caniuse_ref}' caniuse.com feature.`);
+        throw new Error(`Can't find '${feature.caniuse_ref}' feature on caniuse.com.`);
       }
 
       [{
