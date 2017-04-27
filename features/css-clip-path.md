@@ -5,7 +5,7 @@ bugzilla: 1247229
 firefox_status: 54
 mdn_url: https://developer.mozilla.org/Web/CSS/clip-path
 spec_url: https://drafts.fxtf.org/css-masking-1/#the-clip-path
-caniuse_ref: clip-path
+caniuse_ref: css-clip-path
 chrome_ref: 5742325112242176
 ---
 
