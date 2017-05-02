@@ -9,6 +9,7 @@ spec_repo: https://github.com/w3c/webcomponents
 chrome_ref: 4642138092470272
 ie_ref: Custom Elements
 webkit_ref: Custom Elements
+webkit_status: shipped
 caniuse_ref: custom-elements
 ---
 
