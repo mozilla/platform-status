@@ -54,6 +54,7 @@ function normalizeStatus(status, browser) {
     case 'done':
     case 'partial support':
     case 'prefixed':
+    case 'supported':
       return 'shipped';
     default:
       console.warn(`Unmapped status: "${status}" for "${browser}"`);
