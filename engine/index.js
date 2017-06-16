@@ -48,6 +48,7 @@ function normalizeStatus(status, browser) {
     case 'preview release':
     case 'in-development':
     case 'origin trial':
+    case 'supported in preview':
       return 'in-development';
     case 'shipped':
     case 'enabled by default':
