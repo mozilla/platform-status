@@ -79,7 +79,7 @@ class ChromeBrowserFeature extends BrowserFeature {
   }
 
   get _rawStatus() {
-    return this.data.impl_status_chrome;
+    return this.data.browsers.chrome.status.text;
   }
   get url() {
     return url.format({
