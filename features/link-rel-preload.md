@@ -8,7 +8,6 @@ spec_url: https://w3c.github.io/preload/
 spec_repo: https://github.com/w3c/preload
 chrome_ref: 5757468554559488
 ie_ref: Preload
-caniuse_ref: preload
 webkit_ref: Preload
 ---
 
