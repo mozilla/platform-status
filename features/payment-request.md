@@ -8,7 +8,6 @@ spec_url: https://w3c.github.io/payment-request/
 spec_repo: https://github.com/w3c/payment-request
 chrome_ref: 5639348045217792
 ie_ref: Payment Request API
-caniuse_ref: payment
 webkit_ref: Payment Request
 ---
 
