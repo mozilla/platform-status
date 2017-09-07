@@ -437,11 +437,6 @@ article {
 			background-image: url('images/browsers/firefox-beta_64x64.png');
 		}
 	}
-	&.state-developer-edition {
-		.icon-browser {
-			background-image: url('images/browsers/firefox-developer-edition_64x64.png');
-		}
-	}
 	&.state-nightly {
 		.icon-browser {
 			background-image: url('images/browsers/firefox-nightly_64x64.png');
