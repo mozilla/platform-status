@@ -14,8 +14,7 @@ export default class FirefoxVersionParser {
         this.results = {
           stable: this.majorVersion(results.LATEST_FIREFOX_VERSION),
           beta: this.majorVersion(results.LATEST_FIREFOX_DEVEL_VERSION),
-          aurora: this.majorVersion(results.FIREFOX_AURORA),
-          nightly: this.majorVersion(results.FIREFOX_AURORA) + 1, // File doesn't have nightly.
+          nightly: this.majorVersion(results.FIREFOX_NIGHTLY),
         };
       });
   }

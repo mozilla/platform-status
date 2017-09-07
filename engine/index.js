@@ -330,7 +330,7 @@ function populateFirefoxStatus(versions, features) {
     if (!isNaN(feature.firefox_status)) {
       const version = parseInt(feature.firefox_status, 10);
       feature.firefox_version = version;
-      if (version <= versions.aurora) {
+      if (version <= versions.beta) {
         feature.firefox_status = 'shipped';
       } else {
         feature.firefox_status = 'in-development';
@@ -340,8 +340,6 @@ function populateFirefoxStatus(versions, features) {
         feature.firefox_channel = 'release';
       } else if (version === versions.beta) {
         feature.firefox_channel = 'beta';
-      } else if (version === versions.aurora) {
-        feature.firefox_channel = 'developer-edition';
       } else if (version === versions.nightly) {
         feature.firefox_channel = 'nightly';
       }
