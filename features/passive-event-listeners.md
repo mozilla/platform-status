@@ -9,7 +9,7 @@ spec_repo: https://github.com/whatwg/dom
 caniuse_ref:
 webkit_ref:
 chrome_ref: 5745543795965952
-ie_ref:
+ie_ref: Passive Event Listeners
 webkit_footnote: Implemented in https://trac.webkit.org/changeset/201757
 ---
 
