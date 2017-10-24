@@ -6,7 +6,7 @@ firefox_status: 49
 mdn_url: https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/addEventListener
 spec_url: https://dom.spec.whatwg.org/#dom-addeventlisteneroptions-passive
 spec_repo: https://github.com/whatwg/dom
-caniuse_ref:
+caniuse_ref: passive-event-listener
 webkit_ref:
 chrome_ref: 5745543795965952
 ie_ref:
