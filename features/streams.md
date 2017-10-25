@@ -6,7 +6,7 @@ firefox_status: in-development
 spec_url: https://streams.spec.whatwg.org/
 spec_repo: https://github.com/whatwg/streams
 chrome_ref: 6605041225957376
-webkit_ref: Streams
+webkit_ref: Readable Streams
 ie_ref: Streams API
 ---
 
