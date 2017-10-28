@@ -2,7 +2,7 @@
 title: CSS Font Rendering Controls (font-display)
 category: css, font
 bugzilla: 1157064
-firefox_status: in-development
+firefox_status: 58
 mdn_url: https://developer.mozilla.org/en-US/docs/Web/CSS/@font-face/font-display
 spec_url: https://tabatkins.github.io/specs/css-font-display/
 chrome_ref: 4799947908055040
