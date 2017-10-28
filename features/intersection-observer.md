@@ -2,7 +2,7 @@
 title: Intersection Observer API
 category: api, apps
 bugzilla: 1243846
-firefox_status: in-development
+firefox_status: 55
 mdn_url: https://developer.mozilla.org/en-US/docs/Web/API/Intersection_Observer_API
 spec_url: https://wicg.github.io/IntersectionObserver/
 chrome_ref: 5695342691483648
