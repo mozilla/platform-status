@@ -8,7 +8,7 @@ spec_url: https://dvcs.w3.org/hg/speech-api/raw-file/tip/webspeechapi.html
 spec_repo: https://dvcs.w3.org/hg/speech-api/
 caniuse_ref: speech-recognition
 chrome_ref: 5908775487668224
-ie_ref: webspeechapispeechrecognition
+ie_ref: Web Speech API (Speech Recognition)
 ---
 
 Recognizes speech input in web applications.
