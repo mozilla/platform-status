@@ -5,12 +5,12 @@ import handlebars from 'handlebars';
 import Bottleneck from 'bottleneck';
 import slug from 'slug';
 slug.defaults.mode = 'rfc3986';
-import FixtureParser from './fixtureParser.js';
-import BrowserParser from './browserParser.js';
-import FirefoxVersionParser from './firefoxVersionParser.js';
-import CanIUseParser from './canIUseParser.js';
-import cache from './cache.js';
-import redis from './redis-helper.js';
+import FixtureParser from './fixtureParser';
+import BrowserParser from './browserParser';
+import FirefoxVersionParser from './firefoxVersionParser';
+import CanIUseParser from './canIUseParser';
+import cache from './cache';
+import redis from './redis-helper';
 
 const fixtureDir = path.resolve('./features');
 const fixtureParser = new FixtureParser(fixtureDir);
