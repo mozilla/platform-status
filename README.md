@@ -2,7 +2,7 @@
 
 [![Build Status](https://api.travis-ci.org/mozilla/platform-status.svg?branch=master)](https://travis-ci.org/mozilla/platform-status)
 [![dependencies](https://img.shields.io/david/mozilla/platform-status.svg)](https://david-dm.org/mozilla/platform-status)
-[![devdependencies](https://img.shields.io/david/dev/mozilla/platform-status.svg)](https://david-dm.org/mozilla/platform-status#info=devDependencies)
+[![devdependencies](https://img.shields.io/david/dev/mozilla/platform-status.svg)](https://david-dm.org/mozilla/platform-status?type=dev)
 
 *tomayto, tomahto*, or also **platform-status**
 
