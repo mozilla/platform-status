@@ -1,7 +1,7 @@
 /* global ga */
+import debounce from 'lodash.debounce';
 import search from './search';
 import refreshOnUpdate from './refresh-on-update';
-import debounce from 'lodash.debounce';
 
 refreshOnUpdate();
 

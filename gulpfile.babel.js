@@ -10,9 +10,6 @@ import gulp from 'gulp';
 import debounce from 'lodash.debounce';
 import oghliner from 'oghliner';
 import loadPlugins from 'gulp-load-plugins';
-const plugins = loadPlugins({
-  lazy: false,
-});
 import cssnext from 'postcss-cssnext';
 import cssImport from 'postcss-import';
 import cssNested from 'postcss-nested';
@@ -21,13 +18,18 @@ import cssSimpleVars from 'postcss-simple-vars';
 import cssMqpacker from 'css-mqpacker';
 import cssReporter from 'postcss-reporter';
 import mkdirp from 'mkdirp';
-
 import babelRegister from 'babel-core/register';
-babelRegister();
 import sourceMapSupport from 'source-map-support';
+import browserSyncCreator from 'browser-sync';
+
+import engine from './engine/index';
+
+babelRegister();
 sourceMapSupport.install();
 
-import browserSyncCreator from 'browser-sync';
+const plugins = loadPlugins({
+  lazy: false,
+});
 
 const develop = process.env.NODE_ENV !== 'production';
 console.log(`Building for ${develop ? 'development' : 'production'}`);
@@ -44,8 +46,6 @@ const indexHtmlPath = path.join(publicDir, indexHtmlFilename);
 
 const statusFilePath = path.join(cacheDir, 'status.json');
 const searchFilePath = path.join(publicDir, 'search.json');
-
-import engine from './engine/index';
 
 gulp.task('clean', () => del([distDir]));
 
