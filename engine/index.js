@@ -3,8 +3,7 @@ import fs from 'fs';
 import url from 'url';
 import handlebars from 'handlebars';
 import Bottleneck from 'bottleneck';
-import slug from 'slug';
-slug.defaults.mode = 'rfc3986';
+import slugify from 'slugify';
 import FixtureParser from './fixtureParser';
 import BrowserParser from './browserParser';
 import FirefoxVersionParser from './firefoxVersionParser';
@@ -113,7 +112,7 @@ class WebKitBrowserFeature extends BrowserFeature {
     return this.data.status ? this.data.status.status : '';
   }
   get url() {
-    const slugName = slug(this.data.name);
+    const slugName = slugify(this.data.name);
     return url.format({
       host: 'www.webkit.org',
       pathname: '/status.html',
