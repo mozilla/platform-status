@@ -211,6 +211,14 @@ function fillInUsingCanIUseData(canIUseData, features) {
       {
         browser: 'safari',
         engine: 'webkit',
+      },
+      {
+        browser: 'chrome',
+        engine: 'chrome',
+      },
+      {
+        browser: 'ie',
+        engine: 'ie',
       }].forEach(({ browser, engine }) => {
         if (feature[`${engine}_status`] !== 'unknown') {
           return;
