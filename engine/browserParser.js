@@ -36,19 +36,22 @@ export default class BrowserParser {
           this.results.webkit = new Map(
             merged.map(entry => [entry.name, entry])
           );
-        }),
+        })
+        .catch(e => console.warn(`Error retrieving WebKit status: ${e}`)),
       cache.readJson(this.urls.chrome)
         .then((results) => {
           this.results.chrome = new Map(
             results.map(entry => [entry.id, entry])
           );
-        }),
+        })
+        .catch(e => console.warn(`Error retrieving Chrome status: ${e}`)),
       cache.readJson(this.urls.ie)
-        .then((results) => {
+        .then(results => {
           this.results.ie = new Map(
             results.map(entry => [entry.name, entry])
           );
-        }),
+        })
+        .catch(e => console.warn(`Error retrieving IE status: ${e}`)),
     ]);
   }
 }
