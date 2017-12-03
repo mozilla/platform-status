@@ -45,7 +45,7 @@ const indexHtmlPath = path.join(publicDir, indexHtmlFilename);
 const statusFilePath = path.join(cacheDir, 'status.json');
 const searchFilePath = path.join(publicDir, 'search.json');
 
-import engine from './engine/index.js';
+import engine from './engine/index';
 
 gulp.task('clean', () => del([distDir]));
 

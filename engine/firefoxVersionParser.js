@@ -1,4 +1,4 @@
-import cache from './cache.js';
+import cache from './cache';
 
 export default class FirefoxVersionParser {
   results = {};

@@ -1,4 +1,4 @@
-import redis from './redis-helper.js';
+import redis from './redis-helper';
 
 // return status as an object
 function getStatus() {
