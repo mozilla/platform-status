@@ -1,15 +1,8 @@
 language: node_js
 node_js:
-  - '4'
-addons:
-  apt:
-    sources:
-    - ubuntu-toolchain-r-test
-    packages:
-    - g++-4.8
+  - 'stable'
 env:
   global:
-    - CXX=g++-4.8
     - REDIS_URL=redis://localhost:6379
 install: npm install
 script:
