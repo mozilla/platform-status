@@ -37,9 +37,10 @@ This list isn't definitive, but a feature makes a good candidate if any of the f
 
 ## Developing the Site
 
+The project requires **Node.js 4** or superior and **Redis**. Set the Redis server URL in the environment variable `REDIS_URL`.
+
 * Try to work on [open issues](https://github.com/mozilla/platform-status/issues) or create a [new issue](https://github.com/mozilla/platform-status/issues/new) before starting work.
 * Follow the style in the file and make sure to run `npm test`.
-* The minimum supported Node.js version is 4.
 
 ## Help
 
