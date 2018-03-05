@@ -135,14 +135,14 @@ class IEBrowserFeature extends BrowserFeature {
   get url() {
     const name = this.data.name.replace(/[^a-zA-Z0-9]/g, '').toLowerCase();
     return url.format({
-      host: 'dev.modern.ie',
-      pathname: `/platform/status/${name}`,
+      host: 'developer.microsoft.com',
+      pathname: `/en-us/microsoft-edge/platform/status/${name}/`,
       protocol: 'https:',
     });
   }
 }
 
-IEBrowserFeature.defaultUrl = 'https://dev.modern.ie/platform/status/';
+IEBrowserFeature.defaultUrl = 'https://developer.microsoft.com/en-us/microsoft-edge/platform/status/';
 
 const allBrowserFeatures = [
   ['chrome', 'chrome', ChromeBrowserFeature],
