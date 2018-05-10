@@ -8,6 +8,7 @@ spec_url: https://w3c.github.io/requestidlecallback/
 spec_repo: https://github.com/w3c/requestidlecallback
 chrome_ref: 5572795866021888
 ie_ref: requestIdleCallback
+webkit_ref: requestIdleCallback
 caniuse_ref: requestidlecallback
 ---
 
