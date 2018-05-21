@@ -8,6 +8,7 @@ spec_url: http://dev.w3.org/2009/dap/vibration/
 caniuse_ref: vibration
 chrome_ref: 5698768766763008
 ie_ref: Vibration API
+webkit_ref: Vibration API
 ---
 
 Provides access to vibration hardware, allowing physical feedback to the user by causing the device to shake.

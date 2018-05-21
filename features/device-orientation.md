@@ -7,6 +7,7 @@ mdn_url: https://developer.mozilla.org/en-US/docs/Web/API/DeviceOrientationEvent
 spec_url: http://w3c.github.io/deviceorientation/spec-source-orientation.html
 chrome_ref: 5874690627207168
 ie_ref: Device Orientation
+webkit_ref: DeviceOrientation Events
 caniuse_ref: deviceorientation
 ---
 
