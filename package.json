@@ -4,7 +4,7 @@
   "description": "",
   "main": "gulpfile.babel.js",
   "engines": {
-    "node": ">= 6"
+    "node": "6"
   },
   "dependencies": {
     "babel-core": "^6.24.0",
