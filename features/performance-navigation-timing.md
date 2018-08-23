@@ -7,7 +7,8 @@ mdn_url: https://developer.mozilla.org/en-US/docs/Web/API/PerformanceNavigationT
 spec_url: https://w3c.github.io/navigation-timing/
 chrome_ref: 5409443269312512
 webkit_ref: Navigation Timing Level 2
-
+ie_ref: Navigation Timing API
+caniuse_ref: nav-timing
 ---
 
 Provides methods and properties to store and retrieve metrics regarding the browser's document navigation events.
