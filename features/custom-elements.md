@@ -2,7 +2,7 @@
 title: Custom Elements
 category: apps
 bugzilla: 889230
-firefox_status: in-development
+firefox_status: 63
 mdn_url: https://developer.mozilla.org/en-US/docs/Web/Web_Components/Using_custom_elements
 spec_url: http://w3c.github.io/webcomponents/spec/custom/
 spec_repo: https://github.com/w3c/webcomponents
