@@ -6,7 +6,7 @@ firefox_status: 63
 mdn_url: https://developer.mozilla.org/docs/Web/Web_Components/Using_custom_elements
 spec_url: https://html.spec.whatwg.org/multipage/custom-elements.html
 spec_repo: https://github.com/w3c/webcomponents
-chrome_ref: 4642138092470272
+chrome_ref: 4696261944934400
 ie_ref: Custom Elements
 webkit_ref: Custom Elements
 caniuse_ref: custom-elementsv1
