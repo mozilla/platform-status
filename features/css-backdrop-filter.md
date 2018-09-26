@@ -6,7 +6,7 @@ firefox_status: under-consideration
 mdn_url: https://developer.mozilla.org/docs/Web/CSS/backdrop-filter
 spec_url: https://dev.w3.org/fxtf/filters-2/#BackdropFilterPropert
 caniuse_ref: css-backdrop-filter
-webkit_ref: Filter Effects backdrop-filter propery
+webkit_ref: feature-filter-effects-backdrop-filter-property
 chrome_ref: 5679432723333120
 ie_ref: Backdrop filter
 ---
