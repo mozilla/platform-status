@@ -9,6 +9,7 @@ spec_repo: https://github.com/w3c/payment-request
 chrome_ref: 5639348045217792
 ie_ref: Payment Request API
 webkit_ref: Payment Request
+caniuse_ref: payment-request
 ---
 
 Specifies a workflow enabling browsers to handle web-based payments in a consistent manner, facilitating interactions between users, retailers, and card networks.
