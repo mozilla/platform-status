@@ -1,5 +1,5 @@
 ---
-title: Media Capabilities Decoding
+title: Media Capabilities (Decoding)
 category: apps, multimedia
 bugzilla: 1409664
 firefox_status: 63
