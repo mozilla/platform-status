@@ -7,7 +7,7 @@ mdn_url: https://developer.mozilla.org/en-US/docs/Web/HTML/Element/dialog
 spec_url: https://html.spec.whatwg.org/multipage/interactive-elements.html#the-dialog-element
 spec_repo: https://github.com/whatwg/html
 chrome_ref: 5770237022568448
-ie_ref: dialogelementformodals
+ie_ref: <dialog> element for modals
 caniuse_ref: dialog
 ---
 
