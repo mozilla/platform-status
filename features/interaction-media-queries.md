@@ -7,6 +7,7 @@ mdn_url: https://developer.mozilla.org/en-US/docs/Web/CSS/@media
 spec_url: https://drafts.csswg.org/mediaqueries-4/#mf-interaction
 spec_repo: https://github.com/w3c/csswg-drafts/tree/master/mediaqueries-4
 chrome_ref: 6460705494532096
+ie_ref: 'Media Queries Level 4: pointer and hover'
 webkit_status: shipped
 caniuse_ref: css-media-interaction
 ---
