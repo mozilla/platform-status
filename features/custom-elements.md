@@ -12,4 +12,4 @@ webkit_ref: Custom Elements
 caniuse_ref: custom-elementsv1
 ---
 
-Allows for the definition of custom HTML elements that are then associated with ES6 classes.
+Allows for the definition of custom HTML elements.
