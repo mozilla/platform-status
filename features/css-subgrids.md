@@ -4,7 +4,7 @@ category: css, layout
 bugzilla: 1240834
 firefox_status: under-consideration
 mdn_url: https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Grid_Layout
-spec_url: https://www.w3.org/TR/css-grid-1/
+spec_url: https://drafts.csswg.org/css-grid-2/#subgrids
 ie_ref: Grid Update
 ---
 
