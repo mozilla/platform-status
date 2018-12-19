@@ -12,4 +12,4 @@ chrome_ref: 1255
 ie_ref:
 ---
 
-Extensible Stylesheet Language Transformations (XSLT) is an XML-based language used, in conjunction with specialized processing software, for the transformation of XML documents. XSLT 3.0 has been a W3C recommendation since 8 June 2017.
+Extensible Stylesheet Language Transformations (XSLT) is an XML-based language used, in conjunction with specialized processing software, for the transformation of XML documents.
