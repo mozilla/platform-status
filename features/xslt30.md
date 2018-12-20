@@ -5,7 +5,7 @@ bugzilla:
 firefox_status: unknown
 mdn_url: https://developer.mozilla.org/en-US/docs/Web/XSLT
 spec_url: https://www.w3.org/TR/xslt-30/
-spec_repo:
+spec_repo: https://github.com/w3c/qtspecs
 caniuse_ref:
 webkit_ref:
 chrome_ref: 1255
