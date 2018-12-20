@@ -2,7 +2,7 @@
 title: XSLT 3.0
 category:
 bugzilla:
-firefox_status: deprecated
+firefox_status: unknown
 mdn_url: https://developer.mozilla.org/en-US/docs/Web/XSLT
 spec_url: https://www.w3.org/TR/xslt-30/
 spec_repo:
