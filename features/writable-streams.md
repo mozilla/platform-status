@@ -8,7 +8,6 @@ spec_url: https://streams.spec.whatwg.org/#ws
 spec_repo: https://github.com/whatwg/streams
 caniuse_ref: streams
 chrome_ref: 5928498656968704
-ie_ref: Streams API: WritableStream
 ---
 
 Allows JavaScript to write chunks of data to streams.
