@@ -12,4 +12,4 @@ chrome_ref: 5721832506261504
 ie_ref: CSS Scroll Snap Points
 ---
 
-Defines a way to define "snap positions", which allow to enforce a scrolling element to stop at specific positions after scrolling it.
+Provides a way to define "snap positions", which enforce the scroll positions that elements should stop at when they have finished scrolling.
