@@ -31,7 +31,7 @@
 // options that Chai provides - "expect" and "should"):
 //    http://chaijs.com/api/assert/
 
-define(require => {
+define((require) => {
   const bdd = require('intern!bdd');
   const assert = require('intern/chai!assert');
 
@@ -43,29 +43,29 @@ define(require => {
         const page = new IndexPage(this.remote);
 
         return page.title
-        .then(title => {
-          assert(title, 'title exists');
-          assert.equal(title, 'Firefox Platform Status');
-        });
+          .then((title) => {
+            assert(title, 'title exists');
+            assert.equal(title, 'Firefox Platform Status');
+          });
       });
 
       bdd.it('should have link to GitHub repo', function() {
         const page = new IndexPage(this.remote);
 
         return page.followRepoLink().getPageTitle()
-        .then(title => {
-          assert.equal(title, 'GitHub - mozilla/platform-status: Project Platform Status');
-        });
+          .then((title) => {
+            assert.equal(title, 'GitHub - mozilla/platform-status: Project Platform Status');
+          });
       });
 
       bdd.it('should have link to file issues', function() {
         const page = new IndexPage(this.remote);
 
         return page.followFileIssueLink().getPageTitle()
-        .then(title => {
-          // FIXME: We don't really know if we're on the right page
-          assert(title.includes('GitHub'));
-        });
+          .then((title) => {
+            // FIXME: We don't really know if we're on the right page
+            assert(title.includes('GitHub'));
+          });
       });
     });
   });

@@ -43,36 +43,36 @@ define((require) => {
     bdd.describe('getStatus', () => {
       bdd.it('should return null if no status in db', () =>
         digger.getStatus()
-        .then(status => {
-          assert.notOk(status);
-          assert.isNull(status);
-        })
+          .then((status) => {
+            assert.notOk(status);
+            assert.isNull(status);
+          })
       );
 
       bdd.it('should return an object saved as JSON in status key', () =>
         redis.set('status', '{ "test": "data" }')
-        .then(() => digger.getStatus())
-        .then(status => {
-          assert.ok(status);
-          assert.deepEqual({ test: 'data' }, status);
-        })
+          .then(() => digger.getStatus())
+          .then((status) => {
+            assert.ok(status);
+            assert.deepEqual({ test: 'data' }, status);
+          })
       );
     });
 
     bdd.describe('getFeatureStatus', () => {
       bdd.it('should throw if no status in db', () =>
         digger.getFeatureStatus('not-existing')
-        .catch(err => {
-          assert.equal(err.message, 'Not Found');
-        })
+          .catch((err) => {
+            assert.equal(err.message, 'Not Found');
+          })
       );
 
       bdd.it('should throw if no feature in status', () =>
         redis.set('status', '{ "test": "data" }')
-        .then(() => digger.getFeatureStatus('not-existing'))
-        .catch(err => {
-          assert.equal(err.message, 'Not Found');
-        })
+          .then(() => digger.getFeatureStatus('not-existing'))
+          .catch((err) => {
+            assert.equal(err.message, 'Not Found');
+          })
       );
 
       bdd.it('should return the value stored under key defined by slug', () => {
@@ -83,11 +83,11 @@ define((require) => {
           updated: {} };
 
         return engine.saveData([testData])
-        .then(() => digger.getFeatureStatus('feature'))
-        .then(featureStatus => {
-          assert.ok(featureStatus);
-          assert.deepEqual(featureStatus, testData);
-        });
+          .then(() => digger.getFeatureStatus('feature'))
+          .then((featureStatus) => {
+            assert.ok(featureStatus);
+            assert.deepEqual(featureStatus, testData);
+          });
       });
     });
   });
@@ -124,12 +124,12 @@ define((require) => {
     bdd.describe('/api/status', () => {
       bdd.it('returns null if no status', () =>
         api()
-        .get('/api/status')
-        .send()
-        .then(response => {
-          assert.strictEqual(!!response.body, false);
-          assert.strictEqual(response.body, null);
-        })
+          .get('/api/status')
+          .send()
+          .then((response) => {
+            assert.strictEqual(!!response.body, false);
+            assert.strictEqual(response.body, null);
+          })
       );
 
       bdd.it('should return the value stored under key defined by slug', () => {
@@ -140,27 +140,27 @@ define((require) => {
           updated: {} };
 
         return engine.saveData([testData])
-        .then(() => api()
-          .get('/api/status')
-          .send()
-        )
-        .then(response => {
-          assert.property(response.body, 'feature');
-          assert.deepEqual(response.body.feature, testData);
-        });
+          .then(() => api()
+            .get('/api/status')
+            .send()
+          )
+          .then((response) => {
+            assert.property(response.body, 'feature');
+            assert.deepEqual(response.body.feature, testData);
+          });
       });
     });
 
     bdd.describe('/api/feature/{slug}', () => {
       bdd.it('returns 404 if getFeatureStatus throws', () =>
         api()
-        .get('/api/feature/some-status')
-        .send()
-        .then(res => {
-          assert.equal(res.status, 404);
-        })
-        .catch(() => {
-        })
+          .get('/api/feature/some-status')
+          .send()
+          .then((res) => {
+            assert.equal(res.status, 404);
+          })
+          .catch(() => {
+          })
       );
 
       bdd.it('returns savedData', () => {
@@ -176,20 +176,20 @@ define((require) => {
           updated: {} };
 
         return engine.saveData([testData1, testData2])
-        .then(() => api()
-          .get('/api/feature/feature')
-          .send()
-        )
-        .then(response => {
-          assert.deepEqual(response.body, testData1);
-        })
-        .then(() => api()
-          .get('/api/feature/another-feature')
-          .send()
-        )
-        .then(response => {
-          assert.deepEqual(response.body, testData2);
-        });
+          .then(() => api()
+            .get('/api/feature/feature')
+            .send()
+          )
+          .then((response) => {
+            assert.deepEqual(response.body, testData1);
+          })
+          .then(() => api()
+            .get('/api/feature/another-feature')
+            .send()
+          )
+          .then((response) => {
+            assert.deepEqual(response.body, testData2);
+          });
       });
     });
   });

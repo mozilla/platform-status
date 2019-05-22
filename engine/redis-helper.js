@@ -14,7 +14,7 @@ function getClient() {
   }
   redisIndex = process.env.REDIS_INDEX || 0;
   return new Promise((resolve, reject) => {
-    client.select(redisIndex, err => {
+    client.select(redisIndex, (err) => {
       if (err) {
         console.log('REDIS ERROR:', err);
         client.quit();
@@ -31,15 +31,16 @@ const commands = {};
 // promisify following commads (add client as the first argument)
 // redis function:
 // `client.methodName(arguments, callback(err, response))`
-['set', 'get', 'del', 'exists', 'sismember', 'hmset', 'hget', 'smembers',
- 'sadd', 'hgetall', 'srem', 'select', 'flushdb', 'quit']
-.forEach(name => {
+[
+  'set', 'get', 'del', 'exists', 'sismember', 'hmset', 'hget', 'smembers',
+  'sadd', 'hgetall', 'srem', 'select', 'flushdb', 'quit',
+].forEach((name) => {
   commands[name] = function redisFunction(...args) {
     return getClient()
-    .then(() => new Promise((resolve, reject) => {
-      args.push((err, response) => err ? reject(err) : resolve(response));
-      client[name](...args);
-    }));
+      .then(() => new Promise((resolve, reject) => {
+        args.push((err, response) => err ? reject(err) : resolve(response));
+        client[name](...args);
+      }));
   };
 });
 
@@ -48,9 +49,9 @@ function quitClient() {
     return Promise.reject(new Error('No redis client open'));
   }
   const response = commands.quit()
-  .then(() => {
-    client = null;
-  });
+    .then(() => {
+      client = null;
+    });
   return response;
 }
 

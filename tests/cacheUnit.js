@@ -42,14 +42,14 @@ define((require) => {
 
       bdd.it('should throw `Not Found` for 404', () => {
         nock('http://localhost:8001')
-        .get('/')
-        .reply(404);
+          .get('/')
+          .reply(404);
 
         return cache.readJson('http://localhost:8001/')
-        .catch(err => {
-          assert.ok(err);
-          assert.equal(err.message, 'Not Found');
-        });
+          .catch((err) => {
+            assert.ok(err);
+            assert.equal(err.message, 'Not Found');
+          });
       });
 
       bdd.it('should return JSON', () => {
@@ -59,14 +59,14 @@ define((require) => {
           object: { a: 'a' },
         };
         nock('http://localhost:8001')
-        .get('/')
-        .reply(200, JSON.stringify(testJSON));
+          .get('/')
+          .reply(200, JSON.stringify(testJSON));
 
         return cache.readJson('http://localhost:8001/')
-        .then(response => {
-          assert.isObject(response);
-          assert.deepEqual(response, testJSON);
-        });
+          .then((response) => {
+            assert.isObject(response);
+            assert.deepEqual(response, testJSON);
+          });
       });
     });
   });

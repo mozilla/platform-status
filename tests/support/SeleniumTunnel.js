@@ -14,7 +14,7 @@
  *    stdout
  */
 
-define(require => {
+define((require) => {
   var childProcess = require('intern/dojo/node!child_process');
   var fs = require('intern/dojo/node!fs');
   var https = require('intern/dojo/node!https');
@@ -117,12 +117,12 @@ define(require => {
       return new Promise((resolve, reject) => {
         maybeMkdir(testsVarDir).then(() => {
           const file = fs.createWriteStream(filePath);
-          const request = https.get(that.url, response => {
+          const request = https.get(that.url, (response) => {
             response.pipe(file);
             file.on('finish', resolve);
           });
 
-          request.on('error', reqErr => { // Handle errors
+          request.on('error', (reqErr) => { // Handle errors
             fs.unlink(filePath); // Delete the file async. (But we don't check the result)
             reject(reqErr);
           });
@@ -177,7 +177,7 @@ define(require => {
       that._isRunning = false;
       that._isStopping = true;
 
-      return new Promise(resolve => {
+      return new Promise((resolve) => {
         that._process.on('exit', () => {
           that._process = null;
           that._isStopping = false;

@@ -184,7 +184,7 @@ function populateBrowserFeatureData(browserData, features) {
   // Temporarily assume that features that are in development for Chrome are also
   // in development for Opera (at least until
   // https://github.com/GoogleChrome/chromium-dashboard/issues/263 is fixed).
-  features.forEach(feature => {
+  features.forEach((feature) => {
     if (feature.opera_status === 'unknown' && feature.chrome_status === 'in-development') {
       feature.opera_status = 'in-development';
     }
@@ -195,7 +195,7 @@ function populateBrowserFeatureData(browserData, features) {
 function fillInUsingCanIUseData(canIUseData, features) {
   let filledInNum = 0;
 
-  features.forEach(feature => {
+  features.forEach((feature) => {
     if (feature.caniuse_ref) {
       const data = canIUseData.data[feature.caniuse_ref];
 
@@ -291,17 +291,17 @@ function bugzillaFetch(bugzillaUrl) {
 
 function getBugzillaBugData(bugId, options) {
   const includeFields = options.include_fields.join(',');
-  return bugzillaFetch(`https://bugzilla.mozilla.org/rest/bug?id=${bugId}&include_fields=${includeFields}`, options)
-  .then((json) => {
-    if (!json.bugs.length) {
-      throw new Error('Bug not found(secure bug?)');
-    }
-    return json.bugs[0];
-  })
-  .catch((reason) => {
-    validateWarning(`Failed to get bug data for: ${bugId}: ${reason}`);
-    return null;
-  });
+  return bugzillaFetch(`https://bugzilla.mozilla.org/rest/bug?id=${bugId}&include_fields=${includeFields}`)
+    .then((json) => {
+      if (!json.bugs.length) {
+        throw new Error('Bug not found(secure bug?)');
+      }
+      return json.bugs[0];
+    })
+    .catch((reason) => {
+      validateWarning(`Failed to get bug data for: ${bugId}: ${reason}`);
+      return null;
+    });
 }
 
 function populateBugzillaData(features, options) {
@@ -310,25 +310,25 @@ function populateBugzillaData(features, options) {
       return null;
     }
     return getBugzillaBugData(feature.bugzilla, Object.assign(options, { include_fields: ['status', 'depends_on', 'id'] }))
-    .then((bugData) => {
-      if (!bugData) {
-        feature.bugzilla_status = null;
-        return null;
-      }
-      feature.bugzilla_status = bugData.status;
-      feature.bugzilla_resolved_count = (bugData.status === 'RESOLVED') ? 1 : 0;
-      // Add one to show status of the tracking bug itself.
-      feature.bugzilla_dependant_count = bugData.depends_on.length + 1;
-      if (!bugData.depends_on.length) {
-        return null;
-      }
-      // Check all the dependent bugs to count how many are resolved.
-      const dependsOn = bugData.depends_on.join(',');
-      return bugzillaFetch(`https://bugzilla.mozilla.org/rest/bug?id=${dependsOn}&status=RESOLVED&include_fields=id`, options)
-      .then((dependentResult) => {
-        feature.bugzilla_resolved_count += dependentResult.bugs.length;
+      .then((bugData) => {
+        if (!bugData) {
+          feature.bugzilla_status = null;
+          return null;
+        }
+        feature.bugzilla_status = bugData.status;
+        feature.bugzilla_resolved_count = (bugData.status === 'RESOLVED') ? 1 : 0;
+        // Add one to show status of the tracking bug itself.
+        feature.bugzilla_dependant_count = bugData.depends_on.length + 1;
+        if (!bugData.depends_on.length) {
+          return null;
+        }
+        // Check all the dependent bugs to count how many are resolved.
+        const dependsOn = bugData.depends_on.join(',');
+        return bugzillaFetch(`https://bugzilla.mozilla.org/rest/bug?id=${dependsOn}&status=RESOLVED&include_fields=id`)
+          .then((dependentResult) => {
+            feature.bugzilla_resolved_count += dependentResult.bugs.length;
+          });
       });
-    });
   }));
 }
 
@@ -373,43 +373,48 @@ function populateCanIUsePercent(canIUseData, features) {
   });
 }
 
-const statusFields = ['firefox_status', 'spec_status', 'opera_status',
-                      'webkit_status', 'ie_status'];
+const statusFields = [
+  'firefox_status',
+  'spec_status',
+  'opera_status',
+  'webkit_status',
+  'ie_status',
+];
 // checking for changes in 'status' object
 function checkForNewData(features) {
   return redis.get('status')
-  .then((oldStatus) => {
-    try {
-      oldStatus = JSON.parse(oldStatus);
-    } catch (e) {
-      console.error(e, oldStatus);
-    }
-    if (!oldStatus) {
-      oldStatus = {};
-    }
-    features.forEach((feature) => {
-      feature.updated = {};
-      if (!oldStatus[feature.slug]) {
-        feature.just_started = true;
-      } else {
-        // XXX: check if that can happen outside of test...
-        if (feature.just_started) {
-          delete feature.just_started;
-        }
-        statusFields.forEach((name) => {
-          if (feature[name] !== oldStatus[feature.slug][name]) {
-            feature.updated[name] = {
-              from: oldStatus[feature.slug][name],
-              to: feature[name],
-            };
-          }
-        });
+    .then((oldStatus) => {
+      try {
+        oldStatus = JSON.parse(oldStatus);
+      } catch (e) {
+        console.error(e, oldStatus);
       }
-    });
-  }).catch((err) => {
-    console.error('ERROR:', err);
-  })
-  .then(() => features);
+      if (!oldStatus) {
+        oldStatus = {};
+      }
+      features.forEach((feature) => {
+        feature.updated = {};
+        if (!oldStatus[feature.slug]) {
+          feature.just_started = true;
+        } else {
+          // XXX: check if that can happen outside of test...
+          if (feature.just_started) {
+            delete feature.just_started;
+          }
+          statusFields.forEach((name) => {
+            if (feature[name] !== oldStatus[feature.slug][name]) {
+              feature.updated[name] = {
+                from: oldStatus[feature.slug][name],
+                to: feature[name],
+              };
+            }
+          });
+        }
+      });
+    }).catch((err) => {
+      console.error('ERROR:', err);
+    })
+    .then(() => features);
 }
 
 // `status` key holds an Object representation of `status.json`
@@ -435,16 +440,16 @@ function saveData(features) {
     }
   });
   return redis.set('status', JSON.stringify(statusData))
-  .then(() => {
-    if (isChanged) {
-      console.log('DEBUG: found new changes');
-      return redis.hmset('changelog', date, JSON.stringify(changedData));
-    }
-    console.log('DEBUG: no changes found');
-  }).catch((err) => {
-    console.error('ERROR:', err);
-  })
-  .then(() => features);
+    .then(() => {
+      if (isChanged) {
+        console.log('DEBUG: found new changes');
+        return redis.hmset('changelog', date, JSON.stringify(changedData));
+      }
+      console.log('DEBUG: no changes found');
+    }).catch((err) => {
+      console.error('ERROR:', err);
+    })
+    .then(() => features);
 }
 
 function validateFeatureInput(features) {
@@ -595,11 +600,11 @@ function buildIndex(status) {
   status.features.forEach((featureData) => {
     // register partials for each feature
     handlebars.registerPartial(
-        `${featureData.slug}-status`,
-        handlebars.compile(featureStatusContents)(featureData));
+      `${featureData.slug}-status`,
+      handlebars.compile(featureStatusContents)(featureData));
     handlebars.registerPartial(
-        `${featureData.slug}-links`,
-        handlebars.compile(featureLinksContents)(featureData));
+      `${featureData.slug}-links`,
+      handlebars.compile(featureLinksContents)(featureData));
   });
   return Promise.resolve(handlebars.compile(templateContents)(status));
 }
@@ -608,11 +613,11 @@ function buildFeatures(status) {
   const templateContents = fs.readFileSync('src/tpl/feature.html', {
     encoding: 'utf-8',
   });
-  return Promise.resolve(status.features.map(feature => {
+  return Promise.resolve(status.features.map((feature) => {
     handlebars.registerPartial('featureStatus',
-        handlebars.compile(featureStatusContents)(feature));
+      handlebars.compile(featureStatusContents)(feature));
     handlebars.registerPartial('featureLinks',
-        handlebars.compile(featureLinksContents)(feature));
+      handlebars.compile(featureLinksContents)(feature));
     return {
       slug: feature.slug,
       contents: handlebars.compile(templateContents)(feature),
@@ -623,41 +628,41 @@ function buildFeatures(status) {
 function buildStatus(options) {
   validationWarnings = [];
   return cache.getRequest()
-  .then(() => Promise.all([
-    fixtureParser.read(),
-    browserParser.read(),
-    firefoxVersionParser.read(),
-    canIUseParser.read(),
-  ]))
-  .then(() => {
-    validateFeatureInput(fixtureParser.results);
-    return populateBugzillaData(fixtureParser.results, options);
-  })
-  .then(() => {
-    populateFirefoxStatus(firefoxVersionParser.results, fixtureParser.results);
-    populateBrowserFeatureData(browserParser.results, fixtureParser.results);
-    fillInUsingCanIUseData(canIUseParser.results, fixtureParser.results);
-    populateSpecStatus(browserParser.results, fixtureParser.results);
-    populateCanIUsePercent(canIUseParser.results, fixtureParser.results);
-    return checkForNewData(fixtureParser.results);
-  })
-  .then(saveData)
-  .then(cache.quitRedis)
-  .then(redis.quitClient)
-  .then(() => {
-    const data = {
-      created: (new Date()).toISOString(),
-      features: fixtureParser.results,
-      firefoxVersions: firefoxVersionParser.results,
-    };
-    if (validationWarnings.length) {
-      console.warn('Validation warnings: ');
-      validationWarnings.forEach((warning) => {
-        console.warn(`\t${warning}`);
-      });
-    }
-    return data;
-  });
+    .then(() => Promise.all([
+      fixtureParser.read(),
+      browserParser.read(),
+      firefoxVersionParser.read(),
+      canIUseParser.read(),
+    ]))
+    .then(() => {
+      validateFeatureInput(fixtureParser.results);
+      return populateBugzillaData(fixtureParser.results, options);
+    })
+    .then(() => {
+      populateFirefoxStatus(firefoxVersionParser.results, fixtureParser.results);
+      populateBrowserFeatureData(browserParser.results, fixtureParser.results);
+      fillInUsingCanIUseData(canIUseParser.results, fixtureParser.results);
+      populateSpecStatus(browserParser.results, fixtureParser.results);
+      populateCanIUsePercent(canIUseParser.results, fixtureParser.results);
+      return checkForNewData(fixtureParser.results);
+    })
+    .then(saveData)
+    .then(cache.quitRedis)
+    .then(redis.quitClient)
+    .then(() => {
+      const data = {
+        created: (new Date()).toISOString(),
+        features: fixtureParser.results,
+        firefoxVersions: firefoxVersionParser.results,
+      };
+      if (validationWarnings.length) {
+        console.warn('Validation warnings: ');
+        validationWarnings.forEach((warning) => {
+          console.warn(`\t${warning}`);
+        });
+      }
+      return data;
+    });
 }
 
 export default {

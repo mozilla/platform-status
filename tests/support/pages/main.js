@@ -18,16 +18,16 @@ define(() => {
       const remote = this.remote;
 
       return remote.findByCssSelector('#link-repo')
-      .then(anchor => anchor.getProperty('href'))
-      .then(url => remote.get(url));
+        .then(anchor => anchor.getProperty('href'))
+        .then(url => remote.get(url));
     },
 
     followFileIssueLink() {
       const remote = this.remote;
 
       return remote.findByCssSelector('#link-issue')
-      .then(anchor => anchor.getProperty('href'))
-      .then(url => remote.get(url));
+        .then(anchor => anchor.getProperty('href'))
+        .then(url => remote.get(url));
     },
   };
 
