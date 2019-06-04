@@ -1,7 +1,7 @@
 ---
 title: CSS Subgrids
 category: css, layout
-bugzilla: 1349043
+bugzilla: 1240834
 firefox_status: in-development
 mdn_url: https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Grid_Layout
 spec_url: https://drafts.csswg.org/css-grid-2/#subgrids
