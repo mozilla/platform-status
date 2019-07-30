@@ -7,8 +7,8 @@ env:
 install: npm install
 script:
   - npm test
-before_install:
-  - 'sh -e /etc/init.d/xvfb start'
+services:
+  - xvfb
 before_script:
   - 'export DISPLAY=:99.0'
 services:
