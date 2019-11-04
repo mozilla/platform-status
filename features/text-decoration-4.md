@@ -10,4 +10,4 @@ chrome_ref: 5631679087509504
 caniuse_ref: text-decoration
 ---
 
-A module of CSS that defines features relating to text decoration, such as underlines, text shadows, and emphasis marks. Level 4 adds new properties like <code>text-decoration-skip-ink</code>, <code>text-underline-offset</code>, and <code>text-decoration-thickness</code>.
+A module of CSS that defines features relating to text decoration, such as underlines, text shadows, and emphasis marks. Level 4 adds new properties like `text-decoration-skip-ink`, `text-underline-offset`, and `text-decoration-thickness`.
