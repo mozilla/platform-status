@@ -5,7 +5,6 @@ bugzilla: 1580602
 firefox_status: 71
 mdn_url: https://wiki.developer.mozilla.org/en-US/docs/Web/API/Media_Session_API
 spec_url: https://w3c.github.io/mediasession/
-caniuse_ref: mdn-api_mediasession
 chrome_ref: 5639924124483584
 ---
 
