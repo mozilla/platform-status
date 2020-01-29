@@ -2,7 +2,7 @@
 title: Link Rel Preload
 category: apps
 bugzilla: 1222633
-firefox_status: 56
+firefox_status: in-development
 mdn_url: https://developer.mozilla.org/en-US/docs/Web/HTML/Preloading_content
 spec_url: https://w3c.github.io/preload/
 spec_repo: https://github.com/w3c/preload
