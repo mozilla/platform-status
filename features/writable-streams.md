@@ -1,7 +1,7 @@
 ---
 title: Writable Streams
 category: file
-bugzilla: 1128959
+bugzilla: 1474543
 firefox_status: in-development
 mdn_url: https://developer.mozilla.org/en-US/docs/Web/API/Streams_API#Writable_streams
 spec_url: https://streams.spec.whatwg.org/#ws
