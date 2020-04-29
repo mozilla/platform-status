@@ -6,6 +6,7 @@ firefox_status: 58
 mdn_url: https://developer.mozilla.org/en-US/docs/Web/Manifest
 spec_url: https://w3c.github.io/manifest/
 spec_repo: https://github.com/w3c/manifest
+caniuse_ref: web-app-manifest
 chrome_ref: 6488656873259008
 ie_ref: Web Application Manifest
 opera_ref:
