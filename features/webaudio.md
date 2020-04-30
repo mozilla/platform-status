@@ -8,6 +8,7 @@ spec_url: http://webaudio.github.io/web-audio-api/
 spec_repo: https://github.com/webaudio/web-audio-api/
 chrome_ref: 6261718720184320
 ie_ref: Web Audio API
+webkit_ref: Web Audio
 webkit_status: shipped
 caniuse_ref: audio-api
 ---
