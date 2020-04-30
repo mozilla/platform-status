@@ -6,7 +6,7 @@ bugzilla: 868184
 mdn_url: https://developer.mozilla.org/en-US/docs/Games/Tools/asm.js
 spec_url: http://asmjs.org/spec/latest/
 spec_status: working-draft-or-equivalent
-webkit_ref: ASM.js
+webkit_ref:
 chrome_ref: 5053365658583040
 ie_ref: ASM.js
 caniuse_ref: asmjs

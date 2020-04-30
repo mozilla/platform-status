@@ -8,7 +8,7 @@ spec_url: https://w3c.github.io/mediacapture-fromelement/index.html#idl-def-Canv
 spec_repo: https://github.com/w3c/mediacapture-fromelement
 caniuse_ref: mediacapture-fromelement
 chrome_ref: 4817998447640576
-webkit_ref:
+webkit_status: shipped # this is part of Media Capture and Streams
 opera_ref:
 ie_ref:
 ---

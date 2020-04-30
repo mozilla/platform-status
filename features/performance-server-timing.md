@@ -8,7 +8,7 @@ spec_url: https://w3c.github.io/server-timing/
 caniuse_ref: server-timing
 chrome_ref: 5695708376072192
 ie_ref: Server Timing
-webkit_ref: Navigation Timing Level 2
+webkit_ref:
 
 ---
 

@@ -8,6 +8,7 @@ spec_url: https://w3c.github.io/mediacapture-record/MediaRecorder.html
 caniuse_ref: mediarecorder
 chrome_ref: 5929649028726784
 ie_ref: MediaRecorder
+webkit_ref: MediaStream Recording API
 ---
 
 Provides the ability to encode audio and video streams on the fly in the browser.

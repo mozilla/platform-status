@@ -9,6 +9,7 @@ spec_repo: https://github.com/whatwg/html
 chrome_ref: 5770237022568448
 ie_ref: <dialog> element for modals
 caniuse_ref: dialog
+webkit_ref: Dialog Element
 ---
 
 Provides semantics for marking up modal dialogs, along with access to useful related functionality.

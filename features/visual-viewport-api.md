@@ -5,7 +5,7 @@ bugzilla: 1512813
 firefox_status: 68
 mdn_url: https://developer.mozilla.org/en-US/docs/Web/API/Visual_Viewport_API
 spec_url: https://wicg.github.io/visual-viewport/
-webkit_ref: feature-visual-viewport-api
+webkit_ref: Visual Viewport API
 chrome_ref: 5737866978131968
 ---
 
