@@ -9,6 +9,7 @@ spec_repo: https://github.com/w3c/csswg-drafts/tree/master/mediaqueries-5
 ie_ref: 'Media Queries: prefers-reduced-motion'
 webkit_status: shipped
 caniuse_ref: prefers-reduced-motion
+chrome_ref: 5597964353404928
 ---
 
 Used to detect if the user has enabled their system's setting for minimizing the amount of animation or motion it uses.

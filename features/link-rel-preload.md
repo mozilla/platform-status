@@ -6,6 +6,7 @@ firefox_status: in-development
 mdn_url: https://developer.mozilla.org/en-US/docs/Web/HTML/Preloading_content
 spec_url: https://w3c.github.io/preload/
 spec_repo: https://github.com/w3c/preload
+caniuse_ref: link-rel-preload
 chrome_ref: 5757468554559488
 ie_ref: Preload
 webkit_ref: Preload

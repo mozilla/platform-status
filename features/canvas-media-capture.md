@@ -6,6 +6,7 @@ firefox_status: 43
 mdn_url: https://developer.mozilla.org/en-US/docs/Web/API/HTMLCanvasElement/captureStream
 spec_url: https://w3c.github.io/mediacapture-fromelement/index.html#idl-def-CanvasCaptureMediaStream
 spec_repo: https://github.com/w3c/mediacapture-fromelement
+caniuse_ref: mediacapture-fromelement
 chrome_ref: 4817998447640576
 webkit_status: shipped # this is part of Media Capture and Streams
 opera_ref:
