@@ -3,7 +3,7 @@ title: Block autoplaying audio
 category: apps, multimedia
 bugzilla: 1487844
 firefox_status: 66
-chrome_ref: 5700102471548928
+chrome_status: shipped
 webkit_ref: Scroll Anchoring
 ---
 
