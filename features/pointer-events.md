@@ -9,6 +9,7 @@ spec_repo: https://github.com/w3c/pointerevents/
 chrome_ref: 4504699138998272
 ie_ref: Pointer Events
 caniuse_ref: pointer
+webkit_ref: Pointer Events Level 2
 ---
 
 Handles hardware-agnostic pointer input from devices including mouse, pen, touchscreen, etc.
