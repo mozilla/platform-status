@@ -6,6 +6,7 @@ bugzilla: 1188259
 mdn_url: https://developer.mozilla.org/en-US/docs/WebAssembly
 spec_url: https://github.com/WebAssembly/spec
 spec_status: working-draft-or-equivalent
+caniuse_ref: wasm
 chrome_ref: 5453022515691520
 ie_ref: Web Assembly (MVP)
 webkit_ref: WebAssembly

@@ -7,7 +7,7 @@ mdn_url: https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Scroll_Snap
 spec_url: https://drafts.csswg.org/css-scroll-snap-1/
 spec_repo: https://github.com/w3c/csswg-drafts/tree/master/css-scroll-snap-1
 caniuse_ref: css-snappoints
-webkit_ref: css-scroll-snap-points-module-level-1
+webkit_ref: CSS Scroll Snap Points Module Level 1
 chrome_ref: 5721832506261504
 ie_ref: CSS Scroll Snap Points
 ---

@@ -8,7 +8,7 @@ spec_url: https://fetch.spec.whatwg.org/
 spec_repo: https://github.com/whatwg/fetch
 chrome_ref: 6730533392351232
 ie_ref: Fetch API
-webkit_ref: Fetch API
+webkit_ref: Fetch
 caniuse_ref: fetch
 ---
 

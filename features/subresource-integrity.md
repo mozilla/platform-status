@@ -8,6 +8,7 @@ spec_url: https://www.w3.org/TR/SRI/
 chrome_ref: 6183089948590080
 ie_ref: Subresource Integrity
 caniuse_ref: subresource-integrity
+webkit_ref: Subresource Integrity
 ---
 
 Provides an `integrity` attribute allowing scripts and stylesheets to protect against unexpected modifications.

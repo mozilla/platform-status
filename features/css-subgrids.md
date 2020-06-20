@@ -1,11 +1,11 @@
 ---
 title: CSS Subgrids
 category: css, layout
-bugzilla: 1349043
-firefox_status: in-development
-mdn_url: https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Grid_Layout
+bugzilla: 1240834
+firefox_status: 71
+mdn_url: https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Grid_Layout/Subgrid
 spec_url: https://drafts.csswg.org/css-grid-2/#subgrids
-ie_ref: Grid Update
+caniuse_ref: css-subgrid
 ---
 
-Allows a CSS grid nested inside another CSS grid to be connected to its containing grid; all browsers left this feature out of their initial grid implementation.
+Allows a CSS grid nested inside another CSS grid to be connected to its containing grid, using the same tracks.

@@ -9,7 +9,7 @@ spec_repo: https://github.com/w3c/webvr/
 chrome_ref: 4532810371039232
 ie_ref: WebVR
 caniuse_ref: webvr
-webkit_ref: WebVR
+webkit_ref:
 ---
 
 Provides support for exposing virtual reality displays — like the Oculus Rift or HTC Vive — to web apps, enabling developers to create interactive virtual reality scenes on the web platform.
