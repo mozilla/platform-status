@@ -2,7 +2,7 @@
 title: Background Sync API
 category: apps
 bugzilla: 1217544
-firefox_status: in-development
+firefox_status: under-consideration
 spec_url: https://wicg.github.io/BackgroundSync/spec/
 spec_repo: https://github.com/WICG/BackgroundSync
 caniuse_ref: background-sync
