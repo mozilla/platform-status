@@ -1,3 +1,5 @@
+// There's an odd issue with eslint-plugin-import here:
+// eslint-disable-next-line import/extensions
 import lunr from 'lunr';
 
 function loadFeatureData() {
@@ -42,6 +44,6 @@ function buildSearchIndex(features) {
 
 export default function initialize() {
   return loadFeatureData()
-  .then(parseFeatureData)
-  .then(buildSearchIndex);
+    .then(parseFeatureData)
+    .then(buildSearchIndex);
 }

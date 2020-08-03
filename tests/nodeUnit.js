@@ -18,7 +18,7 @@
 // options that Chai provides - "expect" and "should"):
 //    http://chaijs.com/api/assert/
 
-define(require => {
+define((require) => {
   const bdd = require('intern!bdd');
   const assert = require('intern/chai!assert');
   const fs = require('intern/dojo/node!fs');
@@ -65,7 +65,7 @@ define(require => {
             'shipped',
           ];
 
-          strings.forEach(val => {
+          strings.forEach((val) => {
             assert.equal(indexJS.normalizeStatus(val), val);
           });
         });
@@ -116,14 +116,14 @@ define(require => {
 
       bdd.after(() =>
         cache.quitRedis()
-        .then(() => redis.quitClient()));
+          .then(() => redis.quitClient()));
 
       // Remove the test cache dir
       bdd.afterEach(() =>
         del([cacheDir])
-        .then(() => redis.flushdb())
-        // Don't let tests interfere with each other's calls to `fetch`
-        .then(() => nock.cleanAll())
+          .then(() => redis.flushdb())
+          // Don't let tests interfere with each other's calls to `fetch`
+          .then(() => nock.cleanAll())
       );
 
       bdd.beforeEach(() => {
@@ -136,35 +136,35 @@ define(require => {
         const testObject = { some: 'value' };
 
         nock(testURL)
-        .get('/')
-        .reply(200, testObject, {
-          'cache-control': 'max-age=100',
-        })
-        .get('/')
-        .reply(304);
+          .get('/')
+          .reply(200, testObject, {
+            'cache-control': 'max-age=100',
+          })
+          .get('/')
+          .reply(304);
 
         // Cache our package.json file
         return cache.readJson(testURL)
-        // Get our package.json (should succeed from cache)
-        .then(originalText => cache.readJson(testURL)
-          .then(cachedText => {
-            // Compare the original text with the cached text
-            assert.deepEqual(cachedText, originalText);
-            assert.deepEqual(cachedText, testObject);
-          })
-        );
+          // Get our package.json (should succeed from cache)
+          .then(originalText => cache.readJson(testURL)
+            .then((cachedText) => {
+              // Compare the original text with the cached text
+              assert.deepEqual(cachedText, originalText);
+              assert.deepEqual(cachedText, testObject);
+            })
+          );
       });
 
       bdd.it('should reject on 404s', () => {
         const testURL = 'https://somejsonurl.com';
 
         nock(testURL)
-        .get('/')
-        .reply(404);
+          .get('/')
+          .reply(404);
 
         return cache.readJson(testURL).then(() => {
           assert.fail('`cache.readJson` should have rejected on a 404');
-        }).catch(err => {
+        }).catch((err) => {
           assert(err instanceof Error);
           return true;
         });

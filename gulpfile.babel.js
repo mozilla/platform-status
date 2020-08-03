@@ -51,30 +51,30 @@ gulp.task('clean', () => del([distDir]));
 
 gulp.task('lint', () =>
   gulp
-  .src(['./*.js', './engine/*.js', './src/js/*.js', './tests/**/*.js'])
-  .pipe(plugins.eslint({
-    fix: true,
-  }))
-  .pipe(plugins.eslint.format())
-  .pipe(plugins.eslint.failAfterError())
+    .src(['./*.js', './engine/*.js', './src/js/*.js', './tests/**/*.js'])
+    .pipe(plugins.eslint({
+      fix: true,
+    }))
+    .pipe(plugins.eslint.format())
+    .pipe(plugins.eslint.failAfterError()),
 );
 
 gulp.task('build:engines', () =>
   gulp.src(['engine/digger.js', 'engine/redis-helper.js'])
     .pipe(babel())
-    .pipe(gulp.dest('dist/engine/'))
+    .pipe(gulp.dest('dist/engine/')),
 );
 
 gulp.task('build:routes', () =>
   gulp.src('routes/*.js')
     .pipe(babel())
-    .pipe(gulp.dest('dist/routes/'))
+    .pipe(gulp.dest('dist/routes/')),
 );
 
 gulp.task('build:app', ['build:routes', 'build:engines'], () =>
   gulp.src('app.js')
     .pipe(babel())
-    .pipe(gulp.dest('dist'))
+    .pipe(gulp.dest('dist')),
 );
 
 gulp.task('build:status', () => {
@@ -124,22 +124,22 @@ gulp.task('build:html', ['build:index', 'build:features', 'build:css'], () =>
     //   compress: false,
     // })))
     .pipe(plugins.if(!develop, plugins.htmlmin()))
-    .pipe(gulp.dest(publicDir))
+    .pipe(gulp.dest(publicDir)),
 );
 
 gulp.task('build:tabzilla', () =>
   gulp
-  .src(['./node_modules/mozilla-tabzilla/media/img/*.png'])
-  .pipe(gulp.dest(path.join(publicDir, 'images')))
+    .src(['./node_modules/mozilla-tabzilla/media/img/*.png'])
+    .pipe(gulp.dest(path.join(publicDir, 'images'))),
 );
 
 gulp.task('build:root', () =>
   gulp
-  .src(
-    ['./src/*.*', './src/fonts/*.*', './src/images/**/*.*'],
-    { base: './src' }
-  )
-  .pipe(gulp.dest(publicDir))
+    .src(
+      ['./src/*.*', './src/fonts/*.*', './src/images/**/*.*'],
+      { base: './src' },
+    )
+    .pipe(gulp.dest(publicDir)),
 );
 
 gulp.task('build:js', () =>
@@ -147,16 +147,16 @@ gulp.task('build:js', () =>
     entries: './src/js/index.js',
     debug: true,
   })
-  .transform(babelify.configure())
-  .bundle()
-  .pipe(source('bundle.js'))
-  .pipe(buffer())
-  .pipe(plugins.sourcemaps.init({
-    loadMaps: true,
-  }))
-  .pipe(plugins.if(!develop, plugins.uglify()))
-  .pipe(plugins.sourcemaps.write('.'))
-  .pipe(gulp.dest(publicDir))
+    .transform(babelify.configure())
+    .bundle()
+    .pipe(source('bundle.js'))
+    .pipe(buffer())
+    .pipe(plugins.sourcemaps.init({
+      loadMaps: true,
+    }))
+    .pipe(plugins.if(!develop, plugins.uglify()))
+    .pipe(plugins.sourcemaps.write('.'))
+    .pipe(gulp.dest(publicDir)),
 );
 
 gulp.task('build:css', () => {

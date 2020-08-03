@@ -2,6 +2,7 @@ import path from 'path';
 import glob from 'glob';
 import matter from 'gray-matter';
 import MarkdownIt from 'markdown-it';
+
 const markdown = new MarkdownIt();
 
 export default class FixtureParser {
@@ -21,7 +22,7 @@ export default class FixtureParser {
     const meta = matter.read(src);
 
     if (Object.keys(meta.data).length === 0) {
-        throw new Error(`Error while parsing '${src}'.`);
+      throw new Error(`Error while parsing '${src}'.`);
     }
 
     const summary = markdown.renderInline(meta.content);

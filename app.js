@@ -1,9 +1,11 @@
 const express = require('express');
 const fs = require('fs');
 const compression = require('compression');
+
 const app = express();
 const diggerAPI = require('./routes/api');
 const bodyParser = require('body-parser');
+
 app.use(bodyParser.json());
 
 const distPublicDir = './dist/public';
