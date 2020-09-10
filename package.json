@@ -50,7 +50,7 @@
     "mkdirp": "^0.5.1",
     "mozilla-tabzilla": "^0.5.1",
     "newrelic": "^2.4.1",
-    "node-fetch": "^1.6.0",
+    "node-fetch": "^2.6.1",
     "oghliner": "^1.1.1",
     "postcss-cssnext": "^3.0.2",
     "postcss-import": "^11.0.0",
