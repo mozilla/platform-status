@@ -1,9 +1,9 @@
 ---
 title: Media Session API
 category: api
-bugzilla: 1580602
-firefox_status: 71
-mdn_url: https://wiki.developer.mozilla.org/en-US/docs/Web/API/Media_Session_API
+bugzilla: 1665496
+firefox_status: 82
+mdn_url: https://developer.mozilla.org/en-US/docs/Web/API/Media_Session_API
 spec_url: https://w3c.github.io/mediasession/
 chrome_ref: 5639924124483584
 ---
