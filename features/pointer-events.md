@@ -1,8 +1,8 @@
 ---
 title: Pointer events
 category: games, apps
-bugzilla: 822898
-firefox_status: in-development
+bugzilla: 1507495
+firefox_status: 70
 mdn_url: https://developer.mozilla.org/en-US/docs/Web/API/Pointer_events
 spec_url: https://w3c.github.io/pointerevents/
 spec_repo: https://github.com/w3c/pointerevents/
