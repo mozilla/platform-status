@@ -1,8 +1,8 @@
 ---
 title: Feature policy
 category: security
-bugzilla: 1600883
-firefox_status: 73
+bugzilla: 1483631
+firefox_status: 74
 mdn_url: https://developer.mozilla.org/en-US/docs/Web/HTTP/Feature_Policy
 spec_url: https://w3c.github.io/webappsec-feature-policy/
 spec_repo: https://github.com/w3c/webappsec-feature-policy/
